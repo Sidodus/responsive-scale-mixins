@@ -1,0 +1,54 @@
+{
+  "name": "responsive-scale-mixins",
+  "version": "1.0.0",
+  "description": "Powerful SCSS mixins for responsive design with Figma proportions. Automatically scales typography, spacing, and dimensions across desktop, tablet, and mobile breakpoints.",
+  "main": "index.scss",
+  "style": "index.scss",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "scss",
+    "sass",
+    "responsive",
+    "mixins",
+    "figma",
+    "typography",
+    "spacing",
+    "dimensions",
+    "breakpoints",
+    "css",
+    "frontend",
+    "design-system",
+    "react",
+    "vue",
+    "angular",
+    "nextjs",
+    "nuxt",
+    "svelte",
+    "astro",
+    "tailwind",
+    "bootstrap",
+    "mobile-first",
+    "responsive-design",
+    "css-variables",
+    "custom-properties"
+  ],
+  "author": "Saheed Odulaja",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sidodus/responsive-scale-mixins.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sidodus/responsive-scale-mixins.git/issues"
+  },
+  "homepage": "https://github.com/Sidodus/responsive-scale-mixins.git#readme",
+  "files": [
+    "index.scss",
+    "scss/"
+  ],
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}

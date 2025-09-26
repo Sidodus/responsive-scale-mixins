@@ -1,0 +1,159 @@
+/* // ✅ Figma Proportions: Maintains the same proportions as the Figma design.
+
+// // Here’s a SCSS mixin that dynamically calculates font-size, line-height, padding, margins, and other scalable properties across desktop, tablet, and mobile screens.
+// ✅ Consistent Scaling: No need to manually adjust for medium screens.
+// ✅ Reusable: Works for font-size, line-height, margins, paddings, etc.
+// ✅ Automatic Scaling: Dynamically scales values based on the screen size.
+
+// 📌 How to Use It
+// Import the mixins in your SCSS file: @import "../styles/mixins";
+// .title {
+//   @include responsive-scale(font-size, 40, 24);
+//   @include responsive-scale(padding, 20 73, 8 16); // Multi-value
+//   @include responsive-scale(line-height, 65, 40);
+
+//   // Letter-spacing is -1.5% of font-size
+//   @include responsive-scale(letter-spacing, -1.5, -1.5, px, true, 40, 24);
+// }
+
+// Parameters: property, desktop-value, mobile-value, unit (default px), is-percentage (default false), desktop-relative, mobile-relative
+// Pass values as numbers (e.g., 20 for 20px, 20 73 for 20px 73px).
+// Tablet values are automatically interpolated using the tablet-proportion-scale-factor.
+// For percentage-based values, provide the percentage for desktop and mobile, and the base values (e.g., font-size for letter-spacing).
+// Media queries: Desktop (default), Tablet (768-991px), Mobile (≤767px). */
+
+@function scaled-value($val, $scale-var, $unit: px) {
+  @return calc(var(#{$scale-var}) * #{$val});
+}
+
+@mixin responsive-scale(
+  $property,
+  $desktop-value,
+  $mobile-value,
+  $unit: px,
+  $is-percentage: false,
+  $desktop-relative: null,
+  $mobile-relative: null
+) {
+  $scale-factor: if(
+    $unit == px,
+    unquote("--computed-scale-factor-px"),
+    unquote("--computed-scale-factor-rem")
+  );
+
+  // If it's a percentage-based value (like letter-spacing), scale it based on the relative property
+  @if $is-percentage == true {
+    @if $desktop-relative != null {
+      #{$property}: calc(
+        #{$desktop-value} / 100 * (var(#{$scale-factor}) * #{$desktop-relative})
+      );
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      $tablet-scale-factor: if(
+        $unit == px,
+        unquote("--computed-tablet-scale-factor-px"),
+        unquote("--computed-tablet-scale-factor-rem")
+      );
+      @if $desktop-relative != null and $mobile-relative != null {
+        #{$property}: calc(
+          #{$mobile-value} /
+            100 *
+            (
+              var(#{$tablet-scale-factor}) *
+                (
+                  #{$mobile-relative} +
+                    var(--tablet-proportion-scale-factor) *
+                    (#{$desktop-relative} - #{$mobile-relative})
+                )
+            )
+        );
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      $mobile-scale-factor: if(
+        $unit == px,
+        unquote("--computed-mobile-scale-factor-px"),
+        unquote("--computed-mobile-scale-factor-rem")
+      );
+      @if $mobile-relative != null {
+        #{$property}: calc(
+          #{$mobile-value} /
+            100 *
+            (var(#{$mobile-scale-factor}) * #{$mobile-relative})
+        );
+      }
+    }
+  } @else {
+    // Regular absolute scaling
+    @if type-of($desktop-value) == list {
+      $desktop-scaled: ();
+      @each $val in $desktop-value {
+        $desktop-scaled: append(
+          $desktop-scaled,
+          scaled-value($val, $scale-factor, $unit)
+        );
+      }
+      #{$property}: $desktop-scaled;
+    } @else {
+      #{$property}: scaled-value($desktop-value, $scale-factor, $unit);
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      $tablet-scale-factor: if(
+        $unit == px,
+        unquote("--computed-tablet-scale-factor-px"),
+        unquote("--computed-tablet-scale-factor-rem")
+      );
+      @if type-of($desktop-value) == list {
+        $tablet-scaled: ();
+        @for $i from 1 through length($desktop-value) {
+          $d-val: nth($desktop-value, $i);
+          $m-val: nth($mobile-value, $i);
+          $tablet-scaled: append(
+            $tablet-scaled,
+            calc(
+              var(#{$tablet-scale-factor}) *
+                (
+                  #{$m-val} +
+                    var(--tablet-proportion-scale-factor) *
+                    (#{$d-val} - #{$m-val})
+                )
+            )
+          );
+        }
+        #{$property}: $tablet-scaled;
+      } @else {
+        #{$property}: calc(
+          var(#{$tablet-scale-factor}) *
+            (
+              #{$mobile-value} +
+                var(--tablet-proportion-scale-factor) *
+                (#{$desktop-value} - #{$mobile-value})
+            )
+        );
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      $mobile-scale-factor: if(
+        $unit == px,
+        unquote("--computed-mobile-scale-factor-px"),
+        unquote("--computed-mobile-scale-factor-rem")
+      );
+      @if type-of($mobile-value) == list {
+        $mobile-scaled: ();
+        @each $val in $mobile-value {
+          $mobile-scaled: append(
+            $mobile-scaled,
+            scaled-value($val, $mobile-scale-factor, $unit)
+          );
+        }
+        #{$property}: $mobile-scaled;
+      } @else {
+        #{$property}: scaled-value($mobile-value, $mobile-scale-factor, $unit);
+      }
+    }
+  }
+}
