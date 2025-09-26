@@ -1,6 +1,6 @@
 {
   "name": "responsive-scale-mixins",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Powerful SCSS mixins for responsive design with Figma proportions. Automatically scales typography, spacing, and dimensions across desktop, tablet, and mobile breakpoints.",
   "main": "index.scss",
   "style": "index.scss",
