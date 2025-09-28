@@ -45,6 +45,9 @@ pnpm add responsive-scale-mixins
 @import "~responsive-scale-mixins";
 
 :root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   // Define CSS variables globally (required)
   @include responsive-scale-variables(1440px, 768px, 375px);
   // Or use defaults: @include responsive-scale-variables();
@@ -61,6 +64,10 @@ pnpm add responsive-scale-mixins
 
 :root {
   // Define CSS variables globally (required)
+
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   @include responsive-scale-variables(1440px, 768px, 375px);
   // Or use defaults: @include responsive-scale-variables();
 }
@@ -82,6 +89,10 @@ pnpm add responsive-scale-mixins
 
 :root {
   // Define CSS variables globally (required)
+
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   @include responsive-scale-variables(1440px, 768px, 375px);
   // Or use defaults: @include responsive-scale-variables();
 }
@@ -103,6 +114,10 @@ pnpm add responsive-scale-mixins
 
 :root {
   // Define CSS variables globally (required)
+
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   @include responsive-scale-variables(1440px, 768px, 375px);
   // Or use defaults: @include responsive-scale-variables();
 }
@@ -124,6 +139,10 @@ pnpm add responsive-scale-mixins
 
 :root {
   // Define CSS variables globally (required)
+
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   @include responsive-scale-variables(1440px, 768px, 375px);
   // Or use defaults: @include responsive-scale-variables();
 }
@@ -145,6 +164,10 @@ pnpm add responsive-scale-mixins
 
 :root {
   // Customize for your design system (optional)
+
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   @include responsive-scale-variables(1440px, 768px, 375px);
   // Or use defaults: @include responsive-scale-variables();
 }
@@ -158,6 +181,10 @@ pnpm add responsive-scale-mixins
 
 :root {
   // Customize for your design system (optional)
+
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   @include responsive-scale-variables(1440px, 768px, 375px);
   // Or use defaults: @include responsive-scale-variables();
 }
@@ -171,6 +198,10 @@ pnpm add responsive-scale-mixins
 
 :root {
   // Customize for your design system (optional)
+
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   @include responsive-scale-variables(1440px, 768px, 375px);
   // Or use defaults: @include responsive-scale-variables();
 }
@@ -184,6 +215,10 @@ pnpm add responsive-scale-mixins
 
 :root {
   // Customize for your design system (optional)
+
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   @include responsive-scale-variables(1440px, 768px, 375px);
   // Or use defaults: @include responsive-scale-variables();
 }
@@ -197,6 +232,10 @@ pnpm add responsive-scale-mixins
 
 :root {
   // Customize for your design system (optional)
+
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   @include responsive-scale-variables(1440px, 768px, 375px);
   // Or use defaults: @include responsive-scale-variables();
 }
@@ -211,6 +250,9 @@ pnpm add responsive-scale-mixins
 // Variables must be in global scope
 // In your main CSS file:
 :root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   --computed-scale-factor-px: calc(100vw / 1920);
   --computed-scale-factor-rem: calc(100vw / 1920 / 16);
   --computed-tablet-scale-factor-px: calc(100vw / 768);
@@ -375,8 +417,13 @@ Easily customize the design widths to match your project's breakpoints:
 
 ```scss
 :root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+
   // Custom design widths (desktop, tablet, mobile)
   @include responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include responsive-scale-variables();
 }
 ```
 
@@ -400,6 +447,9 @@ If you prefer manual control, you can set the CSS variables directly:
 
 ```scss
 :root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
   --computed-scale-factor-px: calc(100vw / 1440); // Your desktop width
   --computed-scale-factor-rem: calc(100vw / 1440 / 16);
   --computed-tablet-scale-factor-px: calc(100vw / 768); // Your tablet width
@@ -409,6 +459,304 @@ If you prefer manual control, you can set the CSS variables directly:
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 ```
+
+## 🔧 Troubleshooting
+
+If the `@include responsive-scale-variables()` mixin doesn't work in your setup (e.g., due to SCSS compilation issues), use the manual CSS variables approach. Below are manual setups for each framework:
+
+### Why the Manual Approach Works
+
+The `@include responsive-scale-variables()` mixin may fail in certain SCSS compilation environments (like some Next.js setups) because the imported mixins aren't processed correctly. The manual CSS variables approach bypasses this by directly defining the required `--computed-scale-factor-*` variables in `:root`.
+
+### Next.js (App Router) - Manual Setup
+
+```scss
+// app/globals.css or app/styles/globals.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440); // Your design desktop width
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In component files
+@import "responsive-scale-mixins";
+.my-element {
+  @include responsive-scale(font-size, 24, 16);
+}
+```
+
+### Next.js (Pages Router) - Manual Setup
+
+```scss
+// styles/globals.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In component files
+@import "responsive-scale-mixins";
+```
+
+### Create React App - Manual Setup
+
+```scss
+// src/index.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In component files
+@import "responsive-scale-mixins";
+```
+
+### Vue.js - Manual Setup
+
+```scss
+// src/assets/styles/main.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In component styles
+@import "responsive-scale-mixins";
+```
+
+### Angular - Manual Setup
+
+```scss
+// src/styles.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In component styles
+@import "responsive-scale-mixins";
+```
+
+### Vite + Vue/React - Manual Setup
+
+```scss
+// src/styles/main.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In components
+@import "responsive-scale-mixins";
+```
+
+### Gatsby - Manual Setup
+
+```scss
+// src/styles/global.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In components
+@import "responsive-scale-mixins";
+```
+
+### Nuxt.js - Manual Setup
+
+```scss
+// assets/styles/main.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In components
+@import "responsive-scale-mixins";
+```
+
+### SvelteKit - Manual Setup
+
+```scss
+// src/app.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In components
+@import "responsive-scale-mixins";
+```
+
+### Astro - Manual Setup
+
+```scss
+// src/styles/global.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In components
+@import "responsive-scale-mixins";
+```
+
+### CSS Modules - Manual Setup
+
+```scss
+// In your global CSS file (e.g., globals.scss)
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1920);
+  --computed-scale-factor-rem: calc(100vw / 1920 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 390);
+  --computed-mobile-scale-factor-rem: calc(100vw / 390 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 390px) / (1920px - 390px));
+}
+
+// In your module files
+@import "responsive-scale-mixins";
+.myClass {
+  @include responsive-scale(font-size, 24, 16);
+}
+```
+
+### Tailwind CSS - Manual Setup
+
+```scss
+// styles/main.scss
+:root {
+  // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In components
+@import "responsive-scale-mixins";
+.custom-element {
+  @include responsive-scale(padding, 20 40, 10 20);
+  @apply bg-blue-500 text-white;
+}
+```
+
+### Styled Components - Manual Setup
+
+```scss
+// In your global styles
+:root {
+   // Replace 1440 with your design width or leave default (desktop)
+  // Replace 768 with your design width or leave default (tablet)
+  // Replace 375 with your design width or leave default (mobile)
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+// In styled components with SCSS preprocessing
+import styled from 'styled-components';
+import './styles/responsive-mixins.scss';
+
+const StyledComponent = styled.div`
+  ${props => props.theme.responsiveScale('font-size', 24, 16)}
+`;
+```
+
+**Note:** Replace `1440`, `768`, `375` with your actual design widths. The manual approach ensures compatibility across all build tools and frameworks.
 
 ## 📱 Breakpoints
 
