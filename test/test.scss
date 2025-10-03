@@ -1,0 +1,39 @@
+// Test file for responsive-scale mixins
+@import "../index.scss";
+
+:root {
+  @include responsive-scale-variables(1440px, 768px, 375px);
+}
+
+.test-container {
+  @include responsive-scale(padding, 20, 10);
+}
+
+.test-heading {
+  // Test rem units - should use rem scale factor
+  @include responsive-scale(font-size, 4, 1.5, rem);
+  @include responsive-scale(margin-bottom, 1, 0.5, rem);
+}
+
+.test-paragraph {
+  // Test em units - should use rem scale factor
+  @include responsive-scale(font-size, 1, 0.8, em);
+  @include responsive-scale(line-height, 1.5, 1.4, em);
+}
+
+.test-box {
+  // Test px units - should use px scale factor
+  @include responsive-scale(width, 200, 150, px);
+  @include responsive-scale(height, 100, 80, px);
+  @include responsive-scale(padding, 20, 10, px);
+}
+
+.test-letter-spacing {
+  // Test percentage-based property
+  @include responsive-scale(letter-spacing, -1, -0.5, px, true, 16, 14);
+  font-size: 16px;
+
+  @media (max-width: 767px) {
+    font-size: 14px;
+  }
+}
