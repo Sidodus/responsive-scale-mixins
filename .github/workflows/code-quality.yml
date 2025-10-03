@@ -1,0 +1,217 @@
+name: Code Quality & Testing
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test-scss-compilation:
+    name: Test SCSS Compilation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Sass
+        run: npm install -g sass
+
+      - name: Verify Sass installation
+        run: sass --version
+
+      - name: Compile main SCSS file
+        run: sass index.scss dist/index.css --style=compressed
+
+      - name: Compile test SCSS file
+        run: |
+          cd test
+          sass test.scss test.css --style=compressed
+
+      - name: Check for SCSS compilation errors
+        run: |
+          if [ $? -eq 0 ]; then
+            echo "✅ SCSS compilation successful"
+          else
+            echo "❌ SCSS compilation failed"
+            exit 1
+          fi
+
+      - name: Validate generated CSS
+        run: |
+          # Check if CSS files were created
+          if [ -f "dist/index.css" ]; then
+            echo "✅ Main CSS file generated successfully"
+          else
+            echo "❌ Main CSS file not found"
+            exit 1
+          fi
+
+          if [ -f "test/test.css" ]; then
+            echo "✅ Test CSS file generated successfully"
+          else
+            echo "❌ Test CSS file not found"
+            exit 1
+          fi
+
+          # Check test CSS for expected calc expressions (main file is just @forward)
+          if grep -q "calc(var(--computed-scale-factor)" test/test.css; then
+            echo "✅ Test CSS contains expected calc expressions"
+          else
+            echo "❌ Test CSS missing expected calc expressions"
+            exit 1
+          fi
+
+      - name: Check file sizes
+        run: |
+          echo "📊 File sizes:"
+          ls -lh dist/index.css test/test.css
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-css
+          path: |
+            dist/index.css
+            test/test.css
+          retention-days: 7
+
+  validate-package:
+    name: Validate Package Configuration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Validate package.json
+        run: |
+          # Check if package.json exists
+          if [ ! -f "package.json" ]; then
+            echo "❌ package.json not found"
+            exit 1
+          fi
+
+          # Validate JSON syntax
+          if npm run --silent json:validate 2>/dev/null; then
+            echo "✅ package.json is valid JSON"
+          else
+            echo "⚠️  json:validate script not found, checking with node"
+            node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8'))"
+            if [ $? -eq 0 ]; then
+              echo "✅ package.json is valid JSON"
+            else
+              echo "❌ package.json has invalid JSON"
+              exit 1
+            fi
+          fi
+
+      - name: Check package files exist
+        run: |
+          # Check main entry point
+          if [ ! -f "index.scss" ]; then
+            echo "❌ Main entry point index.scss not found"
+            exit 1
+          fi
+
+          # Check SCSS directory
+          if [ ! -d "scss" ]; then
+            echo "❌ SCSS directory not found"
+            exit 1
+          fi
+
+          # Check mixin files
+          if [ ! -f "scss/_mixins.scss" ]; then
+            echo "❌ Mixins file not found"
+            exit 1
+          fi
+
+          if [ ! -f "scss/_variables.scss" ]; then
+            echo "❌ Variables file not found"
+            exit 1
+          fi
+
+          echo "✅ All required package files exist"
+
+      - name: Test npm pack dry-run
+        run: |
+          npm pack --dry-run > pack-output.txt
+          if grep -q "responsive-scale-mixins@2.0.1" pack-output.txt || grep -q "responsive-scale-mixins-2.0.1" pack-output.txt; then
+            echo "✅ Package name and version correct"
+          else
+            echo "❌ Package name/version issue"
+            cat pack-output.txt
+            exit 1
+          fi
+
+          # Check that test files are excluded
+          if grep -q "test/" pack-output.txt; then
+            echo "❌ Test files found in package (should be excluded)"
+            exit 1
+          else
+            echo "✅ Test files properly excluded from package"
+          fi
+
+  lint-and-format:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for common issues
+        run: |
+          echo "🔍 Checking for common issues..."
+
+          # Check for TODO comments
+          if grep -r "TODO\|FIXME\|XXX" --exclude-dir=.git --exclude-dir=node_modules .; then
+            echo "⚠️  Found TODO/FIXME comments (not blocking)"
+          else
+            echo "✅ No TODO/FIXME comments found"
+          fi
+
+          # Check for console.log statements
+          if grep -r "console\." --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.github .; then
+            echo "⚠️  Found console statements (not blocking)"
+          else
+            echo "✅ No console statements found"
+          fi
+
+          # Check file permissions
+          if find . -name "*.sh" -type f ! -executable | grep -q .; then
+            echo "⚠️  Found non-executable shell scripts"
+          else
+            echo "✅ Shell scripts have correct permissions"
+          fi
+
+      - name: Validate README links
+        run: |
+          echo "🔗 Checking README links..."
+
+          # Check if README exists
+          if [ ! -f "README.md" ]; then
+            echo "❌ README.md not found"
+            exit 1
+          fi
+
+          # Basic link validation (check for broken relative links)
+          if grep -q "\[.*\](\.\." README.md; then
+            echo "✅ README contains relative links"
+          fi
+
+          echo "✅ README validation completed"

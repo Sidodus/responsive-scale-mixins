@@ -5,6 +5,16 @@ test/
 .nyc_output/
 coverage/
 
+# GitHub Actions and CI
+.github/
+
+# Build output
+dist/
+
+# Git-related files
+.gitignore
+.git/
+
 # Logs
 *.log
 npm-debug.log*

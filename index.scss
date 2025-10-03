@@ -1,8 +1,6 @@
 // Responsive Scale Mixins
 // A powerful SCSS mixin system for creating perfectly responsive designs
 
-// Import the variables mixin (must be included in your root element)
-@import "scss/variables";
-
-// Import the responsive scale mixin
-@import "scss/mixins";
+// Forward all mixins and functions from modules
+@forward "scss/variables";
+@forward "scss/mixins";
