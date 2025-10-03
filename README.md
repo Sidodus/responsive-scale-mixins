@@ -2,8 +2,55 @@
 
 A powerful SCSS mixin system for creating perfectly responsive designs that maintain Figma proportions across all screen sizes.
 
-[![npm version](https://badge.fury.io/js/responsive-scale-mixins.svg)](https://badge.fury.io/js/responsive-scale-mixins)
+[![npm version](https://badge.fury.io/js/responsive-scale-mixins.svg)](https://www.npmjs.com/package/responsive-scale-mixins)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm](https://img.shields.io/npm/v/responsive-scale-mixins)](https://www.npmjs.com/package/responsive-scale-mixins)
+[![npm](https://img.shields.io/npm/dm/responsive-scale-mixins)](https://www.npmjs.com/package/responsive-scale-mixins)
+
+## ⚠️ Breaking Changes in v2.0.0
+
+**Pure CSS implementations are affected by this breaking change.**
+
+- **CSS Variables**: Variable names changed from `--computed-scale-factor-px`/`--computed-scale-factor-rem` to generic `--computed-scale-factor`
+- **Calc Expressions**: Units are now appended to multipliers (e.g., `* 2rem` instead of `* 2`)
+- **SCSS Usage**: Unchanged - existing SCSS mixin calls continue to work
+
+**SCSS implementations are NOT affected** - existing `@include responsive-scale()` calls work unchanged.
+
+### Migration Guide (Pure CSS Users)
+
+**Update your CSS variable definitions:**
+
+```css
+/* OLD (v1.x) */
+:root {
+  --computed-scale-factor-px: calc(100vw / 1440);
+  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
+  --computed-tablet-scale-factor-px: calc(100vw / 768);
+  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
+  --computed-mobile-scale-factor-px: calc(100vw / 375);
+  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+
+/* NEW (v2.0) */
+:root {
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
+}
+```
+
+**Update your calc expressions to include units:**
+
+```css
+/* OLD (v1.x) */
+font-size: calc(var(--computed-scale-factor-px) * 40);
+
+/* NEW (v2.0) */
+font-size: calc(var(--computed-scale-factor) * 40px);
+```
 
 ## ✨ Features
 
@@ -13,6 +60,7 @@ A powerful SCSS mixin system for creating perfectly responsive designs that main
 - **CSS Custom Properties**: Uses modern CSS variables for optimal performance
 - **Framework Agnostic**: Works with any CSS framework or vanilla CSS
 - **TypeScript Ready**: Compatible with CSS Modules and CSS-in-JS solutions
+- **Universal Unit Support**: Handles all CSS units including absolute (px, pt, cm, mm, in, pc) and relative (%, em, rem, vw, vh, vmin, vmax) units
 
 ## 🚀 Quick Start
 
@@ -253,12 +301,9 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1920);
-  --computed-scale-factor-rem: calc(100vw / 1920 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 390);
-  --computed-mobile-scale-factor-rem: calc(100vw / 390 / 16);
+  --computed-scale-factor: calc(100vw / 1920);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 390);
   --tablet-proportion-scale-factor: calc((100vw - 390px) / (1920px - 390px));
 }
 
@@ -433,11 +478,56 @@ Easily customize the design widths to match your project's breakpoints:
 - Tablet: 768px
 - Mobile: 390px
 
-### REM Units
+### REM and EM Units
 
 ```scss
 .element {
-  @include responsive-scale(font-size, 3, 2, rem); // 3rem / 2rem
+  @include responsive-scale(
+    font-size,
+    3,
+    2,
+    rem
+  ); // 3rem / 2rem - uses rem scale factor
+  @include responsive-scale(
+    font-size,
+    2,
+    1.5,
+    em
+  ); // 2em / 1.5em - uses rem scale factor
+}
+```
+
+**Universal Unit Support:**
+
+The mixin supports **all CSS units** with a single generic scale factor:
+
+**Absolute Units:**
+
+- `@include responsive-scale(property, value, mobile-value, px)` → `* valuepx`
+- `@include responsive-scale(property, value, mobile-value, pt)` → `* valuept`
+- `@include responsive-scale(property, value, mobile-value, cm)` → `* valuecm`
+- `@include responsive-scale(property, value, mobile-value, mm)` → `* valuemm`
+- `@include responsive-scale(property, value, mobile-value, in)` → `* valuein`
+- `@include responsive-scale(property, value, mobile-value, pc)` → `* valuepc`
+
+**Relative Units:**
+
+- `@include responsive-scale(property, value, mobile-value, em)` → `* valueem`
+- `@include responsive-scale(property, value, mobile-value, rem)` → `* valuerem`
+- `@include responsive-scale(property, value, mobile-value, %)` → `* value%`
+- `@include responsive-scale(property, value, mobile-value, vw)` → `* valuevw`
+- `@include responsive-scale(property, value, mobile-value, vh)` → `* valuevh`
+- `@include responsive-scale(property, value, mobile-value, vmin)` → `* valuevmin`
+- `@include responsive-scale(property, value, mobile-value, vmax)` → `* valuevmax`
+
+**Example Usage:**
+
+```scss
+.element {
+  @include responsive-scale(margin, 2, 1, cm); // centimeters
+  @include responsive-scale(width, 50, 30, vw); // viewport width
+  @include responsive-scale(height, 80, 60, vh); // viewport height
+  @include responsive-scale(font-size, 1.5, 1, em); // em units
 }
 ```
 
@@ -450,12 +540,9 @@ If you prefer manual control, you can set the CSS variables directly:
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440); // Your desktop width
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768); // Your tablet width
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375); // Your mobile width
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440); // Your desktop width
+  --computed-tablet-scale-factor: calc(100vw / 768); // Your tablet width
+  --computed-mobile-scale-factor: calc(100vw / 375); // Your mobile width
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 ```
@@ -476,12 +563,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440); // Your design desktop width
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440); // Your design desktop width
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -500,12 +584,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -521,12 +602,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -542,12 +620,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -563,12 +638,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -584,12 +656,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -605,12 +674,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -626,12 +692,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -647,12 +710,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -668,12 +728,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -689,12 +746,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1920);
-  --computed-scale-factor-rem: calc(100vw / 1920 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 390);
-  --computed-mobile-scale-factor-rem: calc(100vw / 390 / 16);
+  --computed-scale-factor: calc(100vw / 1920);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 390);
   --tablet-proportion-scale-factor: calc((100vw - 390px) / (1920px - 390px));
 }
 
@@ -713,12 +767,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -738,12 +789,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
    // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 375);
   --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
 }
 
@@ -797,11 +845,38 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Built for modern web development workflows
 - Compatible with CSS Modules, Styled Components, and traditional CSS
 
-## 📞 Support
+## 🧪 Testing
+
+The library includes a comprehensive test suite located in the `test/` directory:
+
+```bash
+# Run the test suite
+cd test && ./test.sh  # Unix/Linux/macOS
+cd test && test.bat   # Windows
+```
+
+See [`test/TEST_README.md`](test/TEST_README.md) for detailed testing instructions.
+
+<!-- ## � Linking NPM Package to GitHub Packages
+
+To connect your published NPM package to GitHub Packages:
+
+1. **Go to your GitHub repository** → **Settings** → **Packages**
+2. **Click "Connect repository"** or **"Link to repository"**
+3. **Search for and select** your NPM package: `responsive-scale-mixins`
+4. **Confirm the connection**
+
+This will display your NPM package statistics and information in the GitHub Packages section of your repository.
+
+**Note:** The package will automatically appear in GitHub Packages once published to NPM, as long as the repository URL in `package.json` matches your GitHub repository. -->
+
+## �📞 Support
 
 - 📧 Email: saheedodulaja@gmail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/Sidodus/responsive-scale-mixins/issues)
 - 📖 Docs: [Full Documentation](https://github.com/Sidodus/responsive-scale-mixins#readme)
+- 📦 NPM: [https://www.npmjs.com/package/responsive-scale-mixins](https://www.npmjs.com/package/responsive-scale-mixins)
+- 👤 NPM Profile: [https://www.npmjs.com/~sidodus](https://www.npmjs.com/~sidodus)
 
 ---
 
