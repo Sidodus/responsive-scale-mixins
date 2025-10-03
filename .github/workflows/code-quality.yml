@@ -60,11 +60,11 @@ jobs:
             exit 1
           fi
 
-          # Check for basic CSS validity (contains expected content)
-          if grep -q "calc(var(--computed-scale-factor)" dist/index.css; then
-            echo "✅ CSS contains expected calc expressions"
+          # Check test CSS for expected calc expressions (main file is just @forward)
+          if grep -q "calc(var(--computed-scale-factor)" test/test.css; then
+            echo "✅ Test CSS contains expected calc expressions"
           else
-            echo "❌ CSS missing expected calc expressions"
+            echo "❌ Test CSS missing expected calc expressions"
             exit 1
           fi
 
@@ -150,7 +150,7 @@ jobs:
       - name: Test npm pack dry-run
         run: |
           npm pack --dry-run > pack-output.txt
-          if grep -q "responsive-scale-mixins@2.0.0" pack-output.txt; then
+          if grep -q "responsive-scale-mixins@2.0.1" pack-output.txt; then
             echo "✅ Package name and version correct"
           else
             echo "❌ Package name/version issue"
