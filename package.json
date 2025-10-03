@@ -1,7 +1,7 @@
 {
   "name": "responsive-scale-mixins",
   "version": "2.0.0",
-  "description": "Powerful SCSS mixins for responsive design with Figma proportions. Automatically scales typography, spacing, and dimensions across desktop, tablet, and mobile breakpoints.",
+  "description": "🎨 Revolutionary SCSS mixins for perfect responsive design. Supports ALL CSS units (px, rem, em, vw, vh, %, etc.) with pixel-perfect scaling. Zero manual calculations - just flawless responsive typography, spacing, and dimensions across desktop, tablet, and mobile. Framework-agnostic, modern CSS variables, works everywhere.",
   "main": "index.scss",
   "style": "index.scss",
   "scripts": {
@@ -13,6 +13,14 @@
     "responsive",
     "mixins",
     "figma",
+    "sketch",
+    "adobe-xd",
+    "invision",
+    "framer",
+    "zeplin",
+    "ui-design",
+    "ux-design",
+    "design-systems",
     "typography",
     "spacing",
     "dimensions",
@@ -32,7 +40,10 @@
     "mobile-first",
     "responsive-design",
     "css-variables",
-    "custom-properties"
+    "custom-properties",
+    "pixel-perfect",
+    "fluid-typography",
+    "responsive-scaling"
   ],
   "author": "Saheed Odulaja",
   "license": "MIT",
