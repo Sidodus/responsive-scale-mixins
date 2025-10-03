@@ -1,0 +1,169 @@
+@charset "UTF-8";
+/* Responsive Scale Variables Mixin
+ * Include this mixin in your root element to define the scaling factors.
+ * Adjust the design widths to match your design system breakpoints.
+ */
+/* // ✅ Figma Proportions: Maintains the same proportions as the Figma design.
+
+// // Here's a SCSS mixin that dynamically calculates font-size, line-height, padding, margins, and other scalable properties across desktop, tablet, and mobile screens.
+// ✅ Consistent Scaling: No need to manually adjust for medium screens.
+// ✅ Reusable: Works for font-size, line-height, margins, paddings, etc.
+// ✅ Automatic Scaling: Dynamically scales values based on the screen size.
+
+// 📌 How to Use It
+// Import the mixins in your SCSS file: @import "~responsive-scale-mixins/scss/mixins";
+// .title {
+//   @include responsive-scale(font-size, 40, 24);
+//   @include responsive-scale(padding, 20 73, 8 16); // Multi-value
+//   @include responsive-scale(line-height, 65, 40);
+
+//   // Letter-spacing is -1.5% of font-size
+//   @include responsive-scale(letter-spacing, -1.5, -1.5, px, true, 40, 24);
+// }
+
+// Parameters: property, desktop-value, mobile-value, unit (default px), is-percentage (default false), desktop-relative, mobile-relative, important (default null)
+// Pass values as numbers (e.g., 20 for 20px, 20 73 for 20px 73px).
+// Tablet values are automatically interpolated using the tablet-proportion-scale-factor.
+// For percentage-based values, provide the percentage for desktop and mobile, and the base values (e.g., font-size for letter-spacing).
+// Pass " !important" as the important parameter to append !important to the generated CSS rules.
+// Media queries: Desktop (default), Tablet (768-991px), Mobile (≤767px). */
+:root {
+  --computed-scale-factor: calc(100vw / 1440px);
+  --computed-tablet-scale-factor: calc(100vw / 768px);
+  --computed-mobile-scale-factor: calc(100vw / 375px);
+  --tablet-proportion-scale-factor: calc(
+    (100vw - 375px) / (1440px - 375px)
+  );
+}
+
+.test-container {
+  padding: calc(var(--computed-scale-factor) * 20px);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-container {
+    padding: calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (20px - 10px)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-container {
+    padding: calc(var(--computed-mobile-scale-factor) * 10px);
+  }
+}
+
+.test-heading {
+  font-size: calc(var(--computed-scale-factor) * 4rem);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-heading {
+    font-size: calc(var(--computed-tablet-scale-factor) * (1.5rem + var(--tablet-proportion-scale-factor) * (4rem - 1.5rem)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-heading {
+    font-size: calc(var(--computed-mobile-scale-factor) * 1.5rem);
+  }
+}
+.test-heading {
+  margin-bottom: calc(var(--computed-scale-factor) * 1rem);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-heading {
+    margin-bottom: calc(var(--computed-tablet-scale-factor) * (0.5rem + var(--tablet-proportion-scale-factor) * (1rem - 0.5rem)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-heading {
+    margin-bottom: calc(var(--computed-mobile-scale-factor) * 0.5rem);
+  }
+}
+
+.test-paragraph {
+  font-size: calc(var(--computed-scale-factor) * 1em);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-paragraph {
+    font-size: calc(var(--computed-tablet-scale-factor) * (0.8em + var(--tablet-proportion-scale-factor) * (1em - 0.8em)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-paragraph {
+    font-size: calc(var(--computed-mobile-scale-factor) * 0.8em);
+  }
+}
+.test-paragraph {
+  line-height: calc(var(--computed-scale-factor) * 1.5em);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-paragraph {
+    line-height: calc(var(--computed-tablet-scale-factor) * (1.4em + var(--tablet-proportion-scale-factor) * (1.5em - 1.4em)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-paragraph {
+    line-height: calc(var(--computed-mobile-scale-factor) * 1.4em);
+  }
+}
+
+.test-box {
+  width: calc(var(--computed-scale-factor) * 200px);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-box {
+    width: calc(var(--computed-tablet-scale-factor) * (150px + var(--tablet-proportion-scale-factor) * (200px - 150px)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-box {
+    width: calc(var(--computed-mobile-scale-factor) * 150px);
+  }
+}
+.test-box {
+  height: calc(var(--computed-scale-factor) * 100px);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-box {
+    height: calc(var(--computed-tablet-scale-factor) * (80px + var(--tablet-proportion-scale-factor) * (100px - 80px)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-box {
+    height: calc(var(--computed-mobile-scale-factor) * 80px);
+  }
+}
+.test-box {
+  padding: calc(var(--computed-scale-factor) * 20px);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-box {
+    padding: calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (20px - 10px)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-box {
+    padding: calc(var(--computed-mobile-scale-factor) * 10px);
+  }
+}
+
+.test-letter-spacing {
+  letter-spacing: calc(-1 / 100 * var(--computed-scale-factor) * 16px);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-letter-spacing {
+    letter-spacing: calc(-0.5 / 100 * var(--computed-tablet-scale-factor) * (14px + var(--tablet-proportion-scale-factor) * (16px - 14px)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-letter-spacing {
+    letter-spacing: calc(-0.5 / 100 * var(--computed-mobile-scale-factor) * 14px);
+  }
+}
+.test-letter-spacing {
+  font-size: 16px;
+}
+@media (max-width: 767px) {
+  .test-letter-spacing {
+    font-size: 14px;
+  }
+}
+
+/*# sourceMappingURL=test.css.map */

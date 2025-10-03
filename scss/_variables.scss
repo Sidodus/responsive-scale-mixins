@@ -8,17 +8,14 @@
   $tablet-width: 768px,
   $mobile-width: 390px
 ) {
-  // Desktop scale factor
-  --computed-scale-factor-px: calc(100vw / #{$desktop-width});
-  --computed-scale-factor-rem: calc(100vw / #{$desktop-width} / 16);
+  // Desktop scale factor (generic - unit is appended in calc expressions)
+  --computed-scale-factor: calc(100vw / #{$desktop-width});
 
-  // Tablet scale factor
-  --computed-tablet-scale-factor-px: calc(100vw / #{$tablet-width});
-  --computed-tablet-scale-factor-rem: calc(100vw / #{$tablet-width} / 16);
+  // Tablet scale factor (generic - unit is appended in calc expressions)
+  --computed-tablet-scale-factor: calc(100vw / #{$tablet-width});
 
-  // Mobile scale factor
-  --computed-mobile-scale-factor-px: calc(100vw / #{$mobile-width});
-  --computed-mobile-scale-factor-rem: calc(100vw / #{$mobile-width} / 16);
+  // Mobile scale factor (generic - unit is appended in calc expressions)
+  --computed-mobile-scale-factor: calc(100vw / #{$mobile-width});
 
   // Tablet proportion scale factor for interpolation between mobile and desktop values
   --tablet-proportion-scale-factor: calc(

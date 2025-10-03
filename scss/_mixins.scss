@@ -24,7 +24,22 @@
 // Media queries: Desktop (default), Tablet (768-991px), Mobile (≤767px). */
 
 @function scaled-value($val, $scale-var, $unit: px) {
-  @return calc(var(#{$scale-var}) * #{$val});
+  @return calc(var(#{$scale-var}) * #{$val}#{$unit});
+}
+
+@function get-scale-factor($unit) {
+  // Use generic scale factor - unit is appended in calc expressions
+  @return unquote("--computed-scale-factor");
+}
+
+@function get-tablet-scale-factor($unit) {
+  // Use generic scale factor - unit is appended in calc expressions
+  @return unquote("--computed-tablet-scale-factor");
+}
+
+@function get-mobile-scale-factor($unit) {
+  // Use generic scale factor - unit is appended in calc expressions
+  @return unquote("--computed-mobile-scale-factor");
 }
 
 @mixin responsive-scale(
@@ -37,27 +52,21 @@
   $mobile-relative: null,
   $important: null
 ) {
-  $scale-factor: if(
-    $unit == px,
-    unquote("--computed-scale-factor-px"),
-    unquote("--computed-scale-factor-rem")
-  );
+  $scale-factor: get-scale-factor($unit);
 
   // If it's a percentage-based value (like letter-spacing), scale it based on the relative property
   @if $is-percentage == true {
     @if $desktop-relative != null {
       $calc-value: calc(
-        #{$desktop-value} / 100 * (var(#{$scale-factor}) * #{$desktop-relative})
+        #{$desktop-value} /
+          100 *
+          (var(#{$scale-factor}) * #{$desktop-relative}#{$unit})
       );
       #{$property}: #{$calc-value}#{$important};
     }
 
     @media screen and (min-width: 768px) and (max-width: 991px) {
-      $tablet-scale-factor: if(
-        $unit == px,
-        unquote("--computed-tablet-scale-factor-px"),
-        unquote("--computed-tablet-scale-factor-rem")
-      );
+      $tablet-scale-factor: get-tablet-scale-factor($unit);
       @if $desktop-relative != null and $mobile-relative != null {
         $calc-value: calc(
           #{$mobile-value} /
@@ -65,9 +74,9 @@
             (
               var(#{$tablet-scale-factor}) *
                 (
-                  #{$mobile-relative} +
+                  #{$mobile-relative}#{$unit} +
                     var(--tablet-proportion-scale-factor) *
-                    (#{$desktop-relative} - #{$mobile-relative})
+                    (#{$desktop-relative}#{$unit} - #{$mobile-relative}#{$unit})
                 )
             )
         );
@@ -76,16 +85,12 @@
     }
 
     @media screen and (max-width: 767px) {
-      $mobile-scale-factor: if(
-        $unit == px,
-        unquote("--computed-mobile-scale-factor-px"),
-        unquote("--computed-mobile-scale-factor-rem")
-      );
+      $mobile-scale-factor: get-mobile-scale-factor($unit);
       @if $mobile-relative != null {
         $calc-value: calc(
           #{$mobile-value} /
             100 *
-            (var(#{$mobile-scale-factor}) * #{$mobile-relative})
+            (var(#{$mobile-scale-factor}) * #{$mobile-relative}#{$unit})
         );
         #{$property}: #{$calc-value}#{$important};
       }
@@ -107,11 +112,7 @@
     }
 
     @media screen and (min-width: 768px) and (max-width: 991px) {
-      $tablet-scale-factor: if(
-        $unit == px,
-        unquote("--computed-tablet-scale-factor-px"),
-        unquote("--computed-tablet-scale-factor-rem")
-      );
+      $tablet-scale-factor: get-tablet-scale-factor($unit);
       @if type-of($desktop-value) == list {
         $tablet-scaled: ();
         @for $i from 1 through length($desktop-value) {
@@ -122,9 +123,9 @@
             calc(
               var(#{$tablet-scale-factor}) *
                 (
-                  #{$m-val} +
+                  #{$m-val}#{$unit} +
                     var(--tablet-proportion-scale-factor) *
-                    (#{$d-val} - #{$m-val})
+                    (#{$d-val}#{$unit} - #{$m-val}#{$unit})
                 )
             )
           );
@@ -134,9 +135,9 @@
         $calc-value: calc(
           var(#{$tablet-scale-factor}) *
             (
-              #{$mobile-value} +
+              #{$mobile-value}#{$unit} +
                 var(--tablet-proportion-scale-factor) *
-                (#{$desktop-value} - #{$mobile-value})
+                (#{$desktop-value}#{$unit} - #{$mobile-value}#{$unit})
             )
         );
         #{$property}: #{$calc-value}#{$important};
@@ -144,11 +145,7 @@
     }
 
     @media screen and (max-width: 767px) {
-      $mobile-scale-factor: if(
-        $unit == px,
-        unquote("--computed-mobile-scale-factor-px"),
-        unquote("--computed-mobile-scale-factor-rem")
-      );
+      $mobile-scale-factor: get-mobile-scale-factor($unit);
       @if type-of($mobile-value) == list {
         $mobile-scaled: ();
         @each $val in $mobile-value {

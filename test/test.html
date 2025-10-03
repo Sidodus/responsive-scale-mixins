@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Scale Mixins Test</title>
+    <link rel="stylesheet" href="test.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+
+        .test-info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-heading {
+            color: #2196F3;
+            border-bottom: 2px solid #2196F3;
+            padding-bottom: 10px;
+        }
+
+        .test-paragraph {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .test-box {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .test-letter-spacing {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-info">
+        <h2>🎨 Responsive Scale Mixins v2.0 Test</h2>
+        <p><strong>Resize your browser window</strong> to see responsive scaling in action!</p>
+        <p>Check DevTools → Computed tab to verify correct unit scaling.</p>
+        <ul>
+            <li><strong>Heading:</strong> Uses rem units (scales with root font-size)</li>
+            <li><strong>Paragraph:</strong> Uses em units (scales with parent font-size)</li>
+            <li><strong>Box:</strong> Uses px units (absolute scaling)</li>
+            <li><strong>Letter Spacing:</strong> Percentage-based calculation</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h1 class="test-heading">Test Heading (rem units)</h1>
+        <p class="test-paragraph">Test paragraph with em units. This text should scale relative to its parent element's
+            font-size, demonstrating the em unit functionality.</p>
+        <div class="test-box">Test box with px units</div>
+        <div class="test-letter-spacing">Letter spacing test (percentage-based)</div>
+    </div>
+
+    <div class="test-section">
+        <h3>Breakpoint Information:</h3>
+        <ul>
+            <li><strong>Desktop:</strong> ≥992px (scales from 1440px design width)</li>
+            <li><strong>Tablet:</strong> 768px-991px (interpolated values)</li>
+            <li><strong>Mobile:</strong> ≤767px (scales from 375px design width)</li>
+        </ul>
+        <p><em>Current viewport: <span id="viewport-width"></span>px</em></p>
+    </div>
+
+    <script>
+        function updateViewport() {
+            document.getElementById('viewport-width').textContent = window.innerWidth;
+        }
+        updateViewport();
+        window.addEventListener('resize', updateViewport);
+    </script>
+</body>
+
+</html>
