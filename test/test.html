@@ -4,96 +4,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Scale Mixins Test</title>
+    <title>🎨 Responsive Scale Mixins Demo</title>
     <link rel="stylesheet" href="test.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background: #f5f5f5;
-        }
-
-        .test-info {
-            background: #e8f4fd;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #2196F3;
-        }
-
-        .test-section {
-            background: white;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .test-heading {
-            color: #2196F3;
-            border-bottom: 2px solid #2196F3;
-            padding-bottom: 10px;
-        }
-
-        .test-paragraph {
-            color: #666;
-            line-height: 1.6;
-        }
-
-        .test-box {
-            background: linear-gradient(45deg, #2196F3, #21CBF3);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .test-letter-spacing {
-            background: #fff3cd;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-    </style>
 </head>
 
 <body>
-    <div class="test-info">
-        <h2>🎨 Responsive Scale Mixins v2.0 Test</h2>
-        <p><strong>Resize your browser window</strong> to see responsive scaling in action!</p>
-        <p>Check DevTools → Computed tab to verify correct unit scaling.</p>
-        <ul>
-            <li><strong>Heading:</strong> Uses rem units (scales with root font-size)</li>
-            <li><strong>Paragraph:</strong> Uses em units (scales with parent font-size)</li>
-            <li><strong>Box:</strong> Uses px units (absolute scaling)</li>
-            <li><strong>Letter Spacing:</strong> Percentage-based calculation</li>
-        </ul>
-    </div>
+    <div class="container">
+        <div class="row my-3">
+            <div class="testInfo text-center">
+                <h1>🎨Responsive Scale Mixins Demo</h1>
 
-    <div class="test-section">
-        <h1 class="test-heading">Test Heading (rem units)</h1>
-        <p class="test-paragraph">Test paragraph with em units. This text should scale relative to its parent element's
-            font-size, demonstrating the em unit functionality.</p>
-        <div class="test-box">Test box with px units</div>
-        <div class="test-letter-spacing">Letter spacing test (percentage-based)</div>
-    </div>
+                <p>
+                    <strong>Resize your browser window</strong> to see responsive
+                    scaling in action!
+                </p>
 
-    <div class="test-section">
-        <h3>Breakpoint Information:</h3>
-        <ul>
-            <li><strong>Desktop:</strong> ≥992px (scales from 1440px design width)</li>
-            <li><strong>Tablet:</strong> 768px-991px (interpolated values)</li>
-            <li><strong>Mobile:</strong> ≤767px (scales from 375px design width)</li>
-        </ul>
-        <p><em>Current viewport: <span id="viewport-width"></span>px</em></p>
+                <h3>
+                    <em>
+                        Current viewport:
+                        <span class="text-danger" id="viewport-width">0px</span>
+                    </em>
+                </h3>
+            </div>
+        </div>
+
+        <div class="row px-4">
+            <div class="col-xs-12 col-md-6">
+                <div class="demoSection">
+                    <h1 class="beforeAfter">BEFORE:</h1>
+                    <p class="text-muted mb-4">
+                        Static sizes - no responsive scaling
+                    </p>
+
+                    <h2 class="testHeadingStatic">
+                        Test Heading
+                        <span class="staticValue text-danger" id="static-heading-size">0px</span>
+                    </h2>
+                    <p class="testParagraphStatic">
+                        Test paragraph with
+                        <span class="staticValue text-danger" id="static-paragraph-size">0px</span>
+                        . This text has fixed sizes that don't scale with viewport,
+                        demonstrating the em unit functionality.
+                    </p>
+                    <div class="testBoxStatic">
+                        <div class="testBoxInnerStatic">
+                            Static box padding
+                            <span class="staticValue text-danger" id="static-box-padding">0px</span>
+                        </div>
+                    </div>
+                    <div class="testLetterSpacingStatic">
+                        Letter spacing test
+                        <span class="staticValue text-danger" id="static-letter-spacing">0px</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-md-6">
+                <div class="demoSection">
+                    <h1 class="beforeAfter">AFTER:</h1>
+                    <p class="text-muted mb-4">
+                        Dynamic sizes - powered by responsive-scale-mixins
+                    </p>
+
+                    <h2 class="testHeading">
+                        Test Heading
+                        <span class="dynamicValue text-danger" id="dynamic-heading-size">0px</span>
+                    </h2>
+                    <p class="testParagraph">
+                        Test paragraph with
+                        <span class="dynamicValue text-danger" id="dynamic-paragraph-size">0px</span>
+                        . This text should scale relative to its parent element's
+                        font-size, demonstrating the em unit functionality.
+                    </p>
+                    <div class="testBox">
+                        <div class="testBoxInner">
+                            Test box padding
+                            <span class="dynamicValue text-danger" id="dynamic-box-padding">0px</span>
+                        </div>
+                    </div>
+                    <div class="testLetterSpacing">
+                        Letter spacing test
+                        <span class="dynamicValue text-danger" id="dynamic-letter-spacing">0px</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        function updateViewport() {
-            document.getElementById('viewport-width').textContent = window.innerWidth;
+        function updateSizes() {
+            const viewportWidth = window.innerWidth;
+            document.getElementById('viewport-width').textContent = viewportWidth + 'px';
+
+            // Static elements (BEFORE column)
+            const staticHeading = document.querySelector('.testHeadingStatic');
+            const staticParagraph = document.querySelector('.testParagraphStatic');
+            const staticBox = document.querySelector('.testBoxStatic');
+            const staticLetterSpacing = document.querySelector('.testLetterSpacingStatic');
+
+            if (staticHeading) {
+                document.getElementById('static-heading-size').textContent =
+                    getComputedStyle(staticHeading).fontSize;
+            }
+
+            if (staticParagraph) {
+                document.getElementById('static-paragraph-size').textContent =
+                    getComputedStyle(staticParagraph).fontSize;
+            }
+
+            if (staticBox) {
+                document.getElementById('static-box-padding').textContent =
+                    getComputedStyle(staticBox).padding;
+            }
+
+            if (staticLetterSpacing) {
+                document.getElementById('static-letter-spacing').textContent =
+                    getComputedStyle(staticLetterSpacing).letterSpacing;
+            }
+
+            // Dynamic elements (AFTER column)
+            const dynamicHeading = document.querySelector('.testHeading');
+            const dynamicParagraph = document.querySelector('.testParagraph');
+            const dynamicBox = document.querySelector('.testBox');
+            const dynamicLetterSpacing = document.querySelector('.testLetterSpacing');
+
+            if (dynamicHeading) {
+                document.getElementById('dynamic-heading-size').textContent =
+                    getComputedStyle(dynamicHeading).fontSize;
+            }
+
+            if (dynamicParagraph) {
+                document.getElementById('dynamic-paragraph-size').textContent =
+                    getComputedStyle(dynamicParagraph).fontSize;
+            }
+
+            if (dynamicBox) {
+                document.getElementById('dynamic-box-padding').textContent =
+                    getComputedStyle(dynamicBox).padding;
+            }
+
+            if (dynamicLetterSpacing) {
+                document.getElementById('dynamic-letter-spacing').textContent =
+                    getComputedStyle(dynamicLetterSpacing).letterSpacing;
+            }
         }
-        updateViewport();
-        window.addEventListener('resize', updateViewport);
+
+        updateSizes();
+        window.addEventListener('resize', updateSizes);
     </script>
 </body>
 
