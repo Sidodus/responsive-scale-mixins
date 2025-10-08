@@ -24,7 +24,15 @@
 // Media queries: Desktop (default), Tablet (768-991px), Mobile (≤767px). */
 
 @function scaled-value($val, $scale-var, $unit: px) {
-  @return calc(var(#{$scale-var}) * #{$val}#{$unit});
+  @if $scale-var == "--computed-scale-factor" {
+    @return calc(100vw / var(--desktop-width) * #{$val}#{$unit});
+  } @else if $scale-var == "--computed-tablet-scale-factor" {
+    @return calc(100vw / var(--tablet-width) * #{$val}#{$unit});
+  } @else if $scale-var == "--computed-mobile-scale-factor" {
+    @return calc(100vw / var(--mobile-width) * #{$val}#{$unit});
+  } @else {
+    @return calc(var(#{$scale-var}) * #{$val}#{$unit});
+  }
 }
 
 @function get-scale-factor($unit) {
@@ -60,24 +68,29 @@
       $calc-value: calc(
         #{$desktop-value} /
           100 *
-          (var(#{$scale-factor}) * #{$desktop-relative}#{$unit})
+          100vw /
+          var(--desktop-width) *
+          #{$desktop-relative} *
+          #{$unit}
       );
       #{$property}: #{$calc-value}#{$important};
     }
 
     @media screen and (min-width: 768px) and (max-width: 991px) {
-      $tablet-scale-factor: get-tablet-scale-factor($unit);
       @if $desktop-relative != null and $mobile-relative != null {
         $calc-value: calc(
           #{$mobile-value} /
             100 *
             (
-              var(#{$tablet-scale-factor}) *
+              100vw /
+                var(--tablet-width) *
                 (
-                  #{$mobile-relative}#{$unit} +
-                    var(--tablet-proportion-scale-factor) *
-                    (#{$desktop-relative}#{$unit} - #{$mobile-relative}#{$unit})
-                )
+                  #{$mobile-relative} +
+                    (100vw - var(--mobile-width)) /
+                    (var(--desktop-width) - var(--mobile-width)) *
+                    (#{$desktop-relative} - #{$mobile-relative})
+                ) *
+                #{$unit}
             )
         );
         #{$property}: #{$calc-value}#{$important};
@@ -85,12 +98,14 @@
     }
 
     @media screen and (max-width: 767px) {
-      $mobile-scale-factor: get-mobile-scale-factor($unit);
       @if $mobile-relative != null {
         $calc-value: calc(
           #{$mobile-value} /
             100 *
-            (var(#{$mobile-scale-factor}) * #{$mobile-relative}#{$unit})
+            100vw /
+            var(--mobile-width) *
+            #{$mobile-relative} *
+            #{$unit}
         );
         #{$property}: #{$calc-value}#{$important};
       }
@@ -112,7 +127,6 @@
     }
 
     @media screen and (min-width: 768px) and (max-width: 991px) {
-      $tablet-scale-factor: get-tablet-scale-factor($unit);
       @if type-of($desktop-value) == list {
         $tablet-scaled: ();
         @for $i from 1 through length($desktop-value) {
@@ -121,24 +135,30 @@
           $tablet-scaled: append(
             $tablet-scaled,
             calc(
-              var(#{$tablet-scale-factor}) *
+              100vw /
+                var(--tablet-width) *
                 (
-                  #{$m-val}#{$unit} +
-                    var(--tablet-proportion-scale-factor) *
-                    (#{$d-val}#{$unit} - #{$m-val}#{$unit})
-                )
+                  #{$m-val} +
+                    (100vw - var(--mobile-width)) /
+                    (var(--desktop-width) - var(--mobile-width)) *
+                    (#{$d-val} - #{$m-val})
+                ) *
+                #{$unit}
             )
           );
         }
         #{$property}: #{$tablet-scaled}#{$important};
       } @else {
         $calc-value: calc(
-          var(#{$tablet-scale-factor}) *
+          100vw /
+            var(--tablet-width) *
             (
-              #{$mobile-value}#{$unit} +
-                var(--tablet-proportion-scale-factor) *
-                (#{$desktop-value}#{$unit} - #{$mobile-value}#{$unit})
-            )
+              #{$mobile-value} +
+                (100vw - var(--mobile-width)) /
+                (var(--desktop-width) - var(--mobile-width)) *
+                (#{$desktop-value} - #{$mobile-value})
+            ) *
+            #{$unit}
         );
         #{$property}: #{$calc-value}#{$important};
       }

@@ -8,6 +8,11 @@
   $tablet-width: 768px,
   $mobile-width: 390px
 ) {
+  // Design widths for direct calc expressions
+  --desktop-width: #{$desktop-width};
+  --tablet-width: #{$tablet-width};
+  --mobile-width: #{$mobile-width};
+
   // Desktop scale factor (generic - unit is appended in calc expressions)
   --computed-scale-factor: calc(100vw / #{$desktop-width});
 
