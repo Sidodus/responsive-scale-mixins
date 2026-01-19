@@ -49,7 +49,7 @@ A powerful SCSS mixin system for creating perfectly responsive designs that main
 font-size: calc(var(--computed-scale-factor-px) * 40);
 
 /* NEW (v2.0) */
-font-size: calc(var(--computed-scale-factor) * 40px);
+@include responsive-scale(font-size, 24, 16);
 ```
 
 ## ✨ Features
