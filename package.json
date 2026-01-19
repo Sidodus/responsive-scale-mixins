@@ -1,6 +1,6 @@
 {
   "name": "responsive-scale-mixins",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "🎨 Revolutionary SCSS mixins for perfect responsive design. Supports ALL CSS units (px, rem, em, vw, vh, %, etc.) with pixel-perfect scaling. Zero manual calculations - just flawless responsive typography, spacing, and dimensions across desktop, tablet, and mobile. Framework-agnostic, modern CSS variables, works everywhere.",
   "main": "index.scss",
   "style": "index.scss",

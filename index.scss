@@ -1,6 +1,8 @@
 // Responsive Scale Mixins
 // A powerful SCSS mixin system for creating perfectly responsive designs
 
-// Forward all mixins and functions from modules
-@forward "scss/variables";
-@forward "scss/mixins";
+// Import all mixins and functions from modules
+// Note: @import is used here for maximum NPM package compatibility
+// @forward causes issues with package resolution in distributed packages
+@import "scss/variables";
+@import "scss/mixins";

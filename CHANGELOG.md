@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.6] - 2024-01-XX
+
+### Fixed
+
+- **Industry-standard solution**: Switched to `@import` directives in index.scss for maximum NPM package compatibility
+- Resolved package resolution issues that caused "Undefined mixin" errors with `@use` syntax
+- Maintained backward compatibility while ensuring reliable package distribution
+
+## [2.0.5] - 2024-01-XX
+
+### Fixed
+
+- Reverted `@forward` paths to non-relative for NPM package compatibility
+
 ## [2.0.4] - 2024-01-XX
 
 ### Added
