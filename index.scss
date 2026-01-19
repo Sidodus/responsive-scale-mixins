@@ -2,5 +2,5 @@
 // A powerful SCSS mixin system for creating perfectly responsive designs
 
 // Forward all mixins and functions from modules
-@forward "scss/variables";
-@forward "scss/mixins";
+@forward "./scss/variables";
+@forward "./scss/mixins";

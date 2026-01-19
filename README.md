@@ -1,11 +1,54 @@
-# 🎨 Responsive Scale Mixins
+# 🚀 Responsive Scale Mixins
 
-A powerful SCSS mixin system for creating perfectly responsive designs that maintain Figma proportions across all screen sizes.
+## **The Future of Responsive Design is Here**
+
+**Stop wrestling with breakpoints. Start designing once, deploy everywhere.**
+
+Imagine building a beautiful UI in Figma, then seeing it perfectly scale on **every screen size** - from tiny phones (320px) to ultra-wide monitors (9999px) - without writing a single media query. That's the power of Responsive Scale Mixins.
 
 [![npm version](https://badge.fury.io/js/responsive-scale-mixins.svg)](https://www.npmjs.com/package/responsive-scale-mixins)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![npm](https://img.shields.io/npm/v/responsive-scale-mixins)](https://www.npmjs.com/package/responsive-scale-mixins)
 [![npm](https://img.shields.io/npm/dm/responsive-scale-mixins)](https://www.npmjs.com/package/responsive-scale-mixins)
+
+## 🔥 **Why Developers Love It**
+
+### **🎯 Pixel-Perfect Figma Translation**
+
+- Your Figma designs become reality, not approximations
+- Zero guessing, zero manual calculations
+- What you see in design tools is what users see on any device
+
+### **⚡ Revolutionary Simplicity**
+
+```scss
+// Before: 50+ lines of media queries
+.hero-title {
+  font-size: 48px;
+  @media (max-width: 768px) {
+    font-size: 32px;
+  }
+  @media (max-width: 480px) {
+    font-size: 24px;
+  }
+  // ... and so on for every element
+}
+
+// After: 1 line that works everywhere
+.hero-title {
+  @include rsm.responsive-scale(font-size, 48, 24);
+}
+```
+
+### **🎨 Universal Unit Support**
+
+- **px, rem, em, vw, vh, %, cm, mm, in, pt, pc** - you name it, we scale it
+- Intelligent interpolation between desktop and mobile values
+- Perfect scaling from 320px phones to 8K displays
+
+### **🚀 Framework Agnostic**
+
+Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Your favorite framework + perfect responsive design = ❤️
 
 ## ⚠️ Breaking Changes in v2.0.0
 
@@ -48,8 +91,7 @@ A powerful SCSS mixin system for creating perfectly responsive designs that main
 /* OLD (v1.x) */
 font-size: calc(var(--computed-scale-factor-px) * 40);
 
-/* NEW (v2.0) */
-font-size: calc(var(--computed-scale-factor) * 40px);
+@include rsm.responsive-scale(font-size, 24, 16);
 ```
 
 ## ✨ Features
@@ -61,6 +103,37 @@ font-size: calc(var(--computed-scale-factor) * 40px);
 - **Framework Agnostic**: Works with any CSS framework or vanilla CSS
 - **TypeScript Ready**: Compatible with CSS Modules and CSS-in-JS solutions
 - **Universal Unit Support**: Handles all CSS units including absolute (px, pt, cm, mm, in, pc) and relative (%, em, rem, vw, vh, vmin, vmax) units
+
+## 🔧 Dart Sass Compatibility
+
+**Starting with v2.0.4**, this package is fully compatible with Dart Sass. The `index.scss` file now uses relative `@forward` statements (`./scss/variables` and `./scss/mixins`) to ensure proper resolution in Dart Sass environments like Next.js, Vite, and other modern build tools.
+
+### Recommended Import Pattern
+
+```scss
+// Modern @use syntax (preferred)
+@use "responsive-scale-mixins" as rsm;
+
+:root {
+  @include rsm.responsive-scale-variables();
+}
+
+.my-element {
+  @include rsm.responsive-scale(font-size, 24, 16);
+}
+```
+
+### Troubleshooting Import Errors
+
+If you encounter "Can't find stylesheet to import" errors with Dart Sass:
+
+1. **Update the package**: Ensure you're using v2.0.4 or later
+2. **Use relative imports as workaround**: Import the partials directly:
+   ```scss
+   @import "responsive-scale-mixins/scss/variables";
+   @import "responsive-scale-mixins/scss/mixins";
+   ```
+3. **Check your build tool**: Some tools may need configuration updates for SCSS module resolution
 
 ## 🚀 Quick Start
 
@@ -89,26 +162,26 @@ pnpm add responsive-scale-mixins
 #### Next.js (App Router)
 
 ```scss
-// app/globals.css or app/styles/globals.scss
-@import "~responsive-scale-mixins";
+// app/globals.scss or app/styles/globals.scss
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
   // Define CSS variables globally (required)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 
-// Import in app/layout.tsx: import './globals.css'
+// Import in app/layout.tsx: import './globals.scss'
 ```
 
 #### Next.js (Pages Router)
 
 ```scss
 // styles/globals.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Define CSS variables globally (required)
@@ -116,8 +189,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 
 // Import in pages/_app.js: import '../styles/globals.scss'
@@ -133,7 +206,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/index.scss or src/styles/main.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Define CSS variables globally (required)
@@ -141,8 +214,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 
 // Import in src/index.js: import './index.scss'
@@ -158,7 +231,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/assets/styles/main.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Define CSS variables globally (required)
@@ -166,8 +239,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 
 // Import in src/main.js: import './assets/styles/main.scss'
@@ -183,7 +256,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/styles.scss (global styles)
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Define CSS variables globally (required)
@@ -191,8 +264,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 
 // This file is automatically included by Angular CLI
@@ -208,7 +281,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/styles/main.scss
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Customize for your design system (optional)
@@ -216,8 +289,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -225,7 +298,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/styles/global.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Customize for your design system (optional)
@@ -233,8 +306,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -242,7 +315,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // assets/styles/main.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Customize for your design system (optional)
@@ -250,8 +323,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -259,7 +332,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/app.scss
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Customize for your design system (optional)
@@ -267,8 +340,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -276,7 +349,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/styles/global.scss
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Customize for your design system (optional)
@@ -284,8 +357,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -293,7 +366,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // styles.module.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 // Variables must be in global scope
 // In your main CSS file:
@@ -309,7 +382,7 @@ pnpm add responsive-scale-mixins
 
 // Then in your module
 .myClass {
-  @include responsive-scale(font-size, 24, 16);
+  @include rsm.responsive-scale(font-size, 24, 16);
 }
 ```
 
@@ -317,15 +390,15 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // styles/main.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
-  @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables();
 }
 
 // Use alongside Tailwind
 .custom-element {
-  @include responsive-scale(padding, 20 40, 10 20);
+  @include rsm.responsive-scale(padding, 20 40, 10 20);
   @apply bg-blue-500 text-white; // Tailwind classes still work
 }
 ```
@@ -343,6 +416,26 @@ const StyledComponent = styled.div`
 ```
 
 ### Basic Usage
+
+#### Modern @use Syntax (Recommended)
+
+```scss
+// In your main SCSS file
+@use "responsive-scale-mixins" as rsm;
+
+// Include variables in your root element (required)
+:root {
+  @include rsm.responsive-scale-variables();
+}
+
+// Use the mixin anywhere
+.my-element {
+  @include rsm.responsive-scale(font-size, 24, 16);
+  @include rsm.responsive-scale(padding, 20 40, 10 20);
+}
+```
+
+#### Legacy @import Syntax (for older setups)
 
 ```scss
 // In your main SCSS file
@@ -393,9 +486,9 @@ The main responsive scaling mixin.
 
 ```scss
 .hero-title {
-  @include responsive-scale(font-size, 48, 32);
-  @include responsive-scale(line-height, 1.2, 1.3);
-  @include responsive-scale(letter-spacing, -1, -0.5);
+  @include rsm.responsive-scale(font-size, 48, 32);
+  @include rsm.responsive-scale(line-height, 1.2, 1.3);
+  @include rsm.responsive-scale(letter-spacing, -1, -0.5);
 }
 ```
 
@@ -403,8 +496,8 @@ The main responsive scaling mixin.
 
 ```scss
 .card {
-  @include responsive-scale(padding, 32 48, 16 24);
-  @include responsive-scale(margin-bottom, 24, 16);
+  @include rsm.responsive-scale(padding, 32 48, 16 24);
+  @include rsm.responsive-scale(margin-bottom, 24, 16);
 }
 ```
 
@@ -412,9 +505,9 @@ The main responsive scaling mixin.
 
 ```scss
 .button {
-  @include responsive-scale(width, 200, 150);
-  @include responsive-scale(height, 56, 44);
-  @include responsive-scale(border-radius, 8, 6);
+  @include rsm.responsive-scale(width, 200, 150);
+  @include rsm.responsive-scale(height, 56, 44);
+  @include rsm.responsive-scale(border-radius, 8, 6);
 }
 ```
 
@@ -423,7 +516,7 @@ The main responsive scaling mixin.
 ```scss
 .text {
   // Letter-spacing as 1% of font-size
-  @include responsive-scale(letter-spacing, 1, 1, px, true, 48, 32);
+  @include rsm.responsive-scale(letter-spacing, 1, 1, px, true, 48, 32);
 }
 ```
 
@@ -431,7 +524,7 @@ The main responsive scaling mixin.
 
 ```scss
 .override-bootstrap {
-  @include responsive-scale(
+  @include rsm.responsive-scale(
     font-size,
     24,
     16,
@@ -441,7 +534,7 @@ The main responsive scaling mixin.
     null,
     " !important"
   );
-  @include responsive-scale(
+  @include rsm.responsive-scale(
     padding,
     16 32,
     8 16,
@@ -467,8 +560,8 @@ Easily customize the design widths to match your project's breakpoints:
   // Replace 375 with your design width or leave default (mobile)
 
   // Custom design widths (desktop, tablet, mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -482,13 +575,13 @@ Easily customize the design widths to match your project's breakpoints:
 
 ```scss
 .element {
-  @include responsive-scale(
+  @include rsm.responsive-scale(
     font-size,
     3,
     2,
     rem
   ); // 3rem / 2rem - uses rem scale factor
-  @include responsive-scale(
+  @include rsm.responsive-scale(
     font-size,
     2,
     1.5,
@@ -524,10 +617,10 @@ The mixin supports **all CSS units** with a single generic scale factor:
 
 ```scss
 .element {
-  @include responsive-scale(margin, 2, 1, cm); // centimeters
-  @include responsive-scale(width, 50, 30, vw); // viewport width
-  @include responsive-scale(height, 80, 60, vh); // viewport height
-  @include responsive-scale(font-size, 1.5, 1, em); // em units
+  @include rsm.responsive-scale(margin, 2, 1, cm); // centimeters
+  @include rsm.responsive-scale(width, 50, 30, vw); // viewport width
+  @include rsm.responsive-scale(height, 80, 60, vh); // viewport height
+  @include rsm.responsive-scale(font-size, 1.5, 1, em); // em units
 }
 ```
 
@@ -570,9 +663,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
 }
 
 // In component files
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 .my-element {
-  @include responsive-scale(font-size, 24, 16);
+  @include rsm.responsive-scale(font-size, 24, 16);
 }
 ```
 
@@ -753,9 +846,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
 }
 
 // In your module files
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 .myClass {
-  @include responsive-scale(font-size, 24, 16);
+  @include rsm.responsive-scale(font-size, 24, 16);
 }
 ```
 
@@ -774,9 +867,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
 }
 
 // In components
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 .custom-element {
-  @include responsive-scale(padding, 20 40, 10 20);
+  @include rsm.responsive-scale(padding, 20 40, 10 20);
   @apply bg-blue-500 text-white;
 }
 ```
@@ -850,9 +943,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 The library includes a comprehensive test suite located in the `test/` directory:
 
 ```bash
-# Run the test suite
-cd test && ./test.sh  # Unix/Linux/macOS
-cd test && test.bat   # Windows
+# Run the test suite (cross-platform)
+cd test && ./test.sh
 ```
 
 See [`test/TEST_README.md`](test/TEST_README.md) for detailed testing instructions.

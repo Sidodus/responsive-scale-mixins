@@ -1,3 +1,7 @@
+@use "sass:string";
+@use "sass:meta";
+@use "sass:list";
+
 /* // ✅ Figma Proportions: Maintains the same proportions as the Figma design.
 
 // // Here's a SCSS mixin that dynamically calculates font-size, line-height, padding, margins, and other scalable properties across desktop, tablet, and mobile screens.
@@ -37,17 +41,17 @@
 
 @function get-scale-factor($unit) {
   // Use generic scale factor - unit is appended in calc expressions
-  @return unquote("--computed-scale-factor");
+  @return string.unquote("--computed-scale-factor");
 }
 
 @function get-tablet-scale-factor($unit) {
   // Use generic scale factor - unit is appended in calc expressions
-  @return unquote("--computed-tablet-scale-factor");
+  @return string.unquote("--computed-tablet-scale-factor");
 }
 
 @function get-mobile-scale-factor($unit) {
   // Use generic scale factor - unit is appended in calc expressions
-  @return unquote("--computed-mobile-scale-factor");
+  @return string.unquote("--computed-mobile-scale-factor");
 }
 
 @mixin responsive-scale(
@@ -112,10 +116,10 @@
     }
   } @else {
     // Regular absolute scaling
-    @if type-of($desktop-value) == list {
+    @if meta.type-of($desktop-value) == list {
       $desktop-scaled: ();
       @each $val in $desktop-value {
-        $desktop-scaled: append(
+        $desktop-scaled: list.append(
           $desktop-scaled,
           scaled-value($val, $scale-factor, $unit)
         );
@@ -127,12 +131,12 @@
     }
 
     @media screen and (min-width: 768px) and (max-width: 991px) {
-      @if type-of($desktop-value) == list {
+      @if meta.type-of($desktop-value) == list {
         $tablet-scaled: ();
-        @for $i from 1 through length($desktop-value) {
-          $d-val: nth($desktop-value, $i);
-          $m-val: nth($mobile-value, $i);
-          $tablet-scaled: append(
+        @for $i from 1 through list.length($desktop-value) {
+          $d-val: list.nth($desktop-value, $i);
+          $m-val: list.nth($mobile-value, $i);
+          $tablet-scaled: list.append(
             $tablet-scaled,
             calc(
               100vw /
@@ -166,10 +170,10 @@
 
     @media screen and (max-width: 767px) {
       $mobile-scale-factor: get-mobile-scale-factor($unit);
-      @if type-of($mobile-value) == list {
+      @if meta.type-of($mobile-value) == list {
         $mobile-scaled: ();
         @each $val in $mobile-value {
-          $mobile-scaled: append(
+          $mobile-scaled: list.append(
             $mobile-scaled,
             scaled-value($val, $mobile-scale-factor, $unit)
           );
