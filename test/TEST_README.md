@@ -9,8 +9,7 @@ This directory contains comprehensive tests for the Responsive Scale Mixins libr
 - **`test.scss`** - Main test file using SCSS mixins
 - **`test.css`** - Compiled CSS output (auto-generated)
 - **`test.html`** - Visual test page for browser testing
-- **`test.sh`** - Automated test script (Unix/Linux/macOS)
-- **`test.bat`** - Automated test script (Windows)
+- **`test.sh`** - Automated test script (cross-platform)
 
 ### Generated Files (Auto-created)
 
@@ -21,11 +20,8 @@ This directory contains comprehensive tests for the Responsive Scale Mixins libr
 ### Quick Test (Recommended)
 
 ```bash
-# On Unix/Linux/macOS
+# Cross-platform (Unix/Linux/macOS/Windows)
 cd test && ./test.sh
-
-# On Windows
-cd test && test.bat
 ```
 
 This will:
@@ -233,6 +229,6 @@ test.html      # Visual test page
 
 ---
 
-**Test Suite Version**: 2.0.0
-**Last Updated**: October 2025
+**Test Suite Version**: 2.0.4
+**Last Updated**: January 2026
 **Tested With**: Dart Sass 1.93.2

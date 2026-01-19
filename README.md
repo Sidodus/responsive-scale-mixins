@@ -621,9 +621,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
 }
 
 // In component files
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 .my-element {
-  @include responsive-scale(font-size, 24, 16);
+  @include rsm.responsive-scale(font-size, 24, 16);
 }
 ```
 
@@ -901,9 +901,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 The library includes a comprehensive test suite located in the `test/` directory:
 
 ```bash
-# Run the test suite
-cd test && ./test.sh  # Unix/Linux/macOS
-cd test && test.bat   # Windows
+# Run the test suite (cross-platform)
+cd test && ./test.sh
 ```
 
 See [`test/TEST_README.md`](test/TEST_README.md) for detailed testing instructions.
