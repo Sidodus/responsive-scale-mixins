@@ -1,11 +1,54 @@
-# 🎨 Responsive Scale Mixins
+# 🚀 Responsive Scale Mixins
 
-A powerful SCSS mixin system for creating perfectly responsive designs that maintain Figma proportions across all screen sizes.
+## **The Future of Responsive Design is Here**
+
+**Stop wrestling with breakpoints. Start designing once, deploy everywhere.**
+
+Imagine building a beautiful UI in Figma, then seeing it perfectly scale on **every screen size** - from tiny phones (320px) to ultra-wide monitors (9999px) - without writing a single media query. That's the power of Responsive Scale Mixins.
 
 [![npm version](https://badge.fury.io/js/responsive-scale-mixins.svg)](https://www.npmjs.com/package/responsive-scale-mixins)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![npm](https://img.shields.io/npm/v/responsive-scale-mixins)](https://www.npmjs.com/package/responsive-scale-mixins)
 [![npm](https://img.shields.io/npm/dm/responsive-scale-mixins)](https://www.npmjs.com/package/responsive-scale-mixins)
+
+## 🔥 **Why Developers Love It**
+
+### **🎯 Pixel-Perfect Figma Translation**
+
+- Your Figma designs become reality, not approximations
+- Zero guessing, zero manual calculations
+- What you see in design tools is what users see on any device
+
+### **⚡ Revolutionary Simplicity**
+
+```scss
+// Before: 50+ lines of media queries
+.hero-title {
+  font-size: 48px;
+  @media (max-width: 768px) {
+    font-size: 32px;
+  }
+  @media (max-width: 480px) {
+    font-size: 24px;
+  }
+  // ... and so on for every element
+}
+
+// After: 1 line that works everywhere
+.hero-title {
+  @include rsm.responsive-scale(font-size, 48, 24);
+}
+```
+
+### **🎨 Universal Unit Support**
+
+- **px, rem, em, vw, vh, %, cm, mm, in, pt, pc** - you name it, we scale it
+- Intelligent interpolation between desktop and mobile values
+- Perfect scaling from 320px phones to 8K displays
+
+### **🚀 Framework Agnostic**
+
+Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Your favorite framework + perfect responsive design = ❤️
 
 ## ⚠️ Breaking Changes in v2.0.0
 
@@ -48,8 +91,7 @@ A powerful SCSS mixin system for creating perfectly responsive designs that main
 /* OLD (v1.x) */
 font-size: calc(var(--computed-scale-factor-px) * 40);
 
-/* NEW (v2.0) */
-@include responsive-scale(font-size, 24, 16);
+@include rsm.responsive-scale(font-size, 24, 16);
 ```
 
 ## ✨ Features
@@ -444,9 +486,9 @@ The main responsive scaling mixin.
 
 ```scss
 .hero-title {
-  @include responsive-scale(font-size, 48, 32);
-  @include responsive-scale(line-height, 1.2, 1.3);
-  @include responsive-scale(letter-spacing, -1, -0.5);
+  @include rsm.responsive-scale(font-size, 48, 32);
+  @include rsm.responsive-scale(line-height, 1.2, 1.3);
+  @include rsm.responsive-scale(letter-spacing, -1, -0.5);
 }
 ```
 
@@ -454,8 +496,8 @@ The main responsive scaling mixin.
 
 ```scss
 .card {
-  @include responsive-scale(padding, 32 48, 16 24);
-  @include responsive-scale(margin-bottom, 24, 16);
+  @include rsm.responsive-scale(padding, 32 48, 16 24);
+  @include rsm.responsive-scale(margin-bottom, 24, 16);
 }
 ```
 
@@ -463,9 +505,9 @@ The main responsive scaling mixin.
 
 ```scss
 .button {
-  @include responsive-scale(width, 200, 150);
-  @include responsive-scale(height, 56, 44);
-  @include responsive-scale(border-radius, 8, 6);
+  @include rsm.responsive-scale(width, 200, 150);
+  @include rsm.responsive-scale(height, 56, 44);
+  @include rsm.responsive-scale(border-radius, 8, 6);
 }
 ```
 
@@ -474,7 +516,7 @@ The main responsive scaling mixin.
 ```scss
 .text {
   // Letter-spacing as 1% of font-size
-  @include responsive-scale(letter-spacing, 1, 1, px, true, 48, 32);
+  @include rsm.responsive-scale(letter-spacing, 1, 1, px, true, 48, 32);
 }
 ```
 
@@ -482,7 +524,7 @@ The main responsive scaling mixin.
 
 ```scss
 .override-bootstrap {
-  @include responsive-scale(
+  @include rsm.responsive-scale(
     font-size,
     24,
     16,
@@ -492,7 +534,7 @@ The main responsive scaling mixin.
     null,
     " !important"
   );
-  @include responsive-scale(
+  @include rsm.responsive-scale(
     padding,
     16 32,
     8 16,
@@ -518,8 +560,8 @@ Easily customize the design widths to match your project's breakpoints:
   // Replace 375 with your design width or leave default (mobile)
 
   // Custom design widths (desktop, tablet, mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -533,13 +575,13 @@ Easily customize the design widths to match your project's breakpoints:
 
 ```scss
 .element {
-  @include responsive-scale(
+  @include rsm.responsive-scale(
     font-size,
     3,
     2,
     rem
   ); // 3rem / 2rem - uses rem scale factor
-  @include responsive-scale(
+  @include rsm.responsive-scale(
     font-size,
     2,
     1.5,
@@ -575,10 +617,10 @@ The mixin supports **all CSS units** with a single generic scale factor:
 
 ```scss
 .element {
-  @include responsive-scale(margin, 2, 1, cm); // centimeters
-  @include responsive-scale(width, 50, 30, vw); // viewport width
-  @include responsive-scale(height, 80, 60, vh); // viewport height
-  @include responsive-scale(font-size, 1.5, 1, em); // em units
+  @include rsm.responsive-scale(margin, 2, 1, cm); // centimeters
+  @include rsm.responsive-scale(width, 50, 30, vw); // viewport width
+  @include rsm.responsive-scale(height, 80, 60, vh); // viewport height
+  @include rsm.responsive-scale(font-size, 1.5, 1, em); // em units
 }
 ```
 
@@ -804,9 +846,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
 }
 
 // In your module files
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 .myClass {
-  @include responsive-scale(font-size, 24, 16);
+  @include rsm.responsive-scale(font-size, 24, 16);
 }
 ```
 
@@ -825,9 +867,9 @@ The `@include responsive-scale-variables()` mixin may fail in certain SCSS compi
 }
 
 // In components
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 .custom-element {
-  @include responsive-scale(padding, 20 40, 10 20);
+  @include rsm.responsive-scale(padding, 20 40, 10 20);
   @apply bg-blue-500 text-white;
 }
 ```
