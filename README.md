@@ -62,6 +62,37 @@ font-size: calc(var(--computed-scale-factor) * 40px);
 - **TypeScript Ready**: Compatible with CSS Modules and CSS-in-JS solutions
 - **Universal Unit Support**: Handles all CSS units including absolute (px, pt, cm, mm, in, pc) and relative (%, em, rem, vw, vh, vmin, vmax) units
 
+## 🔧 Dart Sass Compatibility
+
+**Starting with v2.0.4**, this package is fully compatible with Dart Sass. The `index.scss` file now uses relative `@forward` statements (`./scss/variables` and `./scss/mixins`) to ensure proper resolution in Dart Sass environments like Next.js, Vite, and other modern build tools.
+
+### Recommended Import Pattern
+
+```scss
+// Modern @use syntax (preferred)
+@use "responsive-scale-mixins" as rsm;
+
+:root {
+  @include rsm.responsive-scale-variables();
+}
+
+.my-element {
+  @include rsm.responsive-scale(font-size, 24, 16);
+}
+```
+
+### Troubleshooting Import Errors
+
+If you encounter "Can't find stylesheet to import" errors with Dart Sass:
+
+1. **Update the package**: Ensure you're using v2.0.4 or later
+2. **Use relative imports as workaround**: Import the partials directly:
+   ```scss
+   @import "responsive-scale-mixins/scss/variables";
+   @import "responsive-scale-mixins/scss/mixins";
+   ```
+3. **Check your build tool**: Some tools may need configuration updates for SCSS module resolution
+
 ## 🚀 Quick Start
 
 ### Installation
@@ -343,6 +374,26 @@ const StyledComponent = styled.div`
 ```
 
 ### Basic Usage
+
+#### Modern @use Syntax (Recommended)
+
+```scss
+// In your main SCSS file
+@use "responsive-scale-mixins" as rsm;
+
+// Include variables in your root element (required)
+:root {
+  @include rsm.responsive-scale-variables();
+}
+
+// Use the mixin anywhere
+.my-element {
+  @include rsm.responsive-scale(font-size, 24, 16);
+  @include rsm.responsive-scale(padding, 20 40, 10 20);
+}
+```
+
+#### Legacy @import Syntax (for older setups)
 
 ```scss
 // In your main SCSS file
