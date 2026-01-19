@@ -122,35 +122,24 @@ jobs:
 
       - name: Check package files exist
         run: |
-          # Check main entry point
+          # Check main entry point (single-file distribution)
           if [ ! -f "index.scss" ]; then
             echo "❌ Main entry point index.scss not found"
             exit 1
           fi
 
-          # Check SCSS directory
-          if [ ! -d "scss" ]; then
-            echo "❌ SCSS directory not found"
+          # Verify single-file structure (no scss directory)
+          if [ -d "scss" ]; then
+            echo "❌ Legacy SCSS directory still exists (should be removed)"
             exit 1
           fi
 
-          # Check mixin files
-          if [ ! -f "scss/_mixins.scss" ]; then
-            echo "❌ Mixins file not found"
-            exit 1
-          fi
-
-          if [ ! -f "scss/_variables.scss" ]; then
-            echo "❌ Variables file not found"
-            exit 1
-          fi
-
-          echo "✅ All required package files exist"
+          echo "✅ Single-file package structure validated"
 
       - name: Test npm pack dry-run
         run: |
           npm pack --dry-run > pack-output.txt
-          if grep -q "responsive-scale-mixins@2.0.6" pack-output.txt || grep -q "responsive-scale-mixins-2.0.6" pack-output.txt; then
+          if grep -q "responsive-scale-mixins@2.0.7" pack-output.txt || grep -q "responsive-scale-mixins-2.0.7" pack-output.txt; then
             echo "✅ Package name and version correct"
           else
             echo "❌ Package name/version issue"

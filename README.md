@@ -104,9 +104,9 @@ font-size: calc(var(--computed-scale-factor-px) * 40);
 - **TypeScript Ready**: Compatible with CSS Modules and CSS-in-JS solutions
 - **Universal Unit Support**: Handles all CSS units including absolute (px, pt, cm, mm, in, pc) and relative (%, em, rem, vw, vh, vmin, vmax) units
 
-## 🔧 Dart Sass Compatibility
+## 🔧 Package Structure
 
-**Starting with v2.0.4**, this package is fully compatible with Dart Sass. The `index.scss` file now uses relative `@forward` statements (`./scss/variables` and `./scss/mixins`) to ensure proper resolution in Dart Sass environments like Next.js, Vite, and other modern build tools.
+**Starting with v2.0.7**, this package uses a **single-file distribution** for maximum compatibility. All mixins and functions are consolidated in `index.scss`, eliminating import dependency issues that could occur with NPM package distribution.
 
 ### Recommended Import Pattern
 

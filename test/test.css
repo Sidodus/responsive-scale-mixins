@@ -1,32 +1,10 @@
-@charset "UTF-8";
 /* Responsive Scale Variables Mixin
  * Include this mixin in your root element to define the scaling factors.
  * Adjust the design widths to match your design system breakpoints.
  */
-/* // ✅ Figma Proportions: Maintains the same proportions as the Figma design.
-
-// // Here's a SCSS mixin that dynamically calculates font-size, line-height, padding, margins, and other scalable properties across desktop, tablet, and mobile screens.
-// ✅ Consistent Scaling: No need to manually adjust for medium screens.
-// ✅ Reusable: Works for font-size, line-height, margins, paddings, etc.
-// ✅ Automatic Scaling: Dynamically scales values based on the screen size.
-
-// 📌 How to Use It
-// Import the mixins in your SCSS file: @import "~responsive-scale-mixins/scss/mixins";
-// .title {
-//   @include responsive-scale(font-size, 40, 24);
-//   @include responsive-scale(padding, 20 73, 8 16); // Multi-value
-//   @include responsive-scale(line-height, 65, 40);
-
-//   // Letter-spacing is -1.5% of font-size
-//   @include responsive-scale(letter-spacing, -1.5, -1.5, px, true, 40, 24);
-// }
-
-// Parameters: property, desktop-value, mobile-value, unit (default px), is-percentage (default false), desktop-relative, mobile-relative, important (default null)
-// Pass values as numbers (e.g., 20 for 20px, 20 73 for 20px 73px).
-// Tablet values are automatically interpolated using the tablet-proportion-scale-factor.
-// For percentage-based values, provide the percentage for desktop and mobile, and the base values (e.g., font-size for letter-spacing).
-// Pass " !important" as the important parameter to append !important to the generated CSS rules.
-// Media queries: Desktop (default), Tablet (768-991px), Mobile (≤767px). */
+/* Responsive Scale Mixins
+ * Core scaling functionality with support for all CSS units
+ */
 :root {
   /* Define CSS variables globally (required) */
   --desktop-width: 1920px;
