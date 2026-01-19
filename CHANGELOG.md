@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.7] - 2024-01-XX
+## [2.0.8] - 2026-01-XX
+
+### Fixed
+
+- **CHANGELOG Date Correction**: Corrected the release dates in changelog
+
+## [2.0.7] - 2026-01-XX
 
 ### Fixed
 
@@ -18,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Internal structure**: Converted from multi-file to single-file distribution while maintaining identical API
 - **Package files**: Updated to distribute only `index.scss` for maximum compatibility
 
-## [2.0.6] - 2024-01-XX
+## [2.0.6] - 2026-01-XX
 
 ### Fixed
 
@@ -26,13 +32,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolved package resolution issues that caused "Undefined mixin" errors with `@use` syntax
 - Maintained backward compatibility while ensuring reliable package distribution
 
-## [2.0.5] - 2024-01-XX
+## [2.0.5] - 2026-01-XX
 
 ### Fixed
 
 - Reverted `@forward` paths to non-relative for NPM package compatibility
 
-## [2.0.4] - 2024-01-XX
+## [2.0.4] - 2026-01-XX
 
 ### Added
 
@@ -53,26 +59,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated all README examples to prefer @use syntax over @import
 - Updated version to 2.0.4
 
-## [2.0.3] - 2024-01-XX
+## [2.0.3] - 2025-10-XX
 
 ### Fixed
 
 - Minor bug fixes and documentation updates
 
-## [2.0.2] - 2023-XX-XX
+## [2.0.2] - 2025-09-XX
 
 ### Fixed
 
 - Fixed CSS custom property naming issues
 - Updated migration guide
 
-## [2.0.1] - 2023-XX-XX
+## [2.0.1] - 2025-09-XX
 
 ### Fixed
 
 - Fixed calc expression units appending
 
-## [2.0.0] - 2023-XX-XX
+## [2.0.0] - 2025-09-XX
 
 ### Breaking Changes
 
@@ -90,7 +96,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced mixin flexibility for different unit types
 - Updated API to support percentage-based calculations
 
-## [1.x.x] - 2023-XX-XX
+## [1.x.x] - 2025-09-XX
 
 ### Added
 
