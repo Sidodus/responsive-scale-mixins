@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🎨 Responsive Scale Mixins v2.0.4 - Test Script"
+echo "🎨 Responsive Scale Mixins v2.0.5 - Test Script"
 echo "=============================================="
 echo ""
 
