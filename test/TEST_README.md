@@ -229,6 +229,6 @@ test.html      # Visual test page
 
 ---
 
-**Test Suite Version**: 2.0.5
+**Test Suite Version**: 2.0.6
 **Last Updated**: January 2026
 **Tested With**: Dart Sass 1.93.2
