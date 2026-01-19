@@ -1,8 +1,201 @@
-// Responsive Scale Mixins
+// Responsive Scale Mixins v2.0.7
 // A powerful SCSS mixin system for creating perfectly responsive designs
+// Single-file distribution for maximum compatibility
 
-// Import all mixins and functions from modules
-// Note: @import is used here for maximum NPM package compatibility
-// @forward causes issues with package resolution in distributed packages
-@import "scss/variables";
-@import "scss/mixins";
+@use "sass:string";
+@use "sass:meta";
+@use "sass:list";
+
+/* Responsive Scale Variables Mixin
+ * Include this mixin in your root element to define the scaling factors.
+ * Adjust the design widths to match your design system breakpoints.
+ */
+
+@mixin responsive-scale-variables(
+  $desktop-width: 1920px,
+  $tablet-width: 768px,
+  $mobile-width: 390px
+) {
+  // Design widths for direct calc expressions
+  --desktop-width: #{$desktop-width};
+  --tablet-width: #{$tablet-width};
+  --mobile-width: #{$mobile-width};
+
+  // Desktop scale factor (generic - unit is appended in calc expressions)
+  --computed-scale-factor: calc(100vw / #{$desktop-width});
+
+  // Tablet scale factor (generic - unit is appended in calc expressions)
+  --computed-tablet-scale-factor: calc(100vw / #{$tablet-width});
+
+  // Mobile scale factor (generic - unit is appended in calc expressions)
+  --computed-mobile-scale-factor: calc(100vw / #{$mobile-width});
+
+  // Tablet proportion scale factor for interpolation between mobile and desktop values
+  --tablet-proportion-scale-factor: calc(
+    (100vw - #{$mobile-width}) / (#{$desktop-width} - #{$mobile-width})
+  );
+}
+
+/* Responsive Scale Mixins
+ * Core scaling functionality with support for all CSS units
+ */
+
+@function scaled-value($val, $scale-var, $unit: px) {
+  @if $scale-var == "--computed-scale-factor" {
+    @return calc(100vw / var(--desktop-width) * #{$val}#{$unit});
+  } @else if $scale-var == "--computed-tablet-scale-factor" {
+    @return calc(100vw / var(--tablet-width) * #{$val}#{$unit});
+  } @else if $scale-var == "--computed-mobile-scale-factor" {
+    @return calc(100vw / var(--mobile-width) * #{$val}#{$unit});
+  } @else {
+    @return calc(var(#{$scale-var}) * #{$val}#{$unit});
+  }
+}
+
+@function get-scale-factor($unit) {
+  // Use generic scale factor - unit is appended in calc expressions
+  @return string.unquote("--computed-scale-factor");
+}
+
+@function get-tablet-scale-factor($unit) {
+  // Use generic scale factor - unit is appended in calc expressions
+  @return string.unquote("--computed-tablet-scale-factor");
+}
+
+@function get-mobile-scale-factor($unit) {
+  // Use generic scale factor - unit is appended in calc expressions
+  @return string.unquote("--computed-mobile-scale-factor");
+}
+
+@mixin responsive-scale(
+  $property,
+  $desktop-value,
+  $mobile-value,
+  $unit: px,
+  $is-percentage: false,
+  $desktop-relative: null,
+  $mobile-relative: null,
+  $important: null
+) {
+  $scale-factor: get-scale-factor($unit);
+
+  // If it's a percentage-based value (like letter-spacing), scale it based on the relative property
+  @if $is-percentage == true {
+    @if $desktop-relative != null {
+      $calc-value: calc(
+        #{$desktop-value} /
+          100 *
+          100vw /
+          var(--desktop-width) *
+          #{$desktop-relative} *
+          #{$unit}
+      );
+      #{$property}: #{$calc-value}#{$important};
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      @if $desktop-relative != null and $mobile-relative != null {
+        $calc-value: calc(
+          #{$mobile-value} /
+            100 *
+            (
+              100vw /
+                var(--tablet-width) *
+                (
+                  #{$mobile-relative} +
+                    (100vw - var(--mobile-width)) /
+                    (var(--desktop-width) - var(--mobile-width)) *
+                    (#{$desktop-relative} - #{$mobile-relative})
+                ) *
+                #{$unit}
+            )
+        );
+        #{$property}: #{$calc-value}#{$important};
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      @if $mobile-relative != null {
+        $calc-value: calc(
+          #{$mobile-value} /
+            100 *
+            100vw /
+            var(--mobile-width) *
+            #{$mobile-relative} *
+            #{$unit}
+        );
+        #{$property}: #{$calc-value}#{$important};
+      }
+    }
+  } @else {
+    // Regular absolute scaling
+    @if meta.type-of($desktop-value) == list {
+      $desktop-scaled: ();
+      @each $val in $desktop-value {
+        $desktop-scaled: list.append(
+          $desktop-scaled,
+          scaled-value($val, $scale-factor, $unit)
+        );
+      }
+      #{$property}: #{$desktop-scaled}#{$important};
+    } @else {
+      $scaled-value: scaled-value($desktop-value, $scale-factor, $unit);
+      #{$property}: #{$scaled-value}#{$important};
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      @if meta.type-of($desktop-value) == list {
+        $tablet-scaled: ();
+        @for $i from 1 through list.length($desktop-value) {
+          $d-val: list.nth($desktop-value, $i);
+          $m-val: list.nth($mobile-value, $i);
+          $tablet-scaled: list.append(
+            $tablet-scaled,
+            calc(
+              100vw /
+                var(--tablet-width) *
+                (
+                  #{$m-val} +
+                    (100vw - var(--mobile-width)) /
+                    (var(--desktop-width) - var(--mobile-width)) *
+                    (#{$d-val} - #{$m-val})
+                ) *
+                #{$unit}
+            )
+          );
+        }
+        #{$property}: #{$tablet-scaled}#{$important};
+      } @else {
+        $calc-value: calc(
+          100vw /
+            var(--tablet-width) *
+            (
+              #{$mobile-value} +
+                (100vw - var(--mobile-width)) /
+                (var(--desktop-width) - var(--mobile-width)) *
+                (#{$desktop-value} - #{$mobile-value})
+            ) *
+            #{$unit}
+        );
+        #{$property}: #{$calc-value}#{$important};
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      $mobile-scale-factor: get-mobile-scale-factor($unit);
+      @if meta.type-of($mobile-value) == list {
+        $mobile-scaled: ();
+        @each $val in $mobile-value {
+          $mobile-scaled: list.append(
+            $mobile-scaled,
+            scaled-value($val, $mobile-scale-factor, $unit)
+          );
+        }
+        #{$property}: #{$mobile-scaled}#{$important};
+      } @else {
+        $scaled-value: scaled-value($mobile-value, $mobile-scale-factor, $unit);
+        #{$property}: #{$scaled-value}#{$important};
+      }
+    }
+  }
+}

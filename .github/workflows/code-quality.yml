@@ -150,7 +150,7 @@ jobs:
       - name: Test npm pack dry-run
         run: |
           npm pack --dry-run > pack-output.txt
-          if grep -q "responsive-scale-mixins@2.0.6" pack-output.txt || grep -q "responsive-scale-mixins-2.0.6" pack-output.txt; then
+          if grep -q "responsive-scale-mixins@2.0.7" pack-output.txt || grep -q "responsive-scale-mixins-2.0.7" pack-output.txt; then
             echo "✅ Package name and version correct"
           else
             echo "❌ Package name/version issue"
