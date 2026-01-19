@@ -120,26 +120,26 @@ pnpm add responsive-scale-mixins
 #### Next.js (App Router)
 
 ```scss
-// app/globals.css or app/styles/globals.scss
-@import "~responsive-scale-mixins";
+// app/globals.scss or app/styles/globals.scss
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
   // Define CSS variables globally (required)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 
-// Import in app/layout.tsx: import './globals.css'
+// Import in app/layout.tsx: import './globals.scss'
 ```
 
 #### Next.js (Pages Router)
 
 ```scss
 // styles/globals.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Define CSS variables globally (required)
@@ -147,8 +147,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 
 // Import in pages/_app.js: import '../styles/globals.scss'
@@ -164,7 +164,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/index.scss or src/styles/main.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Define CSS variables globally (required)
@@ -172,8 +172,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 
 // Import in src/index.js: import './index.scss'
@@ -189,7 +189,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/assets/styles/main.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Define CSS variables globally (required)
@@ -197,8 +197,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 
 // Import in src/main.js: import './assets/styles/main.scss'
@@ -214,7 +214,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/styles.scss (global styles)
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Define CSS variables globally (required)
@@ -222,8 +222,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 
 // This file is automatically included by Angular CLI
@@ -239,7 +239,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/styles/main.scss
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Customize for your design system (optional)
@@ -247,8 +247,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -256,7 +256,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/styles/global.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Customize for your design system (optional)
@@ -264,8 +264,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -273,7 +273,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // assets/styles/main.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Customize for your design system (optional)
@@ -281,8 +281,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -290,7 +290,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/app.scss
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Customize for your design system (optional)
@@ -298,8 +298,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -307,7 +307,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // src/styles/global.scss
-@import "responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Customize for your design system (optional)
@@ -315,8 +315,8 @@ pnpm add responsive-scale-mixins
   // Replace 1440 with your design width or leave default (desktop)
   // Replace 768 with your design width or leave default (tablet)
   // Replace 375 with your design width or leave default (mobile)
-  @include responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
+  // Or use defaults: @include rsm.responsive-scale-variables();
 }
 ```
 
@@ -324,7 +324,7 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // styles.module.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 // Variables must be in global scope
 // In your main CSS file:
@@ -340,7 +340,7 @@ pnpm add responsive-scale-mixins
 
 // Then in your module
 .myClass {
-  @include responsive-scale(font-size, 24, 16);
+  @include rsm.responsive-scale(font-size, 24, 16);
 }
 ```
 
@@ -348,15 +348,15 @@ pnpm add responsive-scale-mixins
 
 ```scss
 // styles/main.scss
-@import "~responsive-scale-mixins";
+@use "responsive-scale-mixins" as rsm;
 
 :root {
-  @include responsive-scale-variables();
+  @include rsm.responsive-scale-variables();
 }
 
 // Use alongside Tailwind
 .custom-element {
-  @include responsive-scale(padding, 20 40, 10 20);
+  @include rsm.responsive-scale(padding, 20 40, 10 20);
   @apply bg-blue-500 text-white; // Tailwind classes still work
 }
 ```
