@@ -87,7 +87,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo {
-    padding: calc(100vw / var(--tablet-width) * (20 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (25 - 20)) * px);
+    padding: calc(var(--computed-tablet-scale-factor) * (20px + var(--tablet-proportion-scale-factor) * (25px - 20px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -100,7 +100,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo {
-    border-radius: calc(100vw / var(--tablet-width) * (12 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (16 - 12)) * px);
+    border-radius: calc(var(--computed-tablet-scale-factor) * (12px + var(--tablet-proportion-scale-factor) * (16px - 12px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -113,7 +113,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo {
-    margin-bottom: calc(100vw / var(--tablet-width) * (25 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (35 - 25)) * px);
+    margin-bottom: calc(var(--computed-tablet-scale-factor) * (25px + var(--tablet-proportion-scale-factor) * (35px - 25px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -126,7 +126,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo {
-    border-inline-width: calc(100vw / var(--tablet-width) * (2 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (4 - 2)) * px);
+    border-inline-width: calc(var(--computed-tablet-scale-factor) * (2px + var(--tablet-proportion-scale-factor) * (4px - 2px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -156,7 +156,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo h1 {
-    font-size: calc(100vw / var(--tablet-width) * (2 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (3 - 2)) * rem);
+    font-size: calc(var(--computed-tablet-scale-factor) * (2rem + var(--tablet-proportion-scale-factor) * (3rem - 2rem)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -169,7 +169,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo h1 {
-    margin-bottom: calc(100vw / var(--tablet-width) * (0.5 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (1 - 0.5)) * rem);
+    margin-bottom: calc(var(--computed-tablet-scale-factor) * (0.5rem + var(--tablet-proportion-scale-factor) * (1rem - 0.5rem)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -185,7 +185,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo p {
-    font-size: calc(100vw / var(--tablet-width) * (1.2 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (1.5 - 1.2)) * rem);
+    font-size: calc(var(--computed-tablet-scale-factor) * (1.2rem + var(--tablet-proportion-scale-factor) * (1.5rem - 1.2rem)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -201,7 +201,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo h3 {
-    font-size: calc(100vw / var(--tablet-width) * (1.4 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (2 - 1.4)) * rem);
+    font-size: calc(var(--computed-tablet-scale-factor) * (1.4rem + var(--tablet-proportion-scale-factor) * (2rem - 1.4rem)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -262,7 +262,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .dynamicValue {
-    padding: calc(100vw / var(--tablet-width) * (1.3 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (2 - 1.3)) * px) calc(100vw / var(--tablet-width) * (3.4 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (6 - 3.4)) * px);
+    padding: calc(var(--computed-tablet-scale-factor) * (1.3px + var(--tablet-proportion-scale-factor) * (2px - 1.3px))) calc(var(--computed-tablet-scale-factor) * (3.4px + var(--tablet-proportion-scale-factor) * (6px - 3.4px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -275,7 +275,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .dynamicValue {
-    border-radius: calc(100vw / var(--tablet-width) * (4 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (4 - 4)) * px);
+    border-radius: calc(var(--computed-tablet-scale-factor) * (4px + var(--tablet-proportion-scale-factor) * (4px - 4px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -302,7 +302,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .demoSection {
-    border-radius: calc(100vw / var(--tablet-width) * (12 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (16 - 12)) * px);
+    border-radius: calc(var(--computed-tablet-scale-factor) * (12px + var(--tablet-proportion-scale-factor) * (16px - 12px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -315,7 +315,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .demoSection {
-    padding: calc(100vw / var(--tablet-width) * (20 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (30 - 20)) * px);
+    padding: calc(var(--computed-tablet-scale-factor) * (20px + var(--tablet-proportion-scale-factor) * (30px - 20px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -328,7 +328,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .demoSection {
-    margin-bottom: calc(100vw / var(--tablet-width) * (20 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (25 - 20)) * px);
+    margin-bottom: calc(var(--computed-tablet-scale-factor) * (20px + var(--tablet-proportion-scale-factor) * (25px - 20px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -368,7 +368,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .beforeAfter {
-    margin-bottom: calc(100vw / var(--tablet-width) * (1.2 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (2.5 - 1.2)) * rem);
+    margin-bottom: calc(var(--computed-tablet-scale-factor) * (1.2rem + var(--tablet-proportion-scale-factor) * (2.5rem - 1.2rem)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -381,7 +381,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .beforeAfter {
-    font-size: calc(100vw / var(--tablet-width) * (2 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (3 - 2)) * rem);
+    font-size: calc(var(--computed-tablet-scale-factor) * (2rem + var(--tablet-proportion-scale-factor) * (3rem - 2rem)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -479,7 +479,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testHeading {
-    padding-bottom: calc(100vw / var(--tablet-width) * (10 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (10 - 10)) * px);
+    padding-bottom: calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (10px - 10px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -492,7 +492,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testHeading {
-    font-size: calc(100vw / var(--tablet-width) * (1.4 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (2 - 1.4)) * rem);
+    font-size: calc(var(--computed-tablet-scale-factor) * (1.4rem + var(--tablet-proportion-scale-factor) * (2rem - 1.4rem)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -505,7 +505,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testHeading {
-    margin-bottom: calc(100vw / var(--tablet-width) * (0.5 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (1 - 0.5)) * rem);
+    margin-bottom: calc(var(--computed-tablet-scale-factor) * (0.5rem + var(--tablet-proportion-scale-factor) * (1rem - 0.5rem)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -520,7 +520,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testParagraph {
-    font-size: calc(100vw / var(--tablet-width) * (0.8 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (1.4 - 0.8)) * em);
+    font-size: calc(var(--computed-tablet-scale-factor) * (0.8em + var(--tablet-proportion-scale-factor) * (1.4em - 0.8em)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -536,7 +536,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testBox {
-    border-radius: calc(100vw / var(--tablet-width) * (4 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (8 - 4)) * px);
+    border-radius: calc(var(--computed-tablet-scale-factor) * (4px + var(--tablet-proportion-scale-factor) * (8px - 4px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -553,7 +553,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testBox {
-    height: calc(100vw / var(--tablet-width) * (100 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (100 - 100)) * px);
+    height: calc(var(--computed-tablet-scale-factor) * (100px + var(--tablet-proportion-scale-factor) * (100px - 100px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -566,7 +566,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testBox {
-    padding: calc(100vw / var(--tablet-width) * (10 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (20 - 10)) * px);
+    padding: calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (20px - 10px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -579,7 +579,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testBox {
-    margin-bottom: calc(100vw / var(--tablet-width) * (0.5 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (1 - 0.5)) * rem);
+    margin-bottom: calc(var(--computed-tablet-scale-factor) * (0.5rem + var(--tablet-proportion-scale-factor) * (1rem - 0.5rem)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -599,7 +599,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testBox .testBoxInner {
-    font-size: calc(100vw / var(--tablet-width) * (0.8 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (1.4 - 0.8)) * em);
+    font-size: calc(var(--computed-tablet-scale-factor) * (0.8em + var(--tablet-proportion-scale-factor) * (1.4em - 0.8em)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -614,7 +614,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testLetterSpacing {
-    padding: calc(100vw / var(--tablet-width) * (10 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (15 - 10)) * px);
+    padding: calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (15px - 10px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -627,7 +627,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testLetterSpacing {
-    border-radius: calc(100vw / var(--tablet-width) * (4 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (8 - 4)) * px);
+    border-radius: calc(var(--computed-tablet-scale-factor) * (4px + var(--tablet-proportion-scale-factor) * (8px - 4px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -641,7 +641,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testLetterSpacing {
-    letter-spacing: calc(100vw / var(--tablet-width) * (-1 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (-1 - -1)) * px);
+    letter-spacing: calc(var(--computed-tablet-scale-factor) * (-1px + var(--tablet-proportion-scale-factor) * (-1px - -1px)));
   }
 }
 @media screen and (max-width: 767px) {
@@ -654,7 +654,7 @@ a {
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testLetterSpacing {
-    font-size: calc(100vw / var(--tablet-width) * (18 + (100vw - var(--mobile-width)) / (var(--desktop-width) - var(--mobile-width)) * (24 - 18)) * px);
+    font-size: calc(var(--computed-tablet-scale-factor) * (18px + var(--tablet-proportion-scale-factor) * (24px - 18px)));
   }
 }
 @media screen and (max-width: 767px) {

@@ -60,6 +60,15 @@ Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Y
 
 **SCSS implementations are NOT affected** - existing `@include responsive-scale()` calls work unchanged.
 
+## ✅ v2.0.9 - Bug Fix (No Breaking Changes)
+
+**This is a bug fix that resolves tablet breakpoint calculation issues. No API changes.**
+
+- **Fixed**: Tablet breakpoint CSS generation was producing invalid `calc()` expressions
+- **Result**: Tablet scaling now works correctly with valid CSS output
+- **Compatibility**: All existing code continues to work unchanged
+- **API**: Zero breaking changes - same function calls, same parameters, same behavior
+
 ### Migration Guide (Pure CSS Users)
 
 **Update your CSS variable definitions:**

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.9] - 2026-01-XX
+
+### Fixed
+
+- **Tablet breakpoint calculation**: Fixed invalid CSS `calc()` expressions that were causing "Undefined mixin" errors
+- **CSS unit multiplication**: Corrected unit handling in tablet breakpoint interpolation to generate valid CSS
+- **Cross-browser compatibility**: Ensured generated CSS works in all modern browsers
+
+### Changed
+
+- **Tablet calculation logic**: Improved the mathematical approach for smoother breakpoint transitions
+- **CSS output validation**: Enhanced mixin to generate browser-compatible `calc()` expressions
+
 ## [2.0.8] - 2026-01-XX
 
 ### Fixed
