@@ -130,7 +130,9 @@
     @if $desktop-relative != null {
       // v2.1.0: Output fallback value first
       @if $enable-fallback {
-        $fallback-calc: calc(#{$desktop-value} / 100 * #{$desktop-relative});
+        $fallback-calc: calc(
+          #{$desktop-value} / 100 * #{$desktop-relative}
+        );
         #{$property}: #{$fallback-calc}#{$unit}#{$important};
       }
 
@@ -149,12 +151,10 @@
         // v2.1.0: Fallback for tablet
         @if $enable-fallback {
           $fallback-tablet: calc(
-            #{$mobile-value} /
-              100 *
+            #{$mobile-value} / 100 *
               (
                 #{$mobile-relative}#{$unit} +
-                  0.5 *
-                  (#{$desktop-relative}#{$unit} - #{$mobile-relative}#{$unit})
+                  0.5 * (#{$desktop-relative}#{$unit} - #{$mobile-relative}#{$unit})
               )
           );
           #{$property}: #{$fallback-tablet}#{$important};
@@ -182,7 +182,9 @@
       @if $mobile-relative != null {
         // v2.1.0: Fallback for mobile
         @if $enable-fallback {
-          $fallback-mobile: calc(#{$mobile-value} / 100 * #{$mobile-relative});
+          $fallback-mobile: calc(
+            #{$mobile-value} / 100 * #{$mobile-relative}
+          );
           #{$property}: #{$fallback-mobile}#{$unit}#{$important};
         }
 
@@ -202,7 +204,7 @@
       @if $enable-fallback {
         $desktop-fallback: ();
         @each $val in $desktop-value {
-          $desktop-fallback: list.append($desktop-fallback, #{$val}#{$unit});
+          $desktop-fallback: list.append($desktop-fallback, $val#{$unit});
         }
         #{$property}: #{$desktop-fallback}#{$important};
       }
@@ -235,7 +237,7 @@
           $tablet-fallback: ();
           @for $i from 1 through list.length($desktop-value) {
             $m-val: list.nth($mobile-value, $i);
-            $tablet-fallback: list.append($tablet-fallback, #{$m-val}#{$unit});
+            $tablet-fallback: list.append($tablet-fallback, $m-val#{$unit});
           }
           #{$property}: #{$tablet-fallback}#{$important};
         }
@@ -284,7 +286,7 @@
         @if $enable-fallback {
           $mobile-fallback: ();
           @each $val in $mobile-value {
-            $mobile-fallback: list.append($mobile-fallback, #{$val}#{$unit});
+            $mobile-fallback: list.append($mobile-fallback, $val#{$unit});
           }
           #{$property}: #{$mobile-fallback}#{$important};
         }

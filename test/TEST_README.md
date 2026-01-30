@@ -30,6 +30,20 @@ This will:
 2. ✅ Open `test.html` in your default browser
 3. ✅ Display testing instructions
 
+### Simplified Fallback Testing
+
+For testing the new v2.1.0 fallback functionality:
+
+```bash
+# Test fallback generation
+sass test/fallback-test.scss test/fallback-test.css
+
+# View generated CSS
+cat test/fallback-test.css
+```
+
+This will show both fallback and modern CSS declarations for browser compatibility testing.
+
 ### Manual Testing
 
 ```bash
@@ -229,6 +243,6 @@ test.html      # Visual test page
 
 ---
 
-**Test Suite Version**: 2.0.9
-**Last Updated**: January 2026
+**Test Suite Version**: 2.1.0
+**Last Updated**: January 31 2026
 **Tested With**: Dart Sass 1.97.2

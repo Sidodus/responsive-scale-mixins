@@ -1,0 +1,28 @@
+@use "../index.scss" as rsm;
+
+:root {
+  @include rsm.responsive-scale-variables();
+}
+
+// Test with fallbacks (default behavior)
+.test-with-fallback {
+  @include rsm.responsive-scale(font-size, 48, 24, px);
+}
+
+.test-with-fallback-2 {
+  @include rsm.responsive-scale(
+    letter-spacing,
+    8,
+    4,
+    px,
+    true,
+    22,
+    22,
+    " !important"
+  );
+}
+
+// Test without fallbacks (modern-only)
+.test-without-fallback {
+  @include rsm.responsive-scale-no-fallback(padding, 20 40, 10 20, px);
+}

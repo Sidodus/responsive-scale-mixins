@@ -1,0 +1,87 @@
+/* Responsive Scale Variables Mixin
+ * Include this mixin in your root element to define the scaling factors.
+ * Adjust the design widths to match your design system breakpoints.
+ * 
+ * v2.1.0: Now includes fallback generation for browsers without CSS variable support
+ */
+/* Utility function to strip units from values */
+/* Responsive Scale Mixins
+ * Core scaling functionality with support for all CSS units
+ * v2.1.0: Generates both modern calc() AND static fallback values
+ */
+/* v2.1.0: Calculate static fallback values for unsupported browsers
+ * These values are computed at compile time, not runtime
+ */
+/* v2.1.0: Main responsive scale mixin with fallback support
+ * Generates two CSS declarations:
+ * 1. Static fallback value for unsupported browsers
+ * 2. Modern calc() expression for modern browsers
+ */
+/* v2.1.0: New mixin to disable fallback for specific declarations
+ * Useful when you want only modern browsers to receive a style
+ */
+:root {
+  --desktop-width: 1920px;
+  --tablet-width: 768px;
+  --mobile-width: 390px;
+  --computed-scale-factor: calc(100vw / 1920px);
+  --computed-tablet-scale-factor: calc(100vw / 768px);
+  --computed-mobile-scale-factor: calc(100vw / 390px);
+  --tablet-proportion-scale-factor: calc(
+    (100vw - 390px) / (1920px - 390px)
+  );
+  --rsm-desktop-width-value: 1920;
+  --rsm-tablet-width-value: 768;
+  --rsm-mobile-width-value: 390;
+  --rsm-fallback-enabled: 1;
+}
+
+.test-with-fallback {
+  font-size: 48px;
+  font-size: calc(100vw / var(--desktop-width) * 48px);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-with-fallback {
+    font-size: 24px;
+    font-size: calc(var(--computed-tablet-scale-factor) * (24px + var(--tablet-proportion-scale-factor) * (48px - 24px)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-with-fallback {
+    font-size: 24px;
+    font-size: calc(100vw / var(--mobile-width) * 24px);
+  }
+}
+
+.test-with-fallback-2 {
+  letter-spacing: calc(8 / 100 * 22)px !important;
+  letter-spacing: calc(8 / 100 * var(--computed-scale-factor) * 22px) !important;
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-with-fallback-2 {
+    letter-spacing: calc(4 / 100 * (22px + 0.5 * (22px - 22px))) !important;
+    letter-spacing: calc(4 / 100 * var(--computed-tablet-scale-factor) * (22px + var(--tablet-proportion-scale-factor) * (22px - 22px))) !important;
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-with-fallback-2 {
+    letter-spacing: calc(4 / 100 * 22)px !important;
+    letter-spacing: calc(4 / 100 * var(--computed-mobile-scale-factor) * 22px) !important;
+  }
+}
+
+.test-without-fallback {
+  padding: calc(100vw / var(--desktop-width) * 20px) calc(100vw / var(--desktop-width) * 40px);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .test-without-fallback {
+    padding: calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (20px - 10px))) calc(var(--computed-tablet-scale-factor) * (20px + var(--tablet-proportion-scale-factor) * (40px - 20px)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .test-without-fallback {
+    padding: calc(100vw / var(--mobile-width) * 10px) calc(100vw / var(--mobile-width) * 20px);
+  }
+}
+
+/*# sourceMappingURL=fallback-test.css.map */
