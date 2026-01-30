@@ -1,6 +1,9 @@
 # Test files - not needed in NPM package
 test/
 
+# Fix files - not needed in NPM package
+fix/
+
 # Development files
 .nyc_output/
 coverage/
