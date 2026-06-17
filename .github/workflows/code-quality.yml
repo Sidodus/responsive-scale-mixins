@@ -61,7 +61,7 @@ jobs:
           fi
 
           # Check test CSS for expected direct calc expressions (browser-compatible)
-          if grep -q "calc(100vw / var(--desktop-width)" test/test.css; then
+          if grep -E -q "calc\(100vw / [0-9]+px" test/test.css; then
             echo "✅ Test CSS contains expected direct calc expressions"
           else
             echo "❌ Test CSS missing expected direct calc expressions"
