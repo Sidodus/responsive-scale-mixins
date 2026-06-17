@@ -6,12 +6,52 @@
 
   --background: #ffffff;
   --foreground: #171717;
+  --surface: rgba(255, 255, 255, 0.96);
+  --surface-alt: rgba(250, 250, 252, 0.95);
+  --panel-bg: rgba(255, 255, 255, 0.95);
+  --panel-border: rgba(33, 150, 243, 0.14);
+  --accent: #2196f3;
+  --accent-strong: #21cbf3;
+  --accent-alt: #ff6b9d;
+  --muted: #666666;
+  --text-muted: #6c757d;
+  --shadow:
+    0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --shadow-soft:
+    0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --spotlight: rgba(255, 255, 255, 0.9);
+  --warning-bg: rgba(255, 243, 205, 0.6);
+  --text-card: #111827;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #080a12;
+    --foreground: #f4f5f8;
+    --surface: rgba(10, 14, 28, 0.92);
+    --surface-alt: rgba(18, 23, 45, 0.9);
+    --panel-bg: rgba(25, 30, 53, 0.88);
+    --panel-border: rgba(129, 215, 255, 0.2);
+    --accent: #7dd3fc;
+    --accent-strong: #38bdf8;
+    --muted: #bfc7d9;
+    --text-muted: #a0aec0;
+    --shadow:
+      0 12px 40px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    --shadow-soft:
+      0 8px 32px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    --spotlight: rgba(255, 255, 255, 0.06);
+    --warning-bg: rgba(255, 207, 125, 0.16);
+    --accent: #7dd3fc;
+    --accent-strong: #38bdf8;
+    --accent-alt: #fbbf24;
+    --muted: #bfc7d9;
+    --text-muted: #a0aec0;
+    --text-card: #eaf2ff;
   }
 }
 
@@ -87,18 +127,15 @@ a {
   max-width: 96%;
   margin-left: auto;
   margin-right: auto;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--panel-bg);
   backdrop-filter: blur(15px);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.12),
-    0 4px 16px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow);
   @include rsm.responsive-scale(padding, 25, 20);
   @include rsm.responsive-scale(border-radius, 16, 12);
   @include rsm.responsive-scale(margin-bottom, 35, 25);
   @include rsm.responsive-scale(border-inline-width, 4, 2);
   border-inline-style: solid;
-  border-inline-color: #2196f3;
+  border-inline-color: var(--accent);
   position: relative;
   overflow: hidden;
   animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -110,7 +147,12 @@ a {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #2196f3, #21cbf3, #ff6b9d);
+    background: linear-gradient(
+      90deg,
+      var(--accent),
+      var(--accent-strong),
+      var(--accent-alt)
+    );
     animation: shimmer 2s infinite;
   }
 
@@ -198,16 +240,13 @@ a {
 }
 
 .demoSection {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--surface);
   backdrop-filter: blur(15px);
   @include rsm.responsive-scale(border-radius, 16, 12);
   @include rsm.responsive-scale(padding, 30, 20);
   @include rsm.responsive-scale(margin-bottom, 25, 20);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    0 2px 8px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--panel-border);
   position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
@@ -221,7 +260,7 @@ a {
     left: -100%;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #2196f3, transparent);
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
     transition: left 0.5s ease;
   }
 
@@ -242,14 +281,14 @@ a {
   @include rsm.responsive-scale(margin-bottom, 2.5, 1.2, rem);
   @include rsm.responsive-scale(font-size, 3, 2, rem);
   text-align: center;
-  color: #333;
+  color: var(--foreground);
   font-weight: 600;
   text-transform: uppercase;
 }
 
 // Static versions for BEFORE column
 .testHeadingStatic {
-  color: #2196f3;
+  color: var(--accent);
   font-size: 2rem;
   padding-bottom: 10px;
   margin-bottom: 1rem;
@@ -262,7 +301,7 @@ a {
 }
 
 .testParagraphStatic {
-  color: #666;
+  color: var(--muted);
   font-size: 1.4em;
 
   @media screen and (max-width: 767px) {
@@ -271,8 +310,8 @@ a {
 }
 
 .testBoxStatic {
-  background: linear-gradient(45deg, #2196f3, #21cbf3);
-  color: white;
+  background: linear-gradient(45deg, var(--accent), var(--accent-strong));
+  color: var(--foreground);
   border-radius: 8px;
   text-align: center;
   justify-content: center;
@@ -290,8 +329,8 @@ a {
   }
 
   .testBoxInnerStatic {
-    background: whitesmoke;
-    color: black;
+    background: var(--surface-alt);
+    color: var(--foreground);
     width: 100%;
     height: 100%;
     display: flex;
@@ -306,7 +345,8 @@ a {
 }
 
 .testLetterSpacingStatic {
-  background: #fff3cd;
+  background: var(--warning-bg);
+  color: var(--foreground);
   padding: 15px;
   border-radius: 8px;
   font-weight: bold;
@@ -322,20 +362,20 @@ a {
 }
 
 .testHeading {
-  color: #2196f3;
+  color: var(--accent);
   @include rsm.responsive-scale(padding-bottom, 10, 10);
   @include rsm.responsive-scale(font-size, 2, 1.4, rem);
   @include rsm.responsive-scale(margin-bottom, 1, 0.5, rem);
 }
 
 .testParagraph {
-  color: #666;
+  color: var(--muted);
   @include rsm.responsive-scale(font-size, 1.4, 0.8, em);
 }
 
 .testBox {
-  background: linear-gradient(45deg, #2196f3, #21cbf3);
-  color: white;
+  background: linear-gradient(45deg, var(--accent), var(--accent-strong));
+  color: var(--foreground);
   @include rsm.responsive-scale(border-radius, 8, 4, px);
   text-align: center;
   justify-content: center;
@@ -346,8 +386,8 @@ a {
   @include rsm.responsive-scale(margin-bottom, 1, 0.5, rem);
 
   .testBoxInner {
-    background: whitesmoke;
-    color: black;
+    background: var(--surface-alt);
+    color: var(--foreground);
     width: 100%;
     height: 100%;
     display: flex;
@@ -359,7 +399,7 @@ a {
 }
 
 .testLetterSpacing {
-  background: #fff3cd;
+  background: var(--warning-bg);
   @include rsm.responsive-scale(padding, 15, 10);
   @include rsm.responsive-scale(border-radius, 8, 4);
   font-weight: bold;
@@ -407,11 +447,11 @@ a {
 }
 
 .text-danger {
-  color: #dc3545 !important;
+  color: var(--accent-alt) !important;
 }
 
 .text-muted {
-  color: #6c757d !important;
+  color: var(--text-muted) !important;
 }
 
 .mb-4 {

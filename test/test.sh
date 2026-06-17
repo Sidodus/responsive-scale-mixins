@@ -1,11 +1,25 @@
 #!/bin/bash
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR" || exit 1
+
 echo "🎨 Responsive Scale Mixins v2.1.0 - Test Script"
 echo "=============================================="
 echo ""
 
 echo "📝 Compiling test.scss to test.css..."
-if sass test.scss test.css; then
+if command -v sass > /dev/null; then
+    sass test.scss test.css
+elif command -v npx > /dev/null; then
+    npx --yes sass test.scss test.css
+else
+    echo "❌ Compilation failed!"
+    echo "   sass is not installed and npx is unavailable."
+    echo "   Install Dart Sass globally or run: npx --yes sass test.scss test.css"
+    exit 1
+fi
+
+if [ $? -eq 0 ]; then
     echo "✅ Compilation successful!"
     echo ""
     echo "🌐 Opening test.html in default browser..."
@@ -17,6 +31,8 @@ if sass test.scss test.css; then
         open test.html
     elif command -v start > /dev/null; then
         start test.html
+    elif command -v cmd.exe > /dev/null; then
+        cmd.exe /c start test.html
     else
         echo "❓ Could not detect browser command."
         echo "   Please manually open test.html in your browser."

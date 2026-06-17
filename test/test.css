@@ -9,9 +9,6 @@
  * Core scaling functionality with support for all CSS units
  * v2.1.0: Generates both modern calc() AND static fallback values
  */
-/* v2.1.0: Calculate static fallback values for unsupported browsers
- * These values are computed at compile time, not runtime
- */
 /* v2.1.0: Main responsive scale mixin with fallback support
  * Generates two CSS declarations:
  * 1. Static fallback value for unsupported browsers
@@ -25,10 +22,10 @@
   --desktop-width: 1920px;
   --tablet-width: 768px;
   --mobile-width: 390px;
-  --computed-scale-factor: calc(100vw / 1920px);
-  --computed-tablet-scale-factor: calc(100vw / 768px);
-  --computed-mobile-scale-factor: calc(100vw / 390px);
-  --tablet-proportion-scale-factor: calc(
+  --computed-scale-factor: (100vw / 1920px);
+  --computed-tablet-scale-factor: (100vw / 768px);
+  --computed-mobile-scale-factor: (100vw / 390px);
+  --tablet-proportion-scale-factor: (
     (100vw - 390px) / (1920px - 390px)
   );
   --rsm-desktop-width-value: 1920;
@@ -37,12 +34,44 @@
   --rsm-fallback-enabled: 1;
   --background: #ffffff;
   --foreground: #171717;
+  --surface: rgba(255, 255, 255, 0.96);
+  --surface-alt: rgba(250, 250, 252, 0.95);
+  --panel-bg: rgba(255, 255, 255, 0.95);
+  --panel-border: rgba(33, 150, 243, 0.14);
+  --accent: #2196f3;
+  --accent-strong: #21cbf3;
+  --accent-alt: #ff6b9d;
+  --muted: #666666;
+  --text-muted: #6c757d;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --spotlight: rgba(255, 255, 255, 0.9);
+  --warning-bg: rgba(255, 243, 205, 0.6);
+  --text-card: #111827;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #080a12;
+    --foreground: #f4f5f8;
+    --surface: rgba(10, 14, 28, 0.92);
+    --surface-alt: rgba(18, 23, 45, 0.9);
+    --panel-bg: rgba(25, 30, 53, 0.88);
+    --panel-border: rgba(129, 215, 255, 0.2);
+    --accent: #7dd3fc;
+    --accent-strong: #38bdf8;
+    --muted: #bfc7d9;
+    --text-muted: #a0aec0;
+    --shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    --spotlight: rgba(255, 255, 255, 0.06);
+    --warning-bg: rgba(255, 207, 125, 0.16);
+    --accent: #7dd3fc;
+    --accent-strong: #38bdf8;
+    --accent-alt: #fbbf24;
+    --muted: #bfc7d9;
+    --text-muted: #a0aec0;
+    --text-card: #eaf2ff;
   }
 }
 html,
@@ -99,75 +128,123 @@ a {
   max-width: 96%;
   margin-left: auto;
   margin-right: auto;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--panel-bg);
   backdrop-filter: blur(15px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow);
   padding: 25px;
-  padding: calc(100vw / var(--desktop-width) * 25px);
+}
+@supports (padding: calc(100vw / 1920px * 25px)) {
+  .testInfo {
+    padding: calc(100vw / 1920px * 25px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo {
     padding: 20px;
-    padding: calc(var(--computed-tablet-scale-factor) * (20px + var(--tablet-proportion-scale-factor) * (25px - 20px)));
+  }
+  @supports (padding: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (25px - 20px)))) {
+    .testInfo {
+      padding: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (25px - 20px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testInfo {
     padding: 20px;
-    padding: calc(100vw / var(--mobile-width) * 20px);
+  }
+  @supports (padding: calc(100vw / 390px * 20px)) {
+    .testInfo {
+      padding: calc(100vw / 390px * 20px);
+    }
   }
 }
 .testInfo {
   border-radius: 16px;
-  border-radius: calc(100vw / var(--desktop-width) * 16px);
+}
+@supports (border-radius: calc(100vw / 1920px * 16px)) {
+  .testInfo {
+    border-radius: calc(100vw / 1920px * 16px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo {
     border-radius: 12px;
-    border-radius: calc(var(--computed-tablet-scale-factor) * (12px + var(--tablet-proportion-scale-factor) * (16px - 12px)));
+  }
+  @supports (border-radius: calc(100vw / 768px * (12px + (100vw - 390px) / (1920px - 390px) * (16px - 12px)))) {
+    .testInfo {
+      border-radius: calc(100vw / 768px * (12px + (100vw - 390px) / (1920px - 390px) * (16px - 12px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testInfo {
     border-radius: 12px;
-    border-radius: calc(100vw / var(--mobile-width) * 12px);
+  }
+  @supports (border-radius: calc(100vw / 390px * 12px)) {
+    .testInfo {
+      border-radius: calc(100vw / 390px * 12px);
+    }
   }
 }
 .testInfo {
   margin-bottom: 35px;
-  margin-bottom: calc(100vw / var(--desktop-width) * 35px);
+}
+@supports (margin-bottom: calc(100vw / 1920px * 35px)) {
+  .testInfo {
+    margin-bottom: calc(100vw / 1920px * 35px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo {
     margin-bottom: 25px;
-    margin-bottom: calc(var(--computed-tablet-scale-factor) * (25px + var(--tablet-proportion-scale-factor) * (35px - 25px)));
+  }
+  @supports (margin-bottom: calc(100vw / 768px * (25px + (100vw - 390px) / (1920px - 390px) * (35px - 25px)))) {
+    .testInfo {
+      margin-bottom: calc(100vw / 768px * (25px + (100vw - 390px) / (1920px - 390px) * (35px - 25px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testInfo {
     margin-bottom: 25px;
-    margin-bottom: calc(100vw / var(--mobile-width) * 25px);
+  }
+  @supports (margin-bottom: calc(100vw / 390px * 25px)) {
+    .testInfo {
+      margin-bottom: calc(100vw / 390px * 25px);
+    }
   }
 }
 .testInfo {
   border-inline-width: 4px;
-  border-inline-width: calc(100vw / var(--desktop-width) * 4px);
+}
+@supports (border-inline-width: calc(100vw / 1920px * 4px)) {
+  .testInfo {
+    border-inline-width: calc(100vw / 1920px * 4px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo {
     border-inline-width: 2px;
-    border-inline-width: calc(var(--computed-tablet-scale-factor) * (2px + var(--tablet-proportion-scale-factor) * (4px - 2px)));
+  }
+  @supports (border-inline-width: calc(100vw / 768px * (2px + (100vw - 390px) / (1920px - 390px) * (4px - 2px)))) {
+    .testInfo {
+      border-inline-width: calc(100vw / 768px * (2px + (100vw - 390px) / (1920px - 390px) * (4px - 2px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testInfo {
     border-inline-width: 2px;
-    border-inline-width: calc(100vw / var(--mobile-width) * 2px);
+  }
+  @supports (border-inline-width: calc(100vw / 390px * 2px)) {
+    .testInfo {
+      border-inline-width: calc(100vw / 390px * 2px);
+    }
   }
 }
 .testInfo {
   border-inline-style: solid;
-  border-inline-color: #2196f3;
+  border-inline-color: var(--accent);
   position: relative;
   overflow: hidden;
   animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -179,39 +256,63 @@ a {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #2196f3, #21cbf3, #ff6b9d);
+  background: linear-gradient(90deg, var(--accent), var(--accent-strong), var(--accent-alt));
   animation: shimmer 2s infinite;
 }
 .testInfo h1 {
   font-size: 3rem;
-  font-size: calc(100vw / var(--desktop-width) * 3rem);
+}
+@supports (font-size: calc(100vw / 1920px * 3rem)) {
+  .testInfo h1 {
+    font-size: calc(100vw / 1920px * 3rem);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo h1 {
     font-size: 2rem;
-    font-size: calc(var(--computed-tablet-scale-factor) * (2rem + var(--tablet-proportion-scale-factor) * (3rem - 2rem)));
+  }
+  @supports (font-size: calc(100vw / 768px * (2rem + (100vw - 390px) / (1920px - 390px) * (3rem - 2rem)))) {
+    .testInfo h1 {
+      font-size: calc(100vw / 768px * (2rem + (100vw - 390px) / (1920px - 390px) * (3rem - 2rem)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testInfo h1 {
     font-size: 2rem;
-    font-size: calc(100vw / var(--mobile-width) * 2rem);
+  }
+  @supports (font-size: calc(100vw / 390px * 2rem)) {
+    .testInfo h1 {
+      font-size: calc(100vw / 390px * 2rem);
+    }
   }
 }
 .testInfo h1 {
   margin-bottom: 1rem;
-  margin-bottom: calc(100vw / var(--desktop-width) * 1rem);
+}
+@supports (margin-bottom: calc(100vw / 1920px * 1rem)) {
+  .testInfo h1 {
+    margin-bottom: calc(100vw / 1920px * 1rem);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo h1 {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(var(--computed-tablet-scale-factor) * (0.5rem + var(--tablet-proportion-scale-factor) * (1rem - 0.5rem)));
+  }
+  @supports (margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)))) {
+    .testInfo h1 {
+      margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testInfo h1 {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(100vw / var(--mobile-width) * 0.5rem);
+  }
+  @supports (margin-bottom: calc(100vw / 390px * 0.5rem)) {
+    .testInfo h1 {
+      margin-bottom: calc(100vw / 390px * 0.5rem);
+    }
   }
 }
 .testInfo h1 {
@@ -219,18 +320,30 @@ a {
 }
 .testInfo p {
   font-size: 1.5rem;
-  font-size: calc(100vw / var(--desktop-width) * 1.5rem);
+}
+@supports (font-size: calc(100vw / 1920px * 1.5rem)) {
+  .testInfo p {
+    font-size: calc(100vw / 1920px * 1.5rem);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo p {
     font-size: 1.2rem;
-    font-size: calc(var(--computed-tablet-scale-factor) * (1.2rem + var(--tablet-proportion-scale-factor) * (1.5rem - 1.2rem)));
+  }
+  @supports (font-size: calc(100vw / 768px * (1.2rem + (100vw - 390px) / (1920px - 390px) * (1.5rem - 1.2rem)))) {
+    .testInfo p {
+      font-size: calc(100vw / 768px * (1.2rem + (100vw - 390px) / (1920px - 390px) * (1.5rem - 1.2rem)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testInfo p {
     font-size: 1.2rem;
-    font-size: calc(100vw / var(--mobile-width) * 1.2rem);
+  }
+  @supports (font-size: calc(100vw / 390px * 1.2rem)) {
+    .testInfo p {
+      font-size: calc(100vw / 390px * 1.2rem);
+    }
   }
 }
 .testInfo p {
@@ -238,18 +351,30 @@ a {
 }
 .testInfo h3 {
   font-size: 2rem;
-  font-size: calc(100vw / var(--desktop-width) * 2rem);
+}
+@supports (font-size: calc(100vw / 1920px * 2rem)) {
+  .testInfo h3 {
+    font-size: calc(100vw / 1920px * 2rem);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testInfo h3 {
     font-size: 1.4rem;
-    font-size: calc(var(--computed-tablet-scale-factor) * (1.4rem + var(--tablet-proportion-scale-factor) * (2rem - 1.4rem)));
+  }
+  @supports (font-size: calc(100vw / 768px * (1.4rem + (100vw - 390px) / (1920px - 390px) * (2rem - 1.4rem)))) {
+    .testInfo h3 {
+      font-size: calc(100vw / 768px * (1.4rem + (100vw - 390px) / (1920px - 390px) * (2rem - 1.4rem)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testInfo h3 {
     font-size: 1.4rem;
-    font-size: calc(100vw / var(--mobile-width) * 1.4rem);
+  }
+  @supports (font-size: calc(100vw / 390px * 1.4rem)) {
+    .testInfo h3 {
+      font-size: calc(100vw / 390px * 1.4rem);
+    }
   }
 }
 .testInfo h3 {
@@ -302,34 +427,46 @@ a {
 
 .dynamicValue {
   padding: 2px 6px;
-  padding: calc(100vw / var(--desktop-width) * 2px) calc(100vw / var(--desktop-width) * 6px);
+  padding: calc(100vw / 1920px * 2px) calc(100vw / 1920px * 6px);
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .dynamicValue {
     padding: 1.3px 3.4px;
-    padding: calc(var(--computed-tablet-scale-factor) * (1.3px + var(--tablet-proportion-scale-factor) * (2px - 1.3px))) calc(var(--computed-tablet-scale-factor) * (3.4px + var(--tablet-proportion-scale-factor) * (6px - 3.4px)));
+    padding: calc(var(get-tablet-scale-factor(px)) * (1.3px + var(--tablet-proportion-scale-factor) * (2px - 1.3px))) calc(var(get-tablet-scale-factor(px)) * (3.4px + var(--tablet-proportion-scale-factor) * (6px - 3.4px)));
   }
 }
 @media screen and (max-width: 767px) {
   .dynamicValue {
     padding: 1.3px 3.4px;
-    padding: calc(100vw / var(--mobile-width) * 1.3px) calc(100vw / var(--mobile-width) * 3.4px);
+    padding: calc(100vw / 390px * 1.3px) calc(100vw / 390px * 3.4px);
   }
 }
 .dynamicValue {
   border-radius: 4px;
-  border-radius: calc(100vw / var(--desktop-width) * 4px);
+}
+@supports (border-radius: calc(100vw / 1920px * 4px)) {
+  .dynamicValue {
+    border-radius: calc(100vw / 1920px * 4px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .dynamicValue {
     border-radius: 4px;
-    border-radius: calc(var(--computed-tablet-scale-factor) * (4px + var(--tablet-proportion-scale-factor) * (4px - 4px)));
+  }
+  @supports (border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (4px - 4px)))) {
+    .dynamicValue {
+      border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (4px - 4px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .dynamicValue {
     border-radius: 4px;
-    border-radius: calc(100vw / var(--mobile-width) * 4px);
+  }
+  @supports (border-radius: calc(100vw / 390px * 4px)) {
+    .dynamicValue {
+      border-radius: calc(100vw / 390px * 4px);
+    }
   }
 }
 
@@ -345,58 +482,94 @@ a {
   }
 }
 .demoSection {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--surface);
   backdrop-filter: blur(15px);
   border-radius: 16px;
-  border-radius: calc(100vw / var(--desktop-width) * 16px);
+}
+@supports (border-radius: calc(100vw / 1920px * 16px)) {
+  .demoSection {
+    border-radius: calc(100vw / 1920px * 16px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .demoSection {
     border-radius: 12px;
-    border-radius: calc(var(--computed-tablet-scale-factor) * (12px + var(--tablet-proportion-scale-factor) * (16px - 12px)));
+  }
+  @supports (border-radius: calc(100vw / 768px * (12px + (100vw - 390px) / (1920px - 390px) * (16px - 12px)))) {
+    .demoSection {
+      border-radius: calc(100vw / 768px * (12px + (100vw - 390px) / (1920px - 390px) * (16px - 12px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .demoSection {
     border-radius: 12px;
-    border-radius: calc(100vw / var(--mobile-width) * 12px);
+  }
+  @supports (border-radius: calc(100vw / 390px * 12px)) {
+    .demoSection {
+      border-radius: calc(100vw / 390px * 12px);
+    }
   }
 }
 .demoSection {
   padding: 30px;
-  padding: calc(100vw / var(--desktop-width) * 30px);
+}
+@supports (padding: calc(100vw / 1920px * 30px)) {
+  .demoSection {
+    padding: calc(100vw / 1920px * 30px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .demoSection {
     padding: 20px;
-    padding: calc(var(--computed-tablet-scale-factor) * (20px + var(--tablet-proportion-scale-factor) * (30px - 20px)));
+  }
+  @supports (padding: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (30px - 20px)))) {
+    .demoSection {
+      padding: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (30px - 20px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .demoSection {
     padding: 20px;
-    padding: calc(100vw / var(--mobile-width) * 20px);
+  }
+  @supports (padding: calc(100vw / 390px * 20px)) {
+    .demoSection {
+      padding: calc(100vw / 390px * 20px);
+    }
   }
 }
 .demoSection {
   margin-bottom: 25px;
-  margin-bottom: calc(100vw / var(--desktop-width) * 25px);
+}
+@supports (margin-bottom: calc(100vw / 1920px * 25px)) {
+  .demoSection {
+    margin-bottom: calc(100vw / 1920px * 25px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .demoSection {
     margin-bottom: 20px;
-    margin-bottom: calc(var(--computed-tablet-scale-factor) * (20px + var(--tablet-proportion-scale-factor) * (25px - 20px)));
+  }
+  @supports (margin-bottom: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (25px - 20px)))) {
+    .demoSection {
+      margin-bottom: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (25px - 20px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .demoSection {
     margin-bottom: 20px;
-    margin-bottom: calc(100vw / var(--mobile-width) * 20px);
+  }
+  @supports (margin-bottom: calc(100vw / 390px * 20px)) {
+    .demoSection {
+      margin-bottom: calc(100vw / 390px * 20px);
+    }
   }
 }
 .demoSection {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--panel-border);
   position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
@@ -410,7 +583,7 @@ a {
   left: -100%;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #2196f3, transparent);
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
   transition: left 0.5s ease;
 }
 .demoSection:hover {
@@ -423,45 +596,69 @@ a {
 
 .beforeAfter {
   margin-bottom: 2.5rem;
-  margin-bottom: calc(100vw / var(--desktop-width) * 2.5rem);
+}
+@supports (margin-bottom: calc(100vw / 1920px * 2.5rem)) {
+  .beforeAfter {
+    margin-bottom: calc(100vw / 1920px * 2.5rem);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .beforeAfter {
     margin-bottom: 1.2rem;
-    margin-bottom: calc(var(--computed-tablet-scale-factor) * (1.2rem + var(--tablet-proportion-scale-factor) * (2.5rem - 1.2rem)));
+  }
+  @supports (margin-bottom: calc(100vw / 768px * (1.2rem + (100vw - 390px) / (1920px - 390px) * (2.5rem - 1.2rem)))) {
+    .beforeAfter {
+      margin-bottom: calc(100vw / 768px * (1.2rem + (100vw - 390px) / (1920px - 390px) * (2.5rem - 1.2rem)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .beforeAfter {
     margin-bottom: 1.2rem;
-    margin-bottom: calc(100vw / var(--mobile-width) * 1.2rem);
+  }
+  @supports (margin-bottom: calc(100vw / 390px * 1.2rem)) {
+    .beforeAfter {
+      margin-bottom: calc(100vw / 390px * 1.2rem);
+    }
   }
 }
 .beforeAfter {
   font-size: 3rem;
-  font-size: calc(100vw / var(--desktop-width) * 3rem);
+}
+@supports (font-size: calc(100vw / 1920px * 3rem)) {
+  .beforeAfter {
+    font-size: calc(100vw / 1920px * 3rem);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .beforeAfter {
     font-size: 2rem;
-    font-size: calc(var(--computed-tablet-scale-factor) * (2rem + var(--tablet-proportion-scale-factor) * (3rem - 2rem)));
+  }
+  @supports (font-size: calc(100vw / 768px * (2rem + (100vw - 390px) / (1920px - 390px) * (3rem - 2rem)))) {
+    .beforeAfter {
+      font-size: calc(100vw / 768px * (2rem + (100vw - 390px) / (1920px - 390px) * (3rem - 2rem)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .beforeAfter {
     font-size: 2rem;
-    font-size: calc(100vw / var(--mobile-width) * 2rem);
+  }
+  @supports (font-size: calc(100vw / 390px * 2rem)) {
+    .beforeAfter {
+      font-size: calc(100vw / 390px * 2rem);
+    }
   }
 }
 .beforeAfter {
   text-align: center;
-  color: #333;
+  color: var(--foreground);
   font-weight: 600;
   text-transform: uppercase;
 }
 
 .testHeadingStatic {
-  color: #2196f3;
+  color: var(--accent);
   font-size: 2rem;
   padding-bottom: 10px;
   margin-bottom: 1rem;
@@ -475,7 +672,7 @@ a {
 }
 
 .testParagraphStatic {
-  color: #666;
+  color: var(--muted);
   font-size: 1.4em;
 }
 @media screen and (max-width: 767px) {
@@ -485,8 +682,8 @@ a {
 }
 
 .testBoxStatic {
-  background: linear-gradient(45deg, #2196f3, #21cbf3);
-  color: white;
+  background: linear-gradient(45deg, var(--accent), var(--accent-strong));
+  color: var(--foreground);
   border-radius: 8px;
   text-align: center;
   justify-content: center;
@@ -505,8 +702,8 @@ a {
   }
 }
 .testBoxStatic .testBoxInnerStatic {
-  background: whitesmoke;
-  color: black;
+  background: var(--surface-alt);
+  color: var(--foreground);
   width: 100%;
   height: 100%;
   display: flex;
@@ -521,7 +718,8 @@ a {
 }
 
 .testLetterSpacingStatic {
-  background: #fff3cd;
+  background: var(--warning-bg);
+  color: var(--foreground);
   padding: 15px;
   border-radius: 8px;
   font-weight: bold;
@@ -538,89 +736,149 @@ a {
 }
 
 .testHeading {
-  color: #2196f3;
+  color: var(--accent);
   padding-bottom: 10px;
-  padding-bottom: calc(100vw / var(--desktop-width) * 10px);
+}
+@supports (padding-bottom: calc(100vw / 1920px * 10px)) {
+  .testHeading {
+    padding-bottom: calc(100vw / 1920px * 10px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testHeading {
     padding-bottom: 10px;
-    padding-bottom: calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (10px - 10px)));
+  }
+  @supports (padding-bottom: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (10px - 10px)))) {
+    .testHeading {
+      padding-bottom: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (10px - 10px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testHeading {
     padding-bottom: 10px;
-    padding-bottom: calc(100vw / var(--mobile-width) * 10px);
+  }
+  @supports (padding-bottom: calc(100vw / 390px * 10px)) {
+    .testHeading {
+      padding-bottom: calc(100vw / 390px * 10px);
+    }
   }
 }
 .testHeading {
   font-size: 2rem;
-  font-size: calc(100vw / var(--desktop-width) * 2rem);
+}
+@supports (font-size: calc(100vw / 1920px * 2rem)) {
+  .testHeading {
+    font-size: calc(100vw / 1920px * 2rem);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testHeading {
     font-size: 1.4rem;
-    font-size: calc(var(--computed-tablet-scale-factor) * (1.4rem + var(--tablet-proportion-scale-factor) * (2rem - 1.4rem)));
+  }
+  @supports (font-size: calc(100vw / 768px * (1.4rem + (100vw - 390px) / (1920px - 390px) * (2rem - 1.4rem)))) {
+    .testHeading {
+      font-size: calc(100vw / 768px * (1.4rem + (100vw - 390px) / (1920px - 390px) * (2rem - 1.4rem)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testHeading {
     font-size: 1.4rem;
-    font-size: calc(100vw / var(--mobile-width) * 1.4rem);
+  }
+  @supports (font-size: calc(100vw / 390px * 1.4rem)) {
+    .testHeading {
+      font-size: calc(100vw / 390px * 1.4rem);
+    }
   }
 }
 .testHeading {
   margin-bottom: 1rem;
-  margin-bottom: calc(100vw / var(--desktop-width) * 1rem);
+}
+@supports (margin-bottom: calc(100vw / 1920px * 1rem)) {
+  .testHeading {
+    margin-bottom: calc(100vw / 1920px * 1rem);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testHeading {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(var(--computed-tablet-scale-factor) * (0.5rem + var(--tablet-proportion-scale-factor) * (1rem - 0.5rem)));
+  }
+  @supports (margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)))) {
+    .testHeading {
+      margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testHeading {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(100vw / var(--mobile-width) * 0.5rem);
+  }
+  @supports (margin-bottom: calc(100vw / 390px * 0.5rem)) {
+    .testHeading {
+      margin-bottom: calc(100vw / 390px * 0.5rem);
+    }
   }
 }
 
 .testParagraph {
-  color: #666;
+  color: var(--muted);
   font-size: 1.4em;
-  font-size: calc(100vw / var(--desktop-width) * 1.4em);
+}
+@supports (font-size: calc(100vw / 1920px * 1.4em)) {
+  .testParagraph {
+    font-size: calc(100vw / 1920px * 1.4em);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testParagraph {
     font-size: 0.8em;
-    font-size: calc(var(--computed-tablet-scale-factor) * (0.8em + var(--tablet-proportion-scale-factor) * (1.4em - 0.8em)));
+  }
+  @supports (font-size: calc(100vw / 768px * (0.8em + (100vw - 390px) / (1920px - 390px) * (1.4em - 0.8em)))) {
+    .testParagraph {
+      font-size: calc(100vw / 768px * (0.8em + (100vw - 390px) / (1920px - 390px) * (1.4em - 0.8em)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testParagraph {
     font-size: 0.8em;
-    font-size: calc(100vw / var(--mobile-width) * 0.8em);
+  }
+  @supports (font-size: calc(100vw / 390px * 0.8em)) {
+    .testParagraph {
+      font-size: calc(100vw / 390px * 0.8em);
+    }
   }
 }
 
 .testBox {
-  background: linear-gradient(45deg, #2196f3, #21cbf3);
-  color: white;
+  background: linear-gradient(45deg, var(--accent), var(--accent-strong));
+  color: var(--foreground);
   border-radius: 8px;
-  border-radius: calc(100vw / var(--desktop-width) * 8px);
+}
+@supports (border-radius: calc(100vw / 1920px * 8px)) {
+  .testBox {
+    border-radius: calc(100vw / 1920px * 8px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testBox {
     border-radius: 4px;
-    border-radius: calc(var(--computed-tablet-scale-factor) * (4px + var(--tablet-proportion-scale-factor) * (8px - 4px)));
+  }
+  @supports (border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (8px - 4px)))) {
+    .testBox {
+      border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (8px - 4px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testBox {
     border-radius: 4px;
-    border-radius: calc(100vw / var(--mobile-width) * 4px);
+  }
+  @supports (border-radius: calc(100vw / 390px * 4px)) {
+    .testBox {
+      border-radius: calc(100vw / 390px * 4px);
+    }
   }
 }
 .testBox {
@@ -629,140 +887,236 @@ a {
   align-items: center;
   width: 100%;
   height: 100px;
-  height: calc(100vw / var(--desktop-width) * 100px);
+}
+@supports (height: calc(100vw / 1920px * 100px)) {
+  .testBox {
+    height: calc(100vw / 1920px * 100px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testBox {
     height: 100px;
-    height: calc(var(--computed-tablet-scale-factor) * (100px + var(--tablet-proportion-scale-factor) * (100px - 100px)));
+  }
+  @supports (height: calc(100vw / 768px * (100px + (100vw - 390px) / (1920px - 390px) * (100px - 100px)))) {
+    .testBox {
+      height: calc(100vw / 768px * (100px + (100vw - 390px) / (1920px - 390px) * (100px - 100px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testBox {
     height: 100px;
-    height: calc(100vw / var(--mobile-width) * 100px);
+  }
+  @supports (height: calc(100vw / 390px * 100px)) {
+    .testBox {
+      height: calc(100vw / 390px * 100px);
+    }
   }
 }
 .testBox {
   padding: 20px;
-  padding: calc(100vw / var(--desktop-width) * 20px);
+}
+@supports (padding: calc(100vw / 1920px * 20px)) {
+  .testBox {
+    padding: calc(100vw / 1920px * 20px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testBox {
     padding: 10px;
-    padding: calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (20px - 10px)));
+  }
+  @supports (padding: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (20px - 10px)))) {
+    .testBox {
+      padding: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (20px - 10px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testBox {
     padding: 10px;
-    padding: calc(100vw / var(--mobile-width) * 10px);
+  }
+  @supports (padding: calc(100vw / 390px * 10px)) {
+    .testBox {
+      padding: calc(100vw / 390px * 10px);
+    }
   }
 }
 .testBox {
   margin-bottom: 1rem;
-  margin-bottom: calc(100vw / var(--desktop-width) * 1rem);
+}
+@supports (margin-bottom: calc(100vw / 1920px * 1rem)) {
+  .testBox {
+    margin-bottom: calc(100vw / 1920px * 1rem);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testBox {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(var(--computed-tablet-scale-factor) * (0.5rem + var(--tablet-proportion-scale-factor) * (1rem - 0.5rem)));
+  }
+  @supports (margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)))) {
+    .testBox {
+      margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testBox {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(100vw / var(--mobile-width) * 0.5rem);
+  }
+  @supports (margin-bottom: calc(100vw / 390px * 0.5rem)) {
+    .testBox {
+      margin-bottom: calc(100vw / 390px * 0.5rem);
+    }
   }
 }
 .testBox .testBoxInner {
-  background: whitesmoke;
-  color: black;
+  background: var(--surface-alt);
+  color: var(--foreground);
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.4em;
-  font-size: calc(100vw / var(--desktop-width) * 1.4em);
+}
+@supports (font-size: calc(100vw / 1920px * 1.4em)) {
+  .testBox .testBoxInner {
+    font-size: calc(100vw / 1920px * 1.4em);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testBox .testBoxInner {
     font-size: 0.8em;
-    font-size: calc(var(--computed-tablet-scale-factor) * (0.8em + var(--tablet-proportion-scale-factor) * (1.4em - 0.8em)));
+  }
+  @supports (font-size: calc(100vw / 768px * (0.8em + (100vw - 390px) / (1920px - 390px) * (1.4em - 0.8em)))) {
+    .testBox .testBoxInner {
+      font-size: calc(100vw / 768px * (0.8em + (100vw - 390px) / (1920px - 390px) * (1.4em - 0.8em)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testBox .testBoxInner {
     font-size: 0.8em;
-    font-size: calc(100vw / var(--mobile-width) * 0.8em);
+  }
+  @supports (font-size: calc(100vw / 390px * 0.8em)) {
+    .testBox .testBoxInner {
+      font-size: calc(100vw / 390px * 0.8em);
+    }
   }
 }
 
 .testLetterSpacing {
-  background: #fff3cd;
+  background: var(--warning-bg);
   padding: 15px;
-  padding: calc(100vw / var(--desktop-width) * 15px);
+}
+@supports (padding: calc(100vw / 1920px * 15px)) {
+  .testLetterSpacing {
+    padding: calc(100vw / 1920px * 15px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testLetterSpacing {
     padding: 10px;
-    padding: calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (15px - 10px)));
+  }
+  @supports (padding: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (15px - 10px)))) {
+    .testLetterSpacing {
+      padding: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (15px - 10px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testLetterSpacing {
     padding: 10px;
-    padding: calc(100vw / var(--mobile-width) * 10px);
+  }
+  @supports (padding: calc(100vw / 390px * 10px)) {
+    .testLetterSpacing {
+      padding: calc(100vw / 390px * 10px);
+    }
   }
 }
 .testLetterSpacing {
   border-radius: 8px;
-  border-radius: calc(100vw / var(--desktop-width) * 8px);
+}
+@supports (border-radius: calc(100vw / 1920px * 8px)) {
+  .testLetterSpacing {
+    border-radius: calc(100vw / 1920px * 8px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testLetterSpacing {
     border-radius: 4px;
-    border-radius: calc(var(--computed-tablet-scale-factor) * (4px + var(--tablet-proportion-scale-factor) * (8px - 4px)));
+  }
+  @supports (border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (8px - 4px)))) {
+    .testLetterSpacing {
+      border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (8px - 4px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testLetterSpacing {
     border-radius: 4px;
-    border-radius: calc(100vw / var(--mobile-width) * 4px);
+  }
+  @supports (border-radius: calc(100vw / 390px * 4px)) {
+    .testLetterSpacing {
+      border-radius: calc(100vw / 390px * 4px);
+    }
   }
 }
 .testLetterSpacing {
   font-weight: bold;
   letter-spacing: -1px;
-  letter-spacing: calc(100vw / var(--desktop-width) * -1px);
+}
+@supports (letter-spacing: calc(100vw / 1920px * -1px)) {
+  .testLetterSpacing {
+    letter-spacing: calc(100vw / 1920px * -1px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testLetterSpacing {
     letter-spacing: -1px;
-    letter-spacing: calc(var(--computed-tablet-scale-factor) * (-1px + var(--tablet-proportion-scale-factor) * (-1px - -1px)));
+  }
+  @supports (letter-spacing: calc(100vw / 768px * (-1px + (100vw - 390px) / (1920px - 390px) * (-1px - -1px)))) {
+    .testLetterSpacing {
+      letter-spacing: calc(100vw / 768px * (-1px + (100vw - 390px) / (1920px - 390px) * (-1px - -1px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testLetterSpacing {
     letter-spacing: -1px;
-    letter-spacing: calc(100vw / var(--mobile-width) * -1px);
+  }
+  @supports (letter-spacing: calc(100vw / 390px * -1px)) {
+    .testLetterSpacing {
+      letter-spacing: calc(100vw / 390px * -1px);
+    }
   }
 }
 .testLetterSpacing {
   font-size: 24px;
-  font-size: calc(100vw / var(--desktop-width) * 24px);
+}
+@supports (font-size: calc(100vw / 1920px * 24px)) {
+  .testLetterSpacing {
+    font-size: calc(100vw / 1920px * 24px);
+  }
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .testLetterSpacing {
     font-size: 18px;
-    font-size: calc(var(--computed-tablet-scale-factor) * (18px + var(--tablet-proportion-scale-factor) * (24px - 18px)));
+  }
+  @supports (font-size: calc(100vw / 768px * (18px + (100vw - 390px) / (1920px - 390px) * (24px - 18px)))) {
+    .testLetterSpacing {
+      font-size: calc(100vw / 768px * (18px + (100vw - 390px) / (1920px - 390px) * (24px - 18px)));
+    }
   }
 }
 @media screen and (max-width: 767px) {
   .testLetterSpacing {
     font-size: 18px;
-    font-size: calc(100vw / var(--mobile-width) * 18px);
+  }
+  @supports (font-size: calc(100vw / 390px * 18px)) {
+    .testLetterSpacing {
+      font-size: calc(100vw / 390px * 18px);
+    }
   }
 }
 
@@ -804,11 +1158,11 @@ a {
 }
 
 .text-danger {
-  color: #dc3545 !important;
+  color: var(--accent-alt) !important;
 }
 
 .text-muted {
-  color: #6c757d !important;
+  color: var(--text-muted) !important;
 }
 
 .mb-4 {

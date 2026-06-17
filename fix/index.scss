@@ -1,17 +1,20 @@
-// Responsive Scale Mixins v2.1.0
+// Responsive Scale Mixins v2.2.0
 // A powerful SCSS mixin system for creating perfectly responsive designs
 // with universal browser compatibility and static fallbacks
 // Single-file distribution for maximum compatibility
 
+@use "sass:math";
 @use "sass:string";
 @use "sass:meta";
 @use "sass:list";
+
+$rsm-fallback-enabled: true !default;
 
 /* Responsive Scale Variables Mixin
  * Include this mixin in your root element to define the scaling factors.
  * Adjust the design widths to match your design system breakpoints.
  * 
- * v2.1.0: Now includes fallback generation for browsers without CSS variable support
+ * v2.2.0: Now includes fallback generation for browsers without CSS variable support
  */
 
 @mixin responsive-scale-variables(
@@ -20,55 +23,58 @@
   $mobile-width: 390px,
   $enable-fallback: true
 ) {
+  $rsm-fallback-enabled: $enable-fallback !global;
   // Design widths for direct calc expressions
   --desktop-width: #{$desktop-width};
   --tablet-width: #{$tablet-width};
   --mobile-width: #{$mobile-width};
 
   // Desktop scale factor (generic - unit is appended in calc expressions)
-  --computed-scale-factor: calc(100vw / #{$desktop-width});
+  --computed-scale-factor: (100vw / #{$desktop-width});
 
   // Tablet scale factor (generic - unit is appended in calc expressions)
-  --computed-tablet-scale-factor: calc(100vw / #{$tablet-width});
+  --computed-tablet-scale-factor: (100vw / #{$tablet-width});
 
   // Mobile scale factor (generic - unit is appended in calc expressions)
-  --computed-mobile-scale-factor: calc(100vw / #{$mobile-width});
+  --computed-mobile-scale-factor: (100vw / #{$mobile-width});
 
   // Tablet proportion scale factor for interpolation between mobile and desktop values
-  --tablet-proportion-scale-factor: calc(
+  --tablet-proportion-scale-factor: (
     (100vw - #{$mobile-width}) / (#{$desktop-width} - #{$mobile-width})
   );
 
-  // v2.1.0: Store original design widths as strings for fallback calculation
+  // v2.2.0: Store original design widths as strings for fallback calculation
   --rsm-desktop-width-value: #{strip-units($desktop-width)};
   --rsm-tablet-width-value: #{strip-units($tablet-width)};
   --rsm-mobile-width-value: #{strip-units($mobile-width)};
-  --rsm-fallback-enabled: 1;
+  --rsm-fallback-enabled: #{if(sass($enable-fallback): 1; else: 0)};
 }
 
 /* Utility function to strip units from values */
 @function strip-units($value) {
-  @return $value / ($value * 0 + 1);
+  @return math.div($value, $value * 0 + 1);
 }
 
 /* Responsive Scale Mixins
  * Core scaling functionality with support for all CSS units
- * v2.1.0: Generates both modern calc() AND static fallback values
+ * v2.2.0: Generates both modern calc() AND static fallback values
  */
 
 @function scaled-value($val, $scale-var, $unit: px) {
-  @if $scale-var == "--computed-scale-factor" {
-    @return calc(100vw / var(--desktop-width) * #{$val}#{$unit});
-  } @else if $scale-var == "--computed-tablet-scale-factor" {
-    @return calc(100vw / var(--tablet-width) * #{$val}#{$unit});
-  } @else if $scale-var == "--computed-mobile-scale-factor" {
-    @return calc(100vw / var(--mobile-width) * #{$val}#{$unit});
+  @if $scale-var ==
+    "--computed-scale-factor" or
+    $scale-var ==
+    "--computed-tablet-scale-factor" or
+    $scale-var ==
+    "--computed-mobile-scale-factor"
+  {
+    @return calc(var(#{$scale-var}) * #{$val}#{$unit});
   } @else {
     @return calc(var(#{$scale-var}) * #{$val}#{$unit});
   }
 }
 
-/* v2.1.0: Calculate static fallback values for unsupported browsers
+/* v2.2.0: Calculate static fallback values for unsupported browsers
  * These values are computed at compile time, not runtime
  */
 @function fallback-value($val, $breakpoint: "desktop", $unit: px) {
@@ -107,7 +113,7 @@
   @return string.unquote("--computed-mobile-scale-factor");
 }
 
-/* v2.1.0: Main responsive scale mixin with fallback support
+/* v2.2.0: Main responsive scale mixin with fallback support
  * Generates two CSS declarations:
  * 1. Static fallback value for unsupported browsers
  * 2. Modern calc() expression for modern browsers
@@ -121,18 +127,20 @@
   $desktop-relative: null,
   $mobile-relative: null,
   $important: null,
-  $enable-fallback: true
+  $enable-fallback: null
 ) {
+  @if $enable-fallback == null {
+    $enable-fallback: $rsm-fallback-enabled;
+  }
+
   $scale-factor: get-scale-factor($unit);
 
   // If it's a percentage-based value (like letter-spacing), scale it based on the relative property
   @if $is-percentage == true {
     @if $desktop-relative != null {
-      // v2.1.0: Output fallback value first
+      // v2.2.0: Output fallback value first
       @if $enable-fallback {
-        $fallback-calc: calc(
-          #{$desktop-value} / 100 * #{$desktop-relative}
-        );
+        $fallback-calc: calc(#{$desktop-value} / 100 * #{$desktop-relative});
         #{$property}: #{$fallback-calc}#{$unit}#{$important};
       }
 
@@ -148,13 +156,15 @@
     @media screen and (min-width: 768px) and (max-width: 991px) {
       $tablet-scale-factor: get-tablet-scale-factor($unit);
       @if $desktop-relative != null and $mobile-relative != null {
-        // v2.1.0: Fallback for tablet
+        // v2.2.0: Fallback for tablet
         @if $enable-fallback {
           $fallback-tablet: calc(
-            #{$mobile-value} / 100 *
+            #{$mobile-value} /
+              100 *
               (
                 #{$mobile-relative}#{$unit} +
-                  0.5 * (#{$desktop-relative}#{$unit} - #{$mobile-relative}#{$unit})
+                  0.5 *
+                  (#{$desktop-relative}#{$unit} - #{$mobile-relative}#{$unit})
               )
           );
           #{$property}: #{$fallback-tablet}#{$important};
@@ -180,11 +190,9 @@
     @media screen and (max-width: 767px) {
       $mobile-scale-factor: get-mobile-scale-factor($unit);
       @if $mobile-relative != null {
-        // v2.1.0: Fallback for mobile
+        // v2.2.0: Fallback for mobile
         @if $enable-fallback {
-          $fallback-mobile: calc(
-            #{$mobile-value} / 100 * #{$mobile-relative}
-          );
+          $fallback-mobile: calc(#{$mobile-value} / 100 * #{$mobile-relative});
           #{$property}: #{$fallback-mobile}#{$unit}#{$important};
         }
 
@@ -200,7 +208,7 @@
   } @else {
     // Regular absolute scaling
     @if meta.type-of($desktop-value) == list {
-      // v2.1.0: Fallback for list values (padding: 20 40)
+      // v2.2.0: Fallback for list values (padding: 20 40)
       @if $enable-fallback {
         $desktop-fallback: ();
         @each $val in $desktop-value {
@@ -219,7 +227,7 @@
       }
       #{$property}: #{$desktop-scaled}#{$important};
     } @else {
-      // v2.1.0: Fallback for single values
+      // v2.2.0: Fallback for single values
       @if $enable-fallback {
         #{$property}: #{$desktop-value}#{$unit}#{$important};
       }
@@ -232,7 +240,7 @@
     @media screen and (min-width: 768px) and (max-width: 991px) {
       $tablet-scale-factor: get-tablet-scale-factor($unit);
       @if meta.type-of($desktop-value) == list {
-        // v2.1.0: Fallback for tablet list
+        // v2.2.0: Fallback for tablet list
         @if $enable-fallback {
           $tablet-fallback: ();
           @for $i from 1 through list.length($desktop-value) {
@@ -261,7 +269,7 @@
         }
         #{$property}: #{$tablet-scaled}#{$important};
       } @else {
-        // v2.1.0: Fallback for tablet single value
+        // v2.2.0: Fallback for tablet single value
         @if $enable-fallback {
           #{$property}: #{$mobile-value}#{$unit}#{$important};
         }
@@ -282,7 +290,7 @@
     @media screen and (max-width: 767px) {
       $mobile-scale-factor: get-mobile-scale-factor($unit);
       @if meta.type-of($mobile-value) == list {
-        // v2.1.0: Fallback for mobile list
+        // v2.2.0: Fallback for mobile list
         @if $enable-fallback {
           $mobile-fallback: ();
           @each $val in $mobile-value {
@@ -301,7 +309,7 @@
         }
         #{$property}: #{$mobile-scaled}#{$important};
       } @else {
-        // v2.1.0: Fallback for mobile single value
+        // v2.2.0: Fallback for mobile single value
         @if $enable-fallback {
           #{$property}: #{$mobile-value}#{$unit}#{$important};
         }
@@ -314,7 +322,7 @@
   }
 }
 
-/* v2.1.0: New mixin to disable fallback for specific declarations
+/* v2.2.0: New mixin to disable fallback for specific declarations
  * Useful when you want only modern browsers to receive a style
  */
 @mixin responsive-scale-no-fallback(
