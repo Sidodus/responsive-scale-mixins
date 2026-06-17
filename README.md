@@ -50,7 +50,7 @@ Imagine building a beautiful UI in Figma, then seeing it perfectly scale on **ev
 
 Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Your favorite framework + perfect responsive design = ❤️
 
-## 🚀 v2.1.0 - Universal Browser Compatibility (No Breaking Changes)
+## 🚀 v2.2.0 - Universal Browser Compatibility (No Breaking Changes)
 
 **Automatic fallback generation for browsers without CSS variable support!**
 
@@ -89,7 +89,12 @@ Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Y
 // v2.1.0 output (works everywhere!)
 .hero-title {
   font-size: 48px; /* Fallback for old browsers */
-  font-size: calc(100vw / 1920 * 48px); /* Modern responsive scaling */
+}
+
+@supports (font-size: calc(100vw / 1920px * 48px)) {
+  .hero-title {
+    font-size: calc(100vw / 1920px * 48px); /* Modern responsive scaling */
+  }
 }
 ```
 
@@ -121,6 +126,8 @@ Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Y
   );
 }
 ```
+
+> Note: Setting the last argument to `false` disables fallback output globally for all `rsm.responsive-scale()` calls. Individual declarations can still override this behavior by passing the `$enable-fallback` parameter explicitly.
 
 ### **📊 Performance Impact**
 
@@ -185,6 +192,9 @@ npm update responsive-scale-mixins
 ```css
 /* OLD (v1.x) */
 font-size: calc(var(--computed-scale-factor-px) * 40);
+
+/* NEW (v2.0+) */
+font-size: calc(var(--computed-scale-factor) * 40px);
 
 @include rsm.responsive-scale(font-size, 24, 16);
 ```
@@ -1041,6 +1051,15 @@ The library includes a comprehensive test suite located in the `test/` directory
 # Run the test suite (cross-platform)
 cd test && ./test.sh
 ```
+
+If `./test.sh` fails because `sass` is not installed globally, run this instead from the repository root:
+
+```bash
+npx --yes sass test/test.scss test/test.css
+start test/test.html
+```
+
+On Windows, you can also open `test/test.html` manually after compiling.
 
 See [`test/TEST_README.md`](test/TEST_README.md) for detailed testing instructions.
 

@@ -61,7 +61,7 @@ jobs:
           fi
 
           # Check test CSS for expected direct calc expressions (browser-compatible)
-          if grep -q "calc(100vw / var(--desktop-width)" test/test.css; then
+          if grep -E -q "calc\(100vw / [0-9]+px" test/test.css; then
             echo "✅ Test CSS contains expected direct calc expressions"
           else
             echo "❌ Test CSS missing expected direct calc expressions"
@@ -139,7 +139,7 @@ jobs:
       - name: Test npm pack dry-run
         run: |
           npm pack --dry-run > pack-output.txt
-          if grep -q "responsive-scale-mixins@2.1.0" pack-output.txt || grep -q "responsive-scale-mixins-2.1.0" pack-output.txt; then
+          if grep -q "responsive-scale-mixins@2.2.0" pack-output.txt || grep -q "responsive-scale-mixins-2.2.0" pack-output.txt; then
             echo "✅ Package name and version correct"
           else
             echo "❌ Package name/version issue"

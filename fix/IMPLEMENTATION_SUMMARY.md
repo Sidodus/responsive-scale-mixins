@@ -9,6 +9,7 @@ A complete guide to the v2.1.0 update that adds universal browser compatibility 
 ### The Issue (v2.0.x)
 
 Users reported that `responsive-scale-mixins` doesn't work on:
+
 - ❌ Firefox Mobile
 - ❌ Old Android browsers
 - ❌ Older Safari versions
@@ -19,6 +20,7 @@ Users reported that `responsive-scale-mixins` doesn't work on:
 ### The Solution (v2.1.0)
 
 Add **automatic fallback generation** at build time:
+
 - Modern browsers use responsive `calc()` expressions
 - Older browsers use static fallback values
 - Both approaches work perfectly
@@ -35,14 +37,17 @@ Add **automatic fallback generation** at build time:
 **Key Additions:**
 
 1. **New utility function:**
+
    ```scss
    @function strip-units($value) {
      @return $value / ($value * 0 + 1);
    }
    ```
+
    Extracts numeric values from CSS units for fallback calculation.
 
 2. **New fallback function:**
+
    ```scss
    @function fallback-value($val, $breakpoint: "desktop", $unit: px) {
      // Computes static fallback values at build time
@@ -50,6 +55,7 @@ Add **automatic fallback generation** at build time:
    ```
 
 3. **New optional parameter in main mixin:**
+
    ```scss
    @mixin responsive-scale(
      $property,
@@ -60,11 +66,12 @@ Add **automatic fallback generation** at build time:
      $desktop-relative: null,
      $mobile-relative: null,
      $important: null,
-     $enable-fallback: true  // NEW!
-   )
+     $enable-fallback: true // NEW!
+   );
    ```
 
 4. **New convenience mixin:**
+
    ```scss
    @mixin responsive-scale-no-fallback(...) {
      // Explicitly opt-out of fallbacks
@@ -72,13 +79,19 @@ Add **automatic fallback generation** at build time:
    ```
 
 5. **New CSS variable:**
+
    ```scss
    --rsm-fallback-enabled: 1; // Tracks if fallbacks are enabled
    ```
 
+6. **Global fallback control:**
+   - `responsive-scale-variables(..., false)` now sets a Sass global fallback flag
+   - `responsive-scale()` respects that flag unless overridden per declaration
+
 #### CSS Generation Logic
 
 **Before (v2.0.x):**
+
 ```scss
 .title {
   font-size: calc(100vw / 1920px * 48px);
@@ -86,10 +99,11 @@ Add **automatic fallback generation** at build time:
 ```
 
 **After (v2.1.0):**
+
 ```scss
 .title {
-  font-size: 48px;                              /* Fallback first */
-  font-size: calc(100vw / 1920px * 48px);    /* Modern overrides */
+  font-size: 48px; /* Fallback first */
+  font-size: calc(100vw / 1920px * 48px); /* Modern overrides */
 }
 ```
 
@@ -146,12 +160,14 @@ Old browsers (Firefox Mobile, Android 4.4):
 ## Files Modified/Created
 
 ### Core Package File
+
 - **index.scss** (342 lines)
   - Updated with fallback generation logic
   - New functions and parameters
   - Backward compatible
 
 ### Documentation Files
+
 1. **README_v2.1.0.md** (481 lines)
    - Updated with v2.1.0 features
    - New browser support matrix
@@ -310,11 +326,11 @@ Each media query also gets its own fallback:
 
 ### CSS File Size
 
-| Scenario | Increase | Impact |
-|----------|----------|--------|
-| Single element (3 properties) | +240 bytes | 0.2 KB |
-| Medium page (30 elements) | +7.2 KB | 1-2 KB GZip |
-| Large page (100 elements) | +24 KB | 3-5 KB GZip |
+| Scenario                      | Increase   | Impact      |
+| ----------------------------- | ---------- | ----------- |
+| Single element (3 properties) | +240 bytes | 0.2 KB      |
+| Medium page (30 elements)     | +7.2 KB    | 1-2 KB GZip |
+| Large page (100 elements)     | +24 KB     | 3-5 KB GZip |
 
 **Real-world:** Most sites increase by <1 KB after GZip.
 
@@ -388,7 +404,7 @@ Each media query also gets its own fallback:
     1920px,
     768px,
     390px,
-    false  // No fallbacks
+    false // No fallbacks
   );
 }
 ```
@@ -453,12 +469,14 @@ Everyone gets perfect results ✨
 ### Why Not JavaScript?
 
 JavaScript could calculate values, but:
+
 - ❌ Adds runtime overhead
 - ❌ Requires execution delay
 - ❌ More complex to implement
 - ❌ Larger bundle size
 
 **Pure CSS approach is superior:**
+
 - ✅ Zero runtime cost
 - ✅ Instant application
 - ✅ Simple to understand
@@ -503,6 +521,7 @@ JavaScript could calculate values, but:
 ### Q: How are fallback values calculated?
 
 A: At SCSS compile time using the same values passed to the mixin:
+
 - Desktop fallback = desktop value
 - Mobile fallback = mobile value
 - Tablet fallback = interpolated value between mobile and desktop
@@ -510,6 +529,7 @@ A: At SCSS compile time using the same values passed to the mixin:
 ### Q: Why not use a JavaScript polyfill?
 
 A: Pure CSS is better because:
+
 - No runtime overhead
 - Works instantly
 - No bundle size increase
@@ -538,6 +558,7 @@ A: No, old browsers get static values at breakpoints. This is the trade-off for 
 ### What We've Built
 
 A **backward-compatible solution** that:
+
 - ✅ Adds universal browser support
 - ✅ Requires zero code changes
 - ✅ Minimal CSS overhead
@@ -547,14 +568,14 @@ A **backward-compatible solution** that:
 
 ### Key Metrics
 
-| Metric | Value |
-|--------|-------|
-| Browser coverage | 85% → 99.5% |
-| Breaking changes | 0 |
-| Code changes needed | 0 |
-| CSS overhead | <1 KB GZip |
-| Documentation | 2,200+ lines |
-| Implementation time | Complete |
+| Metric              | Value        |
+| ------------------- | ------------ |
+| Browser coverage    | 85% → 99.5%  |
+| Breaking changes    | 0            |
+| Code changes needed | 0            |
+| CSS overhead        | <1 KB GZip   |
+| Documentation       | 2,200+ lines |
+| Implementation time | Complete     |
 
 ### Ready to Ship?
 
@@ -569,6 +590,7 @@ A **backward-compatible solution** that:
 ## Next Action: Publishing
 
 Follow **PUBLISHING_GUIDE.md** to:
+
 1. Update package.json version
 2. Create changelog entry
 3. Commit to git

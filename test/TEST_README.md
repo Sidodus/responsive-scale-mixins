@@ -24,6 +24,15 @@ This directory contains comprehensive tests for the Responsive Scale Mixins libr
 cd test && ./test.sh
 ```
 
+OR From the root folder
+
+```bash
+# Cross-platform (Unix/Linux/macOS/Windows)
+test/test.sh
+```
+
+> Note: `test.sh` is now directory-aware and changes into the `test/` folder before compiling, so it will work even when run from the repository root.
+
 This will:
 
 1. ✅ Compile `test.scss` to `test.css`

@@ -24,10 +24,10 @@
   --desktop-width: 1920px;
   --tablet-width: 768px;
   --mobile-width: 390px;
-  --computed-scale-factor: calc(100vw / 1920px);
-  --computed-tablet-scale-factor: calc(100vw / 768px);
-  --computed-mobile-scale-factor: calc(100vw / 390px);
-  --tablet-proportion-scale-factor: calc(
+  --computed-scale-factor: (100vw / 1920px);
+  --computed-tablet-scale-factor: (100vw / 768px);
+  --computed-mobile-scale-factor: (100vw / 390px);
+  --tablet-proportion-scale-factor: (
     (100vw - 390px) / (1920px - 390px)
   );
   --rsm-desktop-width-value: 1920;
@@ -38,7 +38,7 @@
 
 .test-with-fallback {
   font-size: 48px;
-  font-size: calc(100vw / var(--desktop-width) * 48px);
+  font-size: calc(var(--computed-scale-factor) * 48px);
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .test-with-fallback {
@@ -49,7 +49,7 @@
 @media screen and (max-width: 767px) {
   .test-with-fallback {
     font-size: 24px;
-    font-size: calc(100vw / var(--mobile-width) * 24px);
+    font-size: calc(var(--computed-mobile-scale-factor) * 24px);
   }
 }
 
@@ -71,7 +71,7 @@
 }
 
 .test-without-fallback {
-  padding: calc(100vw / var(--desktop-width) * 20px) calc(100vw / var(--desktop-width) * 40px);
+  padding: calc(var(--computed-scale-factor) * 20px) calc(var(--computed-scale-factor) * 40px);
 }
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .test-without-fallback {
@@ -80,7 +80,7 @@
 }
 @media screen and (max-width: 767px) {
   .test-without-fallback {
-    padding: calc(100vw / var(--mobile-width) * 10px) calc(100vw / var(--mobile-width) * 20px);
+    padding: calc(var(--computed-mobile-scale-factor) * 10px) calc(var(--computed-mobile-scale-factor) * 20px);
   }
 }
 
