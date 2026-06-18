@@ -1,0 +1,66 @@
+/* Responsive Scale Variables Mixin
+ * Include this mixin in your root element to define the scaling factors.
+ * Adjust the design widths to match your design system breakpoints.
+ * 
+ * v2.2.0: Now includes fallback generation for browsers without CSS variable support
+ */
+/* Utility function to strip units from values */
+/* Responsive Scale Mixins
+ * Core scaling functionality with support for all CSS units
+ * v2.2.0: Generates both modern calc() AND static fallback values
+ */
+/* v2.2.0: Main responsive scale mixin with fallback support
+ * Generates two CSS declarations:
+ * 1. Static fallback value for unsupported browsers
+ * 2. Modern calc() expression for modern browsers
+ */
+/* v2.2.0: New mixin to disable fallback for specific declarations
+ * Useful when you want only modern browsers to receive a style
+ */
+.foo {
+  padding: 20px 40px;
+  padding: calc(100vw / 1920px * 20px) calc(100vw / 1920px * 40px);
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .foo {
+    padding: 10px 20px;
+    padding: calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (20px - 10px))) calc(var(--computed-tablet-scale-factor) * (20px + var(--tablet-proportion-scale-factor) * (40px - 20px)));
+  }
+}
+@media screen and (max-width: 767px) {
+  .foo {
+    padding: 10px 20px;
+    padding: calc(100vw / 390px * 10px) calc(100vw / 390px * 20px);
+  }
+}
+
+.bar {
+  margin: 20px;
+}
+@supports (margin: calc(100vw / 1920px * 20px)) {
+  .bar {
+    margin: calc(100vw / 1920px * 20px);
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .bar {
+    margin: 10px;
+  }
+  @supports (margin: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (20px - 10px)))) {
+    .bar {
+      margin: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (20px - 10px)));
+    }
+  }
+}
+@media screen and (max-width: 767px) {
+  .bar {
+    margin: 10px;
+  }
+  @supports (margin: calc(100vw / 390px * 10px)) {
+    .bar {
+      margin: calc(100vw / 390px * 10px);
+    }
+  }
+}
+
+/*# sourceMappingURL=tmp-sample.css.map */

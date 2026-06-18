@@ -1,0 +1,6 @@
+@use "../index.scss" as rsm;
+
+.regression {
+  @include rsm.responsive-scale(padding, 10 20, 5 10, px);
+  @include rsm.responsive-scale(margin, 20, 10, px);
+}

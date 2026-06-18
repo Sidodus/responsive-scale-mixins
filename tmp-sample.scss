@@ -1,0 +1,9 @@
+@use "./index.scss" as rsm;
+
+.foo {
+  @include rsm.responsive-scale(padding, 20 40, 10 20, px);
+}
+
+.bar {
+  @include rsm.responsive-scale(margin, 20, 10, px);
+}
