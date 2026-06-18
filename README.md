@@ -282,6 +282,38 @@ pnpm add responsive-scale-mixins
 // Import in app/layout.tsx: import './globals.scss'
 ```
 
+### Regression Test
+
+To confirm the fix before publishing, run the local regression case included in `test/regression.scss`.
+
+```bash
+cd test
+./test.sh
+```
+
+If the build succeeds, verify that `test/regression.css` was generated and contains valid modern expressions such as:
+
+```css
+padding: calc(
+    var(--computed-tablet-scale-factor) *
+      (5px + var(--tablet-proportion-scale-factor) * (10px - 5px))
+  )
+  calc(
+    var(--computed-tablet-scale-factor) *
+      (10px + var(--tablet-proportion-scale-factor) * (20px - 10px))
+  );
+```
+
+Then verify the `@supports` output for the single-value case in `test.css` matches the corrected form:
+
+```css
+@supports (margin: calc(100vw / 1920px * 10px)) {
+  .bar {
+    margin: calc(100vw / 1920px * 10px);
+  }
+}
+```
+
 #### Next.js (Pages Router)
 
 ```scss

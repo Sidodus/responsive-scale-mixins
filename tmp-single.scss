@@ -1,0 +1,2 @@
+@use "./index.scss" as rsm;
+.foo { @include rsm.responsive-scale(padding, 20, 10, px); }

@@ -88,6 +88,18 @@ $rsm-mobile-width: 390px !default;
   @return calc((100vw / #{$rsm-mobile-width}) * #{$mobile-value}#{$unit});
 }
 
+@function get-scale-factor($unit) {
+  @return string.unquote("--computed-scale-factor");
+}
+
+@function get-tablet-scale-factor($unit) {
+  @return string.unquote("--computed-tablet-scale-factor");
+}
+
+@function get-mobile-scale-factor($unit) {
+  @return string.unquote("--computed-mobile-scale-factor");
+}
+
 /* v2.2.0: Main responsive scale mixin with fallback support
  * Generates two CSS declarations:
  * 1. Static fallback value for unsupported browsers

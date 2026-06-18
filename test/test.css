@@ -2,19 +2,19 @@
  * Include this mixin in your root element to define the scaling factors.
  * Adjust the design widths to match your design system breakpoints.
  * 
- * v2.1.0: Now includes fallback generation for browsers without CSS variable support
+ * v2.2.0: Now includes fallback generation for browsers without CSS variable support
  */
 /* Utility function to strip units from values */
 /* Responsive Scale Mixins
  * Core scaling functionality with support for all CSS units
- * v2.1.0: Generates both modern calc() AND static fallback values
+ * v2.2.0: Generates both modern calc() AND static fallback values
  */
-/* v2.1.0: Main responsive scale mixin with fallback support
+/* v2.2.0: Main responsive scale mixin with fallback support
  * Generates two CSS declarations:
  * 1. Static fallback value for unsupported browsers
  * 2. Modern calc() expression for modern browsers
  */
-/* v2.1.0: New mixin to disable fallback for specific declarations
+/* v2.2.0: New mixin to disable fallback for specific declarations
  * Useful when you want only modern browsers to receive a style
  */
 :root {
@@ -43,8 +43,12 @@
   --accent-alt: #ff6b9d;
   --muted: #666666;
   --text-muted: #6c757d;
-  --shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --shadow:
+    0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  --shadow-soft:
+    0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   --spotlight: rgba(255, 255, 255, 0.9);
   --warning-bg: rgba(255, 243, 205, 0.6);
   --text-card: #111827;
@@ -62,8 +66,12 @@
     --accent-strong: #38bdf8;
     --muted: #bfc7d9;
     --text-muted: #a0aec0;
-    --shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03);
-    --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    --shadow:
+      0 12px 40px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    --shadow-soft:
+      0 8px 32px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
     --spotlight: rgba(255, 255, 255, 0.06);
     --warning-bg: rgba(255, 207, 125, 0.16);
     --accent: #7dd3fc;
@@ -432,7 +440,7 @@ a {
 @media screen and (min-width: 768px) and (max-width: 991px) {
   .dynamicValue {
     padding: 1.3px 3.4px;
-    padding: calc(var(get-tablet-scale-factor(px)) * (1.3px + var(--tablet-proportion-scale-factor) * (2px - 1.3px))) calc(var(get-tablet-scale-factor(px)) * (3.4px + var(--tablet-proportion-scale-factor) * (6px - 3.4px)));
+    padding: calc(var(--computed-tablet-scale-factor) * (1.3px + var(--tablet-proportion-scale-factor) * (2px - 1.3px))) calc(var(--computed-tablet-scale-factor) * (3.4px + var(--tablet-proportion-scale-factor) * (6px - 3.4px)));
   }
 }
 @media screen and (max-width: 767px) {

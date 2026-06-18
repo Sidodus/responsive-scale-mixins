@@ -1,0 +1,49 @@
+/* Responsive Scale Variables Mixin
+ * Include this mixin in your root element to define the scaling factors.
+ * Adjust the design widths to match your design system breakpoints.
+ * 
+ * v2.2.0: Now includes fallback generation for browsers without CSS variable support
+ */
+/* Utility function to strip units from values */
+/* Responsive Scale Mixins
+ * Core scaling functionality with support for all CSS units
+ * v2.2.0: Generates both modern calc() AND static fallback values
+ */
+/* v2.2.0: Main responsive scale mixin with fallback support
+ * Generates two CSS declarations:
+ * 1. Static fallback value for unsupported browsers
+ * 2. Modern calc() expression for modern browsers
+ */
+/* v2.2.0: New mixin to disable fallback for specific declarations
+ * Useful when you want only modern browsers to receive a style
+ */
+.foo {
+  padding: 20px;
+}
+@supports (padding: calc(100vw / 1920px * 20px)) {
+  .foo {
+    padding: calc(100vw / 1920px * 20px);
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .foo {
+    padding: 10px;
+  }
+  @supports (padding: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (20px - 10px)))) {
+    .foo {
+      padding: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (20px - 10px)));
+    }
+  }
+}
+@media screen and (max-width: 767px) {
+  .foo {
+    padding: 10px;
+  }
+  @supports (padding: calc(100vw / 390px * 10px)) {
+    .foo {
+      padding: calc(100vw / 390px * 10px);
+    }
+  }
+}
+
+/*# sourceMappingURL=tmp-single.css.map */
