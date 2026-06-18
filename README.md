@@ -50,7 +50,7 @@ Imagine building a beautiful UI in Figma, then seeing it perfectly scale on **ev
 
 Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Your favorite framework + perfect responsive design = ❤️
 
-## 🚀 v2.2.0 - Universal Browser Compatibility (No Breaking Changes)
+## 🚀 v2.2.1 - Universal Browser Compatibility (No Breaking Changes)
 
 **Automatic fallback generation for browsers without CSS variable support!**
 
@@ -86,7 +86,7 @@ Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Y
   font-size: calc(100vw / 1920 * 48px);
 }
 
-// v2.1.0 output (works everywhere!)
+// v2.2.1 output (works everywhere!)
 .hero-title {
   font-size: 48px; /* Fallback for old browsers */
 }
