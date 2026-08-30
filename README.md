@@ -50,6 +50,19 @@ Imagine building a beautiful UI in Figma, then seeing it perfectly scale on **ev
 
 Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Your favorite framework + perfect responsive design = ❤️
 
+## 🚀 v2.2.2 - derive breakpoints from custom widths and fix invalid if()
+
+Previously, media query breakpoints were hardcoded (768px/991px/767px),
+so custom design widths passed to responsive-scale-variables() only
+affected the calc() expressions while the breakpoint ranges silently
+kept using the defaults. Breakpoints are now derived from the supplied
+mobile/desktop widths (tablet spans mobile-width to desktop-width - 1,
+mobile spans up to mobile-width - 1).
+
+Also replace the invalid if(sass(...): 1; else: 0) call inside
+responsive-scale-variables() with the standard if($cond, a, b) form;
+the invalid syntax broke compilation for every consumer.
+
 ## 🚀 v2.2.1 - Universal Browser Compatibility (No Breaking Changes)
 
 **Automatic fallback generation for browsers without CSS variable support!**

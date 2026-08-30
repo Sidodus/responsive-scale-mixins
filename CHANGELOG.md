@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.2] - 2026-08-30
+
+### Fixed
+
+- Previously, media query breakpoints were hardcoded (768px/991px/767px),
+so custom design widths passed to responsive-scale-variables() only
+affected the calc() expressions while the breakpoint ranges silently
+kept using the defaults. Breakpoints are now derived from the supplied
+mobile/desktop widths (tablet spans mobile-width to desktop-width - 1,
+mobile spans up to mobile-width - 1).
+- Replace the invalid if(sass(...): 1; else: 0) call inside
+responsive-scale-variables() with the standard if($cond, a, b) form;
+the invalid syntax broke compilation for every consumer.
+
 ## [2.2.1] - 2026-06-18
 
 ### Fixed
