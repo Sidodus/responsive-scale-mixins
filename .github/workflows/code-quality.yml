@@ -61,7 +61,8 @@ jobs:
           fi
 
           # v2.3.0 output contract: fluid px values as pure vw lengths,
-          # interpolation calc() with unitless divisors, no var()/@supports
+          # interpolation calc() with unitless divisors, @supports barriers
+          # around fluid declarations (minifier defense), no var() scale factors
           if grep -E -q "calc\(100vw / [0-9]+px" test/test.css; then
             echo "❌ Test CSS contains banned division-by-length expressions"
             exit 1
@@ -76,11 +77,18 @@ jobs:
             exit 1
           fi
 
-          if grep -E -q "var\(--computed|@supports" <(grep -v "^\s*\*" test/test.css); then
-            echo "❌ Test CSS contains var() scale factors or @supports wrappers"
+          if ! grep -q "@supports" test/test.css; then
+            echo "❌ Test CSS is missing @supports minifier barriers around fluid declarations"
             exit 1
           else
-            echo "✅ No var()/@supports in scaling output"
+            echo "✅ @supports barriers present"
+          fi
+
+          if grep -E -q "var\(--computed" <(grep -v "^\s*\*" test/test.css); then
+            echo "❌ Test CSS scaling output depends on CSS variables"
+            exit 1
+          else
+            echo "✅ Scaling output is var()-free"
           fi
 
       - name: Check file sizes

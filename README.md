@@ -65,10 +65,13 @@ Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Y
   inflating mid-range values (~70px on a 1366px laptop for a 48px design) with
   2-2.5x jumps at the breakpoint boundaries. The new curve is exactly the
   linear blend between your mobile and desktop design values.
-- **✅ Stronger CSS output**: no `@supports` wrappers, no CSS variables, no
-  division-by-a-length (unsupported before 2023 *and* mangled into invalid CSS
-  by current Dart Sass). px-style values are emitted as pure vw lengths that
-  scale even in browsers without `calc()` support.
+- **✅ Stronger CSS output**: no CSS variables, no division-by-a-length
+  (unsupported before 2023 *and* mangled into invalid CSS by current Dart
+  Sass). px-style values are emitted as pure vw lengths that scale even in
+  browsers without `calc()` support. Fluid declarations stay wrapped in
+  `@supports` because production minifiers (cssnano in Next.js/CRA) would
+  otherwise prune the static fallback pair - verified in real Next.js and
+  Vite builds.
 - **✅ Zero-config requirement**: `responsive-scale-variables()` is now optional.
 - **✅ Clear validation errors** instead of silently invalid CSS.
 
@@ -216,10 +219,7 @@ npm install responsive-scale-mixins
 
 ```scss
 // app/globals.scss  (or styles/globals.scss)
-@use "responsive-scale-mixins" as rsm with (
-  $rsm-desktop-width: 1440px,
-  $rsm-mobile-width: 375px
-);
+@use "responsive-scale-mixins" as rsm;
 
 :root {
   // Optional: emit the legacy CSS variables for custom styles
@@ -242,8 +242,14 @@ module.exports = {
 };
 ```
 
-(If you use the wrapper-file pattern, inject `@use "styles/rsm" as rsm;`
-instead and skip the per-file `@use`.)
+> ⚠️ **Pick ONE configuration channel.** `additionalData` prepends the config
+> to *every* compiled stylesheet, so your own files must NOT configure the
+> module again (`@use "responsive-scale-mixins" as rsm;` without `with (...)`
+> is fine - Sass reuses the already-configured module). Configuring twice
+> fails with *"This module was already loaded, so it can't be configured
+> using with"*. If you prefer the wrapper-file pattern, inject
+> `@use "styles/rsm" as rsm;` via `additionalData` instead and drop the
+> injected module config.
 
 #### Vite (Vue / React / SvelteKit / Astro)
 
@@ -400,28 +406,47 @@ The main responsive scaling mixin.
 ```css
 .hero-title {
   font-size: 48px;                        /* static fallback */
-  font-size: 2.5vw;                       /* fluid - pure vw, works without calc() */
+}
+
+@supports (font-size: 2.5vw) {
+  .hero-title {
+    font-size: 2.5vw;                     /* fluid - pure vw, works without calc() */
+  }
 }
 
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .hero-title {
     font-size: 24px;                      /* static fallback */
-    font-size: calc(24px + (100vw - 390px) * 24 / 1530);  /* continuous interpolation */
+  }
+
+  @supports (font-size: calc(24px + (100vw - 390px) * 24 / 1530)) {
+    .hero-title {
+      font-size: calc(24px + (100vw - 390px) * 24 / 1530);  /* continuous interpolation */
+    }
   }
 }
 
 @media screen and (max-width: 389px) {
   .hero-title {
     font-size: 24px;                      /* static fallback */
-    font-size: 6.1538461538vw;            /* fluid */
+  }
+
+  @supports (font-size: 6.1538461538vw) {
+    .hero-title {
+      font-size: 6.1538461538vw;          /* fluid */
+    }
   }
 }
 ```
 
-Browsers that cannot parse a fluid declaration keep the static one - no
-`@supports` needed. Unit-preserving values (rem/em/%/vw/vh) emit a
-same-type-division `calc()` (e.g. `calc(3rem / 1920px * 100vw)`), which is
-supported by 2023+ browsers and falls back to the static value elsewhere.
+Browsers that cannot parse a fluid declaration keep the static one. The
+`@supports` wrapper is deliberately kept even though the expressions are now
+universally valid: production CSS minifiers (cssnano in Next.js/Create React
+App) prune earlier same-property declarations for mergeable box properties,
+which would otherwise silently delete the static fallback pair. Unit-preserving
+values (rem/em/%/vw/vh) emit a same-type-division `calc()` (e.g.
+`calc(3rem / 1920px * 100vw)`), which is supported by 2023+ browsers and falls
+back to the static value elsewhere.
 
 ### `responsive-scale-no-fallback(...)`
 

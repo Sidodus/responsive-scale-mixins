@@ -14,18 +14,30 @@
 
 .test-with-fallback {
   font-size: 48px;
-  font-size: 2.5vw;
+}
+@supports (font-size: 2.5vw) {
+  .test-with-fallback {
+    font-size: 2.5vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .test-with-fallback {
     font-size: 24px;
-    font-size: calc(24px + (100vw - 390px) * 24 / 1530);
+  }
+  @supports (font-size: calc(24px + (100vw - 390px) * 24 / 1530)) {
+    .test-with-fallback {
+      font-size: calc(24px + (100vw - 390px) * 24 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .test-with-fallback {
     font-size: 24px;
-    font-size: 6.1538461538vw;
+  }
+  @supports (font-size: 6.1538461538vw) {
+    .test-with-fallback {
+      font-size: 6.1538461538vw;
+    }
   }
 }
 
@@ -35,7 +47,11 @@
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .test-with-fallback-2 {
     letter-spacing: 0.88px !important;
-    letter-spacing: calc(0.04 * (22px + (100vw - 390px) * 0 / 1530)) !important;
+  }
+  @supports (letter-spacing: calc(0.04 * (22px + (100vw - 390px) * 0 / 1530))) {
+    .test-with-fallback-2 {
+      letter-spacing: calc(0.04 * (22px + (100vw - 390px) * 0 / 1530)) !important;
+    }
   }
 }
 @media screen and (max-width: 389px) {

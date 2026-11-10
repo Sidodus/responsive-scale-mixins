@@ -61,10 +61,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Output structure**: modern expressions are emitted as a plain second
-  declaration after the static fallback instead of being wrapped in
-  `@supports` - browsers drop declarations they cannot parse, so the cascade
-  alone provides progressive enhancement with roughly half the output size.
+- **Output structure**: fluid declarations are wrapped in `@supports` again
+  (as in v2.1/v2.2) - but the expressions inside are now valid in every
+  browser. Verified during real framework testing: cssnano (Next.js / CRA
+  production builds) prunes earlier same-property declarations for mergeable
+  box properties (padding, margin, width, ...), which would silently delete
+  the static fallback from a plain two-declaration pair. The `@supports`
+  rule is an optimization barrier minifiers respect.
+- **Unit-preserving interpolation is division-first**:
+  `calc(2rem + (3rem - 2rem) / (1920px - 390px) * (100vw - 390px))`.
+  Verified in a real Vite build: esbuild minification folds concrete
+  sub-expressions and would otherwise reorder the ratio into an invalid
+  length-times-length product.
 - `responsive-scale-variables()` is now **optional**; the scaling mixins no
   longer depend on CSS variables.
 - The `$important` parameter accepts `true` in addition to a string like

@@ -119,66 +119,114 @@ a {
   backdrop-filter: blur(15px);
   box-shadow: var(--shadow);
   padding: 25px;
-  padding: 1.3020833333vw;
+}
+@supports (padding: 1.3020833333vw) {
+  .testInfo {
+    padding: 1.3020833333vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo {
     padding: 20px;
-    padding: calc(20px + (100vw - 390px) * 5 / 1530);
+  }
+  @supports (padding: calc(20px + (100vw - 390px) * 5 / 1530)) {
+    .testInfo {
+      padding: calc(20px + (100vw - 390px) * 5 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testInfo {
     padding: 20px;
-    padding: 5.1282051282vw;
+  }
+  @supports (padding: 5.1282051282vw) {
+    .testInfo {
+      padding: 5.1282051282vw;
+    }
   }
 }
 .testInfo {
   border-radius: 16px;
-  border-radius: 0.8333333333vw;
+}
+@supports (border-radius: 0.8333333333vw) {
+  .testInfo {
+    border-radius: 0.8333333333vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo {
     border-radius: 12px;
-    border-radius: calc(12px + (100vw - 390px) * 4 / 1530);
+  }
+  @supports (border-radius: calc(12px + (100vw - 390px) * 4 / 1530)) {
+    .testInfo {
+      border-radius: calc(12px + (100vw - 390px) * 4 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testInfo {
     border-radius: 12px;
-    border-radius: 3.0769230769vw;
+  }
+  @supports (border-radius: 3.0769230769vw) {
+    .testInfo {
+      border-radius: 3.0769230769vw;
+    }
   }
 }
 .testInfo {
   margin-bottom: 35px;
-  margin-bottom: 1.8229166667vw;
+}
+@supports (margin-bottom: 1.8229166667vw) {
+  .testInfo {
+    margin-bottom: 1.8229166667vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo {
     margin-bottom: 25px;
-    margin-bottom: calc(25px + (100vw - 390px) * 10 / 1530);
+  }
+  @supports (margin-bottom: calc(25px + (100vw - 390px) * 10 / 1530)) {
+    .testInfo {
+      margin-bottom: calc(25px + (100vw - 390px) * 10 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testInfo {
     margin-bottom: 25px;
-    margin-bottom: 6.4102564103vw;
+  }
+  @supports (margin-bottom: 6.4102564103vw) {
+    .testInfo {
+      margin-bottom: 6.4102564103vw;
+    }
   }
 }
 .testInfo {
   border-inline-width: 4px;
-  border-inline-width: 0.2083333333vw;
+}
+@supports (border-inline-width: 0.2083333333vw) {
+  .testInfo {
+    border-inline-width: 0.2083333333vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo {
     border-inline-width: 2px;
-    border-inline-width: calc(2px + (100vw - 390px) * 2 / 1530);
+  }
+  @supports (border-inline-width: calc(2px + (100vw - 390px) * 2 / 1530)) {
+    .testInfo {
+      border-inline-width: calc(2px + (100vw - 390px) * 2 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testInfo {
     border-inline-width: 2px;
-    border-inline-width: 0.5128205128vw;
+  }
+  @supports (border-inline-width: 0.5128205128vw) {
+    .testInfo {
+      border-inline-width: 0.5128205128vw;
+    }
   }
 }
 .testInfo {
@@ -200,34 +248,58 @@ a {
 }
 .testInfo h1 {
   font-size: 3rem;
-  font-size: calc(3rem / 1920px * 100vw);
+}
+@supports (font-size: calc(3rem / 1920px * 100vw)) {
+  .testInfo h1 {
+    font-size: calc(3rem / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo h1 {
     font-size: 2rem;
-    font-size: calc(2rem + (100vw - 390px) * ((3rem - 2rem) / (1920px - 390px)));
+  }
+  @supports (font-size: calc(2rem + (3rem - 2rem) / (1920px - 390px) * (100vw - 390px))) {
+    .testInfo h1 {
+      font-size: calc(2rem + (3rem - 2rem) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testInfo h1 {
     font-size: 2rem;
-    font-size: calc(2rem / 390px * 100vw);
+  }
+  @supports (font-size: calc(2rem / 390px * 100vw)) {
+    .testInfo h1 {
+      font-size: calc(2rem / 390px * 100vw);
+    }
   }
 }
 .testInfo h1 {
   margin-bottom: 1rem;
-  margin-bottom: calc(1rem / 1920px * 100vw);
+}
+@supports (margin-bottom: calc(1rem / 1920px * 100vw)) {
+  .testInfo h1 {
+    margin-bottom: calc(1rem / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo h1 {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(0.5rem + (100vw - 390px) * ((1rem - 0.5rem) / (1920px - 390px)));
+  }
+  @supports (margin-bottom: calc(0.5rem + (1rem - 0.5rem) / (1920px - 390px) * (100vw - 390px))) {
+    .testInfo h1 {
+      margin-bottom: calc(0.5rem + (1rem - 0.5rem) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testInfo h1 {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(0.5rem / 390px * 100vw);
+  }
+  @supports (margin-bottom: calc(0.5rem / 390px * 100vw)) {
+    .testInfo h1 {
+      margin-bottom: calc(0.5rem / 390px * 100vw);
+    }
   }
 }
 .testInfo h1 {
@@ -235,18 +307,30 @@ a {
 }
 .testInfo p {
   font-size: 1.5rem;
-  font-size: calc(1.5rem / 1920px * 100vw);
+}
+@supports (font-size: calc(1.5rem / 1920px * 100vw)) {
+  .testInfo p {
+    font-size: calc(1.5rem / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo p {
     font-size: 1.2rem;
-    font-size: calc(1.2rem + (100vw - 390px) * ((1.5rem - 1.2rem) / (1920px - 390px)));
+  }
+  @supports (font-size: calc(1.2rem + (1.5rem - 1.2rem) / (1920px - 390px) * (100vw - 390px))) {
+    .testInfo p {
+      font-size: calc(1.2rem + (1.5rem - 1.2rem) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testInfo p {
     font-size: 1.2rem;
-    font-size: calc(1.2rem / 390px * 100vw);
+  }
+  @supports (font-size: calc(1.2rem / 390px * 100vw)) {
+    .testInfo p {
+      font-size: calc(1.2rem / 390px * 100vw);
+    }
   }
 }
 .testInfo p {
@@ -254,18 +338,30 @@ a {
 }
 .testInfo h3 {
   font-size: 2rem;
-  font-size: calc(2rem / 1920px * 100vw);
+}
+@supports (font-size: calc(2rem / 1920px * 100vw)) {
+  .testInfo h3 {
+    font-size: calc(2rem / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo h3 {
     font-size: 1.4rem;
-    font-size: calc(1.4rem + (100vw - 390px) * ((2rem - 1.4rem) / (1920px - 390px)));
+  }
+  @supports (font-size: calc(1.4rem + (2rem - 1.4rem) / (1920px - 390px) * (100vw - 390px))) {
+    .testInfo h3 {
+      font-size: calc(1.4rem + (2rem - 1.4rem) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testInfo h3 {
     font-size: 1.4rem;
-    font-size: calc(1.4rem / 390px * 100vw);
+  }
+  @supports (font-size: calc(1.4rem / 390px * 100vw)) {
+    .testInfo h3 {
+      font-size: calc(1.4rem / 390px * 100vw);
+    }
   }
 }
 .testInfo h3 {
@@ -318,23 +414,39 @@ a {
 
 .dynamicValue {
   padding: 2px 6px;
-  padding: 0.1041666667vw 0.3125vw;
+}
+@supports (padding: 0.1041666667vw 0.3125vw) {
+  .dynamicValue {
+    padding: 0.1041666667vw 0.3125vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .dynamicValue {
     padding: 1.3px 3.4px;
-    padding: calc(1.3px + (100vw - 390px) * 0.7 / 1530) calc(3.4px + (100vw - 390px) * 2.6 / 1530);
+  }
+  @supports (padding: calc(1.3px + (100vw - 390px) * 0.7 / 1530) calc(3.4px + (100vw - 390px) * 2.6 / 1530)) {
+    .dynamicValue {
+      padding: calc(1.3px + (100vw - 390px) * 0.7 / 1530) calc(3.4px + (100vw - 390px) * 2.6 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .dynamicValue {
     padding: 1.3px 3.4px;
-    padding: 0.3333333333vw 0.8717948718vw;
+  }
+  @supports (padding: 0.3333333333vw 0.8717948718vw) {
+    .dynamicValue {
+      padding: 0.3333333333vw 0.8717948718vw;
+    }
   }
 }
 .dynamicValue {
   border-radius: 4px;
-  border-radius: 0.2083333333vw;
+}
+@supports (border-radius: 0.2083333333vw) {
+  .dynamicValue {
+    border-radius: 0.2083333333vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .dynamicValue {
@@ -344,7 +456,11 @@ a {
 @media screen and (max-width: 389px) {
   .dynamicValue {
     border-radius: 4px;
-    border-radius: 1.0256410256vw;
+  }
+  @supports (border-radius: 1.0256410256vw) {
+    .dynamicValue {
+      border-radius: 1.0256410256vw;
+    }
   }
 }
 
@@ -363,50 +479,86 @@ a {
   background: var(--surface);
   backdrop-filter: blur(15px);
   border-radius: 16px;
-  border-radius: 0.8333333333vw;
+}
+@supports (border-radius: 0.8333333333vw) {
+  .demoSection {
+    border-radius: 0.8333333333vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .demoSection {
     border-radius: 12px;
-    border-radius: calc(12px + (100vw - 390px) * 4 / 1530);
+  }
+  @supports (border-radius: calc(12px + (100vw - 390px) * 4 / 1530)) {
+    .demoSection {
+      border-radius: calc(12px + (100vw - 390px) * 4 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .demoSection {
     border-radius: 12px;
-    border-radius: 3.0769230769vw;
+  }
+  @supports (border-radius: 3.0769230769vw) {
+    .demoSection {
+      border-radius: 3.0769230769vw;
+    }
   }
 }
 .demoSection {
   padding: 30px;
-  padding: 1.5625vw;
+}
+@supports (padding: 1.5625vw) {
+  .demoSection {
+    padding: 1.5625vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .demoSection {
     padding: 20px;
-    padding: calc(20px + (100vw - 390px) * 10 / 1530);
+  }
+  @supports (padding: calc(20px + (100vw - 390px) * 10 / 1530)) {
+    .demoSection {
+      padding: calc(20px + (100vw - 390px) * 10 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .demoSection {
     padding: 20px;
-    padding: 5.1282051282vw;
+  }
+  @supports (padding: 5.1282051282vw) {
+    .demoSection {
+      padding: 5.1282051282vw;
+    }
   }
 }
 .demoSection {
   margin-bottom: 25px;
-  margin-bottom: 1.3020833333vw;
+}
+@supports (margin-bottom: 1.3020833333vw) {
+  .demoSection {
+    margin-bottom: 1.3020833333vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .demoSection {
     margin-bottom: 20px;
-    margin-bottom: calc(20px + (100vw - 390px) * 5 / 1530);
+  }
+  @supports (margin-bottom: calc(20px + (100vw - 390px) * 5 / 1530)) {
+    .demoSection {
+      margin-bottom: calc(20px + (100vw - 390px) * 5 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .demoSection {
     margin-bottom: 20px;
-    margin-bottom: 5.1282051282vw;
+  }
+  @supports (margin-bottom: 5.1282051282vw) {
+    .demoSection {
+      margin-bottom: 5.1282051282vw;
+    }
   }
 }
 .demoSection {
@@ -438,34 +590,58 @@ a {
 
 .beforeAfter {
   margin-bottom: 2.5rem;
-  margin-bottom: calc(2.5rem / 1920px * 100vw);
+}
+@supports (margin-bottom: calc(2.5rem / 1920px * 100vw)) {
+  .beforeAfter {
+    margin-bottom: calc(2.5rem / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .beforeAfter {
     margin-bottom: 1.2rem;
-    margin-bottom: calc(1.2rem + (100vw - 390px) * ((2.5rem - 1.2rem) / (1920px - 390px)));
+  }
+  @supports (margin-bottom: calc(1.2rem + (2.5rem - 1.2rem) / (1920px - 390px) * (100vw - 390px))) {
+    .beforeAfter {
+      margin-bottom: calc(1.2rem + (2.5rem - 1.2rem) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .beforeAfter {
     margin-bottom: 1.2rem;
-    margin-bottom: calc(1.2rem / 390px * 100vw);
+  }
+  @supports (margin-bottom: calc(1.2rem / 390px * 100vw)) {
+    .beforeAfter {
+      margin-bottom: calc(1.2rem / 390px * 100vw);
+    }
   }
 }
 .beforeAfter {
   font-size: 3rem;
-  font-size: calc(3rem / 1920px * 100vw);
+}
+@supports (font-size: calc(3rem / 1920px * 100vw)) {
+  .beforeAfter {
+    font-size: calc(3rem / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .beforeAfter {
     font-size: 2rem;
-    font-size: calc(2rem + (100vw - 390px) * ((3rem - 2rem) / (1920px - 390px)));
+  }
+  @supports (font-size: calc(2rem + (3rem - 2rem) / (1920px - 390px) * (100vw - 390px))) {
+    .beforeAfter {
+      font-size: calc(2rem + (3rem - 2rem) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .beforeAfter {
     font-size: 2rem;
-    font-size: calc(2rem / 390px * 100vw);
+  }
+  @supports (font-size: calc(2rem / 390px * 100vw)) {
+    .beforeAfter {
+      font-size: calc(2rem / 390px * 100vw);
+    }
   }
 }
 .beforeAfter {
@@ -556,7 +732,11 @@ a {
 .testHeading {
   color: var(--accent);
   padding-bottom: 10px;
-  padding-bottom: 0.5208333333vw;
+}
+@supports (padding-bottom: 0.5208333333vw) {
+  .testHeading {
+    padding-bottom: 0.5208333333vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testHeading {
@@ -566,57 +746,97 @@ a {
 @media screen and (max-width: 389px) {
   .testHeading {
     padding-bottom: 10px;
-    padding-bottom: 2.5641025641vw;
+  }
+  @supports (padding-bottom: 2.5641025641vw) {
+    .testHeading {
+      padding-bottom: 2.5641025641vw;
+    }
   }
 }
 .testHeading {
   font-size: 2rem;
-  font-size: calc(2rem / 1920px * 100vw);
+}
+@supports (font-size: calc(2rem / 1920px * 100vw)) {
+  .testHeading {
+    font-size: calc(2rem / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testHeading {
     font-size: 1.4rem;
-    font-size: calc(1.4rem + (100vw - 390px) * ((2rem - 1.4rem) / (1920px - 390px)));
+  }
+  @supports (font-size: calc(1.4rem + (2rem - 1.4rem) / (1920px - 390px) * (100vw - 390px))) {
+    .testHeading {
+      font-size: calc(1.4rem + (2rem - 1.4rem) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testHeading {
     font-size: 1.4rem;
-    font-size: calc(1.4rem / 390px * 100vw);
+  }
+  @supports (font-size: calc(1.4rem / 390px * 100vw)) {
+    .testHeading {
+      font-size: calc(1.4rem / 390px * 100vw);
+    }
   }
 }
 .testHeading {
   margin-bottom: 1rem;
-  margin-bottom: calc(1rem / 1920px * 100vw);
+}
+@supports (margin-bottom: calc(1rem / 1920px * 100vw)) {
+  .testHeading {
+    margin-bottom: calc(1rem / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testHeading {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(0.5rem + (100vw - 390px) * ((1rem - 0.5rem) / (1920px - 390px)));
+  }
+  @supports (margin-bottom: calc(0.5rem + (1rem - 0.5rem) / (1920px - 390px) * (100vw - 390px))) {
+    .testHeading {
+      margin-bottom: calc(0.5rem + (1rem - 0.5rem) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testHeading {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(0.5rem / 390px * 100vw);
+  }
+  @supports (margin-bottom: calc(0.5rem / 390px * 100vw)) {
+    .testHeading {
+      margin-bottom: calc(0.5rem / 390px * 100vw);
+    }
   }
 }
 
 .testParagraph {
   color: var(--muted);
   font-size: 1.4em;
-  font-size: calc(1.4em / 1920px * 100vw);
+}
+@supports (font-size: calc(1.4em / 1920px * 100vw)) {
+  .testParagraph {
+    font-size: calc(1.4em / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testParagraph {
     font-size: 0.8em;
-    font-size: calc(0.8em + (100vw - 390px) * ((1.4em - 0.8em) / (1920px - 390px)));
+  }
+  @supports (font-size: calc(0.8em + (1.4em - 0.8em) / (1920px - 390px) * (100vw - 390px))) {
+    .testParagraph {
+      font-size: calc(0.8em + (1.4em - 0.8em) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testParagraph {
     font-size: 0.8em;
-    font-size: calc(0.8em / 390px * 100vw);
+  }
+  @supports (font-size: calc(0.8em / 390px * 100vw)) {
+    .testParagraph {
+      font-size: calc(0.8em / 390px * 100vw);
+    }
   }
 }
 
@@ -624,18 +844,30 @@ a {
   background: linear-gradient(45deg, var(--accent), var(--accent-strong));
   color: var(--foreground);
   border-radius: 8px;
-  border-radius: 0.4166666667vw;
+}
+@supports (border-radius: 0.4166666667vw) {
+  .testBox {
+    border-radius: 0.4166666667vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testBox {
     border-radius: 4px;
-    border-radius: calc(4px + (100vw - 390px) * 4 / 1530);
+  }
+  @supports (border-radius: calc(4px + (100vw - 390px) * 4 / 1530)) {
+    .testBox {
+      border-radius: calc(4px + (100vw - 390px) * 4 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testBox {
     border-radius: 4px;
-    border-radius: 1.0256410256vw;
+  }
+  @supports (border-radius: 1.0256410256vw) {
+    .testBox {
+      border-radius: 1.0256410256vw;
+    }
   }
 }
 .testBox {
@@ -644,7 +876,11 @@ a {
   align-items: center;
   width: 100%;
   height: 100px;
-  height: 5.2083333333vw;
+}
+@supports (height: 5.2083333333vw) {
+  .testBox {
+    height: 5.2083333333vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testBox {
@@ -654,39 +890,67 @@ a {
 @media screen and (max-width: 389px) {
   .testBox {
     height: 100px;
-    height: 25.641025641vw;
+  }
+  @supports (height: 25.641025641vw) {
+    .testBox {
+      height: 25.641025641vw;
+    }
   }
 }
 .testBox {
   padding: 20px;
-  padding: 1.0416666667vw;
+}
+@supports (padding: 1.0416666667vw) {
+  .testBox {
+    padding: 1.0416666667vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testBox {
     padding: 10px;
-    padding: calc(10px + (100vw - 390px) * 10 / 1530);
+  }
+  @supports (padding: calc(10px + (100vw - 390px) * 10 / 1530)) {
+    .testBox {
+      padding: calc(10px + (100vw - 390px) * 10 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testBox {
     padding: 10px;
-    padding: 2.5641025641vw;
+  }
+  @supports (padding: 2.5641025641vw) {
+    .testBox {
+      padding: 2.5641025641vw;
+    }
   }
 }
 .testBox {
   margin-bottom: 1rem;
-  margin-bottom: calc(1rem / 1920px * 100vw);
+}
+@supports (margin-bottom: calc(1rem / 1920px * 100vw)) {
+  .testBox {
+    margin-bottom: calc(1rem / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testBox {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(0.5rem + (100vw - 390px) * ((1rem - 0.5rem) / (1920px - 390px)));
+  }
+  @supports (margin-bottom: calc(0.5rem + (1rem - 0.5rem) / (1920px - 390px) * (100vw - 390px))) {
+    .testBox {
+      margin-bottom: calc(0.5rem + (1rem - 0.5rem) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testBox {
     margin-bottom: 0.5rem;
-    margin-bottom: calc(0.5rem / 390px * 100vw);
+  }
+  @supports (margin-bottom: calc(0.5rem / 390px * 100vw)) {
+    .testBox {
+      margin-bottom: calc(0.5rem / 390px * 100vw);
+    }
   }
 }
 .testBox .testBoxInner {
@@ -698,58 +962,98 @@ a {
   justify-content: center;
   align-items: center;
   font-size: 1.4em;
-  font-size: calc(1.4em / 1920px * 100vw);
+}
+@supports (font-size: calc(1.4em / 1920px * 100vw)) {
+  .testBox .testBoxInner {
+    font-size: calc(1.4em / 1920px * 100vw);
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testBox .testBoxInner {
     font-size: 0.8em;
-    font-size: calc(0.8em + (100vw - 390px) * ((1.4em - 0.8em) / (1920px - 390px)));
+  }
+  @supports (font-size: calc(0.8em + (1.4em - 0.8em) / (1920px - 390px) * (100vw - 390px))) {
+    .testBox .testBoxInner {
+      font-size: calc(0.8em + (1.4em - 0.8em) / (1920px - 390px) * (100vw - 390px));
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testBox .testBoxInner {
     font-size: 0.8em;
-    font-size: calc(0.8em / 390px * 100vw);
+  }
+  @supports (font-size: calc(0.8em / 390px * 100vw)) {
+    .testBox .testBoxInner {
+      font-size: calc(0.8em / 390px * 100vw);
+    }
   }
 }
 
 .testLetterSpacing {
   background: var(--warning-bg);
   padding: 15px;
-  padding: 0.78125vw;
+}
+@supports (padding: 0.78125vw) {
+  .testLetterSpacing {
+    padding: 0.78125vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testLetterSpacing {
     padding: 10px;
-    padding: calc(10px + (100vw - 390px) * 5 / 1530);
+  }
+  @supports (padding: calc(10px + (100vw - 390px) * 5 / 1530)) {
+    .testLetterSpacing {
+      padding: calc(10px + (100vw - 390px) * 5 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testLetterSpacing {
     padding: 10px;
-    padding: 2.5641025641vw;
+  }
+  @supports (padding: 2.5641025641vw) {
+    .testLetterSpacing {
+      padding: 2.5641025641vw;
+    }
   }
 }
 .testLetterSpacing {
   border-radius: 8px;
-  border-radius: 0.4166666667vw;
+}
+@supports (border-radius: 0.4166666667vw) {
+  .testLetterSpacing {
+    border-radius: 0.4166666667vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testLetterSpacing {
     border-radius: 4px;
-    border-radius: calc(4px + (100vw - 390px) * 4 / 1530);
+  }
+  @supports (border-radius: calc(4px + (100vw - 390px) * 4 / 1530)) {
+    .testLetterSpacing {
+      border-radius: calc(4px + (100vw - 390px) * 4 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testLetterSpacing {
     border-radius: 4px;
-    border-radius: 1.0256410256vw;
+  }
+  @supports (border-radius: 1.0256410256vw) {
+    .testLetterSpacing {
+      border-radius: 1.0256410256vw;
+    }
   }
 }
 .testLetterSpacing {
   font-weight: bold;
   letter-spacing: -1px;
-  letter-spacing: -0.0520833333vw;
+}
+@supports (letter-spacing: -0.0520833333vw) {
+  .testLetterSpacing {
+    letter-spacing: -0.0520833333vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testLetterSpacing {
@@ -759,23 +1063,39 @@ a {
 @media screen and (max-width: 389px) {
   .testLetterSpacing {
     letter-spacing: -1px;
-    letter-spacing: -0.2564102564vw;
+  }
+  @supports (letter-spacing: -0.2564102564vw) {
+    .testLetterSpacing {
+      letter-spacing: -0.2564102564vw;
+    }
   }
 }
 .testLetterSpacing {
   font-size: 24px;
-  font-size: 1.25vw;
+}
+@supports (font-size: 1.25vw) {
+  .testLetterSpacing {
+    font-size: 1.25vw;
+  }
 }
 @media screen and (min-width: 390px) and (max-width: 1919px) {
   .testLetterSpacing {
     font-size: 18px;
-    font-size: calc(18px + (100vw - 390px) * 6 / 1530);
+  }
+  @supports (font-size: calc(18px + (100vw - 390px) * 6 / 1530)) {
+    .testLetterSpacing {
+      font-size: calc(18px + (100vw - 390px) * 6 / 1530);
+    }
   }
 }
 @media screen and (max-width: 389px) {
   .testLetterSpacing {
     font-size: 18px;
-    font-size: 4.6153846154vw;
+  }
+  @supports (font-size: 4.6153846154vw) {
+    .testLetterSpacing {
+      font-size: 4.6153846154vw;
+    }
   }
 }
 

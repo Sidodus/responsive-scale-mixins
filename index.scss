@@ -25,10 +25,13 @@
 //  `calc(0.15625vw * 1rem / 1px)` - both problems are now avoided.
 // - FIX: percentage fallbacks no longer emit invalid CSS like
 //  `calc(1 / 100 * 48)px` (the unit was appended outside the calc()).
-// - CHANGED: modern expressions are emitted as a plain second declaration
-//  after the static fallback instead of being wrapped in `@supports`.
-//  Browsers drop declarations they cannot parse, so the cascade alone
-//  provides progressive enhancement - with roughly half the output size.
+// - CHANGED: fluid declarations are wrapped in `@supports` again (like
+//  v2.1/v2.2) - but now the expressions inside are valid in every browser.
+//  Verified during framework testing: cssnano (Next.js / CRA production
+//  builds) prunes earlier same-property declarations for mergeable box
+//  properties (padding, margin, width, ...), which would silently delete
+//  the static fallback from a plain two-declaration pair. @supports is an
+//  optimization barrier minifiers respect.
 // - CHANGED: px-style values (px, pt, cm, mm, in, pc) are emitted as pure
 //  vw lengths (e.g. `2.5vw`), so they scale fluidly even in browsers
 //  without calc() support (IE9+). Unit-preserving values (rem, em, %, vw,
@@ -177,8 +180,10 @@ $rsm-mobile-width: 390px !default;
 // px-style units use a universal calc() with a unitless slope:
 //  calc(MOBILEpx + (100vw - MWpx) * (DESKTOP - MOBILE) / (DW - MW))
 // Unit-preserving units need same-type division for the slope, emitted
-// verbatim (modern-only):
-//  calc(MOBILEu + (100vw - MWpx) * ((DESKTOPu - MOBILEu) / (DWpx - MWpx)))
+// verbatim (modern-only) with the division FIRST, so CSS minifiers that fold
+// concrete sub-expressions (esbuild in Vite, Next.js SWC) cannot reorder it
+// into an invalid length-times-length product:
+//  calc(MOBILEu + (DESKTOPu - MOBILEu) / (DWpx - MWpx) * (100vw - MWpx))
 @function tablet-interpolation($desktop-value, $mobile-value, $unit) {
   $desktop-value: -value-number($desktop-value, "desktop-value");
   $mobile-value: -value-number($mobile-value, "mobile-value");
@@ -203,7 +208,7 @@ $rsm-mobile-width: 390px !default;
   }
 
   @return string.unquote(
-    "calc(#{$mobile-value}#{$unit} + (100vw - #{$mw}px) * ((#{$desktop-value}#{$unit} - #{$mobile-value}#{$unit}) / (#{$dw}px - #{$mw}px)))"
+    "calc(#{$mobile-value}#{$unit} + (#{$desktop-value}#{$unit} - #{$mobile-value}#{$unit}) / (#{$dw}px - #{$mw}px) * (100vw - #{$mw}px))"
   );
 }
 
@@ -279,6 +284,23 @@ $rsm-mobile-width: 390px !default;
   @return $important;
 }
 
+// Emits a fluid declaration. When static fallbacks are enabled the fluid
+// declaration is wrapped in @supports. This is an optimization barrier, not
+// a feature probe: aggressive CSS minifiers (cssnano in Next.js/CRA) prune
+// earlier same-property declarations for mergeable box properties
+// (padding, margin, width, ...) - a plain "fallback + fluid" pair loses the
+// static fallback in production builds. Minifiers never merge declarations
+// across an @supports boundary, so the pair survives everywhere.
+@mixin -emit-fluid($property, $fluid, $important, $with-supports: true) {
+  @if $with-supports {
+    @supports (#{$property}: #{$fluid}) {
+      #{$property}: #{$fluid}#{$important};
+    }
+  } @else {
+    #{$property}: #{$fluid}#{$important};
+  }
+}
+
 // Responsive Scale Variables Mixin
 // OPTIONAL since v2.3.0 - the mixins no longer depend on CSS variables.
 //
@@ -339,9 +361,10 @@ $rsm-mobile-width: 390px !default;
 //
 // Emits, per property:
 //  1. A static fallback declaration (skipped with $enable-fallback: false)
-//  2. A fluid declaration - a pure vw length or a verbatim calc()
-// No @supports wrappers and no CSS variables are involved: browsers that
-// cannot parse the fluid declaration simply keep the static one.
+//  2. A fluid declaration - a pure vw length or a verbatim calc() - wrapped
+//     in @supports as a minifier barrier (see -emit-fluid); browsers that
+//     cannot parse the fluid declaration simply keep the static one.
+// No CSS variables are involved.
 //
 // Breakpoints are derived from the configured widths:
 //  mobile:  viewport <= mobile-width - 1
@@ -401,14 +424,23 @@ $rsm-mobile-width: 390px !default;
       }
 
       @if -unit-px-factor($unit) != null {
-        $tablet-modern: calc(
-          #{math.div($mobile-value, 100)} * (#{$mobile-relative}#{$unit} + (100vw - #{$mw}px) * #{$desktop-relative - $mobile-relative} / #{$dw - $mw})
+        @include -emit-fluid(
+          $property,
+          calc(
+            #{math.div($mobile-value, 100)} * (#{$mobile-relative}#{$unit} + (100vw - #{$mw}px) * #{$desktop-relative - $mobile-relative} / #{$dw - $mw})
+          ),
+          $important,
+          $enable-fallback
         );
-        #{$property}: #{$tablet-modern}#{$important};
       } @else {
-        #{$property}: string.unquote(
-          "calc(#{math.div($mobile-value, 100)} * (#{$mobile-relative}#{$unit} + (100vw - #{$mw}px) * ((#{$desktop-relative}#{$unit} - #{$mobile-relative}#{$unit}) / (#{$dw}px - #{$mw}px))))"
-        )#{$important};
+        @include -emit-fluid(
+          $property,
+          string.unquote(
+            "calc(#{math.div($mobile-value, 100)} * (#{$mobile-relative}#{$unit} + (#{$desktop-relative}#{$unit} - #{$mobile-relative}#{$unit}) / (#{$dw}px - #{$mw}px) * (100vw - #{$mw}px)))"
+          ),
+          $important,
+          $enable-fallback
+        );
       }
     }
 
@@ -436,16 +468,22 @@ $rsm-mobile-width: 390px !default;
       @if $enable-fallback {
         #{$property}: -static-list($desktop-value, $unit)#{$important};
       }
-      #{$property}: -scaled-list(
-        $desktop-value,
-        meta.get-function("-scaled-desktop"),
-        $unit
-      )#{$important};
+      @include -emit-fluid(
+        $property,
+        -scaled-list($desktop-value, meta.get-function("-scaled-desktop"), $unit),
+        $important,
+        $enable-fallback
+      );
     } @else {
       @if $enable-fallback {
         #{$property}: #{$desktop-value}#{$unit}#{$important};
       }
-      #{$property}: #{scaled-value($desktop-value, $rsm-desktop-width, $unit)}#{$important};
+      @include -emit-fluid(
+        $property,
+        scaled-value($desktop-value, $rsm-desktop-width, $unit),
+        $important,
+        $enable-fallback
+      );
     }
 
     // --- Tablet: continuous interpolation between mobile and desktop ---
@@ -484,9 +522,14 @@ $rsm-mobile-width: 390px !default;
               space
             );
           }
-          #{$property}: #{$tablet-fluid}#{$important};
+          @include -emit-fluid($property, $tablet-fluid, $important, $enable-fallback);
         } @else {
-          #{$property}: #{tablet-interpolation($desktop-value, $mobile-value, $unit)}#{$important};
+          @include -emit-fluid(
+            $property,
+            tablet-interpolation($desktop-value, $mobile-value, $unit),
+            $important,
+            $enable-fallback
+          );
         }
       }
     }
@@ -497,16 +540,22 @@ $rsm-mobile-width: 390px !default;
         @if $enable-fallback {
           #{$property}: -static-list($mobile-value, $unit)#{$important};
         }
-        #{$property}: -scaled-list(
-          $mobile-value,
-          meta.get-function("-scaled-mobile"),
-          $unit
-        )#{$important};
+        @include -emit-fluid(
+          $property,
+          -scaled-list($mobile-value, meta.get-function("-scaled-mobile"), $unit),
+          $important,
+          $enable-fallback
+        );
       } @else {
         @if $enable-fallback {
           #{$property}: #{$mobile-value}#{$unit}#{$important};
         }
-        #{$property}: #{mobile-scale-expression($mobile-value, $unit)}#{$important};
+        @include -emit-fluid(
+          $property,
+          mobile-scale-expression($mobile-value, $unit),
+          $important,
+          $enable-fallback
+        );
       }
     }
   }

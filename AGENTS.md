@@ -39,9 +39,14 @@ variables.
    `:root` setup. `responsive-scale-variables()` only emits *legacy* variables
    for consumer convenience.
 
-3. **No `@supports` wrappers.** Progressive enhancement is achieved by
-   emitting the static fallback declaration first and the fluid declaration
-   second - browsers drop declarations they cannot parse.
+3. **Fluid declarations are wrapped in `@supports` - it is a minifier
+   barrier, not a feature probe.** Verified in a real Next.js 14 production
+   build: cssnano (Next.js/CRA) prunes earlier same-property declarations for
+   mergeable box properties (padding, margin, width, ...), so a plain
+   "fallback + fluid" two-declaration pair silently loses the static
+   fallback. Minifiers never merge declarations across an `@supports`
+   boundary. When `$enable-fallback` is false, emit the fluid declaration
+   plain (no barrier needed).
 
 4. **No division by a length** (e.g. `100vw / 1920px`). Two reasons:
    - unsupported before CSS Values 4 same-type division shipped (2023+
@@ -52,6 +57,13 @@ variables.
    (`calc(48 * 100vw / 1920)` resolves to `2.5vw`), and unit-preserving units
    (rem, em, %, vw, vh, vmin, vmax) use same-type-division forms emitted
    verbatim through `string.unquote(...)` so Sass cannot rewrite them.
+
+4b. **Same-type divisions must be written division-FIRST.** Verified in a
+   real Vite build: esbuild's CSS minifier folds concrete sub-expressions and
+   can turn `A + (100vw - MWpx) * ((Drem - Mrem) / (DWpx - MWpx))` into
+   `A + (100vw - MWpx)*Drem/DWpx` - a length-times-length product that is
+   parse-invalid. Division-first (`A + (Drem - Mrem) / (DWpx - MWpx) *
+   (100vw - MWpx)`) stays valid after folding.
 
 5. **The interpolation curve must be continuous at both breakpoints.**
    - mobile branch: `mobile-value * viewport / mobile-width`
@@ -86,7 +98,7 @@ variables.
 
 ```bash
 npm install          # installs devDependencies (sass)
-npm test             # assertion suite: 27 tests, must be all green
+npm test             # assertion suite: 30 tests, must be all green
 ```
 
 Manual visual check:
@@ -100,6 +112,22 @@ When touching output-affecting code, also compile `test/regression.scss` and
 eyeball `regression.css` - tablet expressions should read
 `calc(<mobile>px + (100vw - <mw>px) * <delta> / <denominator>)`.
 
+## Framework verification (real builds, not just simulations)
+
+The v2.3.0 changes were validated against real production builds, and BOTH
+found real bugs that Sass-level testing missed:
+
+1. **Vite 5 + React + Vue** (`additionalData` config, CSS Modules, scoped
+   styles): esbuild minification reordered a same-type division into invalid
+   CSS -> fixed by division-first emission (invariant 4b).
+2. **Next.js 14 App Router** (`sassOptions.additionalData`, globals + CSS
+   Modules compiled separately): cssnano dropped static fallbacks from plain
+   declaration pairs -> fixed by the @supports barrier (invariant 3).
+
+If you change emission code, repeat at least the Next.js + Vite builds and
+diff the production CSS for: fallback pairs present, `@supports` conditions
+valid, no reordered/invalid calc(), custom breakpoints in every chunk.
+
 ## Sanity checks before publishing
 
 1. `npm test` green.
@@ -109,8 +137,9 @@ eyeball `regression.css` - tablet expressions should read
    (enforced by the `files` allowlist in package.json plus `.npmignore`).
 4. Update `CHANGELOG.md` and the version in `package.json` and the
    `index.scss` header together.
-5. Search the generated CSS for `var(`, `@supports`, `)px`, and `/ 19\d0px`
-   style division-by-length patterns - all must be absent.
+5. Search the generated CSS for `var(`, `)px`, and `/ 19\d0px`-style
+   division-by-length patterns - all must be absent. `@supports` barriers
+   around fluid declarations are EXPECTED (see invariant 3).
 
 ## House rules
 

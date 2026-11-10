@@ -153,10 +153,70 @@ test("px values are emitted as pure vw lengths with a static fallback", () => {
   assertIncludes(defaultsCss(), "font-size: 2.5vw;", "48px at 1920 = 2.5vw");
 });
 
-test("output contains no var(), no @supports and no division-by-length", () => {
+test("output contains no var() and no division-by-length; fluids are @supports-wrapped", () => {
   assertExcludes(defaultsCss(), "var(", "no CSS variables");
-  assertExcludes(defaultsCss(), "@supports", "no @supports wrappers");
+  assertIncludes(defaultsCss(), "@supports (font-size: 2.5vw)", "@supports barrier");
   assertExcludes(defaultsCss(), "100vw / 1920px", "no division by a length");
+});
+
+/**
+ * Minifier-barrier invariant: no plain (non-@supports) rule may declare the
+ * same property twice - aggressive minifiers (cssnano in Next.js/CRA) drop
+ * the earlier declaration in that case, silently deleting static fallbacks.
+ */
+function assertNoDuplicatePropertiesInPlainRules(css, label) {
+  const stack = []; // "rule" | "media" | "supports"
+  const seen = [];
+  const violations = [];
+  let header = "";
+  const tokens = css.replace(/\/\*[\s\S]*?\*\//g, "").split(/([{}])/);
+  for (const token of tokens) {
+    if (token === "{") {
+      const h = header.trim();
+      stack.push(
+        h.startsWith("@supports") ? "supports" : h.startsWith("@media") ? "media" : "rule"
+      );
+      seen.push({});
+      header = "";
+    } else if (token === "}") {
+      stack.pop();
+      seen.pop();
+    } else {
+      header = token;
+      // Declarations live only in plain rule blocks; anything inside @supports
+      // is exempt (that is exactly the minifier barrier the mixin emits).
+      if (stack.length && stack[stack.length - 1] === "rule") {
+        for (const line of token.split(";")) {
+          const m = line.match(/^\s*([a-zA-Z-]+)\s*:/);
+          if (m) {
+            const scope = seen[seen.length - 1];
+            if (scope[m[1]]) {
+              violations.push(`${m[1]} declared twice in one plain rule`);
+            }
+            scope[m[1]] = true;
+          }
+        }
+      }
+    }
+  }
+  assert(
+    violations.length === 0,
+    `${label}: minifier would prune fallbacks - ${violations.join("; ")}\n${css}`
+  );
+}
+
+test("fallback pairs are minifier-proof (no duplicate properties in plain rules)", () => {
+  const multiSrc = `
+@use "responsive-scale-mixins" as rsm;
+.a {
+  @include rsm.responsive-scale(padding, 32 48, 16 24);
+  @include rsm.responsive-scale(margin-top, -10, -20);
+  @include rsm.responsive-scale(font-size, 48, 24);
+  @include rsm.responsive-scale(font-size, 3, 2, rem);
+  @include rsm.responsive-scale(width, 50, 30, vw);
+}
+`;
+  assertNoDuplicatePropertiesInPlainRules(compile(multiSrc).css, "multi-property output");
 });
 
 test("tablet interpolation is continuous at both boundaries", () => {
@@ -260,6 +320,46 @@ test("wrapper-file pattern propagates config into every compilation", () => {
   }
 });
 
+// ----- 3b. additionalData injection (Next.js / Vite / Vue / Astro pattern) --
+
+test("additionalData injection gives separately compiled stylesheets the same widths", () => {
+  // Frameworks prepend this snippet to EVERY compiled stylesheet and compile
+  // each file independently - simulated here exactly.
+  const additionalData = `@use "responsive-scale-mixins" as rsm with (
+  $rsm-desktop-width: 1440px,
+  $rsm-mobile-width: 375px
+);
+`;
+  const globals = compile(`${additionalData}:root { @include rsm.responsive-scale-variables(); }`).css;
+  const component = compile(`${additionalData}.card { @include rsm.responsive-scale(font-size, 48, 24); }`).css;
+
+  assertIncludes(globals, "--computed-scale-factor: calc(100vw / 1440);", "globals vars");
+  assertIncludes(component, "min-width: 375px) and (max-width: 1439px", "component tablet MQ");
+  assertIncludes(component, "max-width: 374px", "component mobile MQ");
+});
+
+test("own plain @use coexists with injected configuration; double-config errors clearly", () => {
+  const additionalData = `@use "responsive-scale-mixins" as rsm with ($rsm-mobile-width: 375px);\n`;
+  const plain = compile(
+    `${additionalData}@use "responsive-scale-mixins" as rsm2;\n.b { @include rsm2.responsive-scale(font-size, 48, 24); }`
+  ).css;
+  assertIncludes(plain, "min-width: 375px) and (max-width: 1919px", "plain @use reuses injected config");
+
+  let errored = false;
+  try {
+    compile(
+      `${additionalData}@use "responsive-scale-mixins" as rsm with ($rsm-desktop-width: 1200px);`
+    );
+  } catch (err) {
+    errored = true;
+    assert(
+      String(err.message).includes("already loaded"),
+      `unexpected error: ${err.message}`
+    );
+  }
+  assert(errored, "expected double configuration to error");
+});
+
 // ----- 4. Fallback toggles --------------------------------------------------
 
 test("responsive-scale-no-fallback emits only the fluid declarations", () => {
@@ -270,6 +370,7 @@ test("responsive-scale-no-fallback emits only the fluid declarations", () => {
   assertExcludes(css, "font-size: 48px;", "no static fallback");
   assertIncludes(css, "font-size: 2.5vw;", "fluid value");
   assertExcludes(css, "font-size: 24px;", "no tablet/mobile fallbacks");
+  assertExcludes(css, "@supports", "no barrier without fallbacks");
 });
 
 test("global fallback disable via module configuration", () => {
@@ -279,6 +380,7 @@ test("global fallback disable via module configuration", () => {
 `);
   assertExcludes(css, "font-size: 48px;", "no static fallback");
   assertIncludes(css, "font-size: 2.5vw;", "fluid value");
+  assertExcludes(css, "@supports", "no barrier without fallbacks");
 });
 
 // ----- 5. Unit handling ------------------------------------------------------
@@ -293,8 +395,8 @@ test("unit-preserving units keep their unit (rem)", () => {
   assertIncludes(css, "font-size: calc(2rem / 390px * 100vw);", "mobile fluid");
   assertIncludes(
     css,
-    "font-size: calc(2rem + (100vw - 390px) * ((3rem - 2rem) / (1920px - 390px)));",
-    "tablet interpolation preserves rem semantics"
+    "font-size: calc(2rem + (3rem - 2rem) / (1920px - 390px) * (100vw - 390px));",
+    "tablet interpolation preserves rem semantics (division-first, minify-safe)"
   );
 });
 
