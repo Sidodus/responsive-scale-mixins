@@ -44,9 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Live demo page** (`docs/demo/`), deployable to GitHub Pages via the
   included `.github/workflows/deploy-demo.yml`.
 - **Release automation**: `.github/workflows/release.yml` - pushing a `v*`
-  tag runs the test suite, verifies the tag matches `package.json`, publishes
-  to npm (with provenance) and creates the GitHub Release. Requires the
-  `NPM_TOKEN` repository secret.
+  tag verifies the tag matches `package.json`, runs the test suite, validates
+  the tarball and creates the GitHub Release. npm publishing stays a manual
+  maintainer step.
 
 ## [2.3.0] - 2026-11-10
 
