@@ -5,6 +5,49 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-11-10
+
+### Added
+
+- **Clamp bounds**: `$min` / `$max` parameters on `responsive-scale()` (and
+  `responsive-scale-no-fallback()`) bound the fluid scaling:
+
+  ```scss
+  @include rsm.responsive-scale(font-size, 48, 24, $min: 24, $max: 48);
+  // -> clamp(24px, <fluid>, 48px) on every fluid declaration
+  ```
+
+  The classic "never smaller than the mobile design value, never larger than
+  the desktop design value" pattern is `$min: <mobile-value>, $max:
+  <desktop-value>`. One-sided bounds emit `max()` / `min()`. Bounds apply to
+  the fluid declarations only - static fallbacks keep the design values - and
+  work with all units (bounds share the `$unit` parameter). Verified to
+  survive cssnano (Next.js) and esbuild (Vite) minification unchanged.
+- **Breakpoint map configuration**: an alternative to the individual width
+  variables:
+
+  ```scss
+  @use "responsive-scale-mixins" as rsm with (
+    $rsm-breakpoints: (desktop: 1440px, tablet: 768px, mobile: 375px)
+  );
+  ```
+
+  `desktop` and `mobile` are required, `tablet` is optional. Validated at
+  load time (unknown keys, missing keys, inverted widths, and mixing the two
+  configuration forms all fail with clear errors).
+- **`breakpoints()` function** returning the effective design widths as a
+  map, for building your own media queries aligned with the mixins:
+
+  ```scss
+  @media (min-width: map.get(rsm.breakpoints(), desktop)) { ... }
+  ```
+- **Live demo page** (`docs/demo/`), deployable to GitHub Pages via the
+  included `.github/workflows/deploy-demo.yml`.
+- **Release automation**: `.github/workflows/release.yml` - pushing a `v*`
+  tag runs the test suite, verifies the tag matches `package.json`, publishes
+  to npm (with provenance) and creates the GitHub Release. Requires the
+  `NPM_TOKEN` repository secret.
+
 ## [2.3.0] - 2026-11-10
 
 ### Added

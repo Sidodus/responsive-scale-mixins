@@ -15,7 +15,7 @@ npm test
 # or: node test/run-tests.js
 ```
 
-What it covers (30 assertions):
+What it covers (41 assertions):
 
 - Default breakpoints are derived from the module defaults (390px / 1919px / 389px)
 - `@use ... with (...)` configuration drives calc expressions AND breakpoints
@@ -27,6 +27,8 @@ What it covers (30 assertions):
 - Fallback pairs, no-fallback mixin, global fallback disable, and the
   minifier-barrier invariant (no duplicate properties in plain rules)
 - additionalData injection pattern (Next.js/Vite) incl. double-config error
+- v2.4: clamp() bounds (two-sided/one-sided, all units, lists) and the
+  breakpoint-map configuration incl. conflict validation
 - Unit handling: px→vw, rem/em/vw/vh unit-preserving forms, cm conversion, negatives
 - List values per-element + clear errors for mismatched lists
 - Percentage mode (static desktop/mobile, interpolated tablet)

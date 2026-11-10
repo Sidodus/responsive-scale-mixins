@@ -1,0 +1,84 @@
+// Demo stylesheet for the GitHub Pages showcase.
+// Compiled in CI via: npx sass --load-path=node_modules demo.scss demo.css
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-breakpoints: (desktop: 1440px, mobile: 390px)
+);
+
+// The page layout itself is fixed - the mixins drive the typography/spacing.
+
+.hero {
+  @include rsm.responsive-scale(padding, 96 40, 48 20, $min: 40, $max: 96);
+  text-align: center;
+}
+
+.hero-title {
+  // Unbounded: keeps scaling beyond the design range
+  @include rsm.responsive-scale(font-size, 96, 40);
+}
+
+.hero-sub {
+  @include rsm.responsive-scale(font-size, 20, 15);
+  margin-inline: auto;
+  max-width: 40em;
+}
+
+.viewport-readout {
+  @include rsm.responsive-scale(font-size, 16, 13);
+  @include rsm.responsive-scale(margin-bottom, 24, 14);
+}
+
+.bp-badge {
+  display: inline-block;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  @include rsm.responsive-scale(padding, 4 12, 2 8, $min: 2, $max: 12);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  @include rsm.responsive-scale(padding, 48 32, 20 16, $min: 20, $max: 48);
+}
+
+.card {
+  @include rsm.responsive-scale(padding, 32, 20, $min: 20, $max: 32);
+  border: 1px solid rgba(120, 130, 255, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.card-title {
+  @include rsm.responsive-scale(font-size, 24, 18, $min: 18, $max: 24);
+  @include rsm.responsive-scale(margin-bottom, 12, 8, $min: 8, $max: 12);
+}
+
+.card-body {
+  @include rsm.responsive-scale(font-size, 16, 14, $min: 14, $max: 16);
+  opacity: 0.85;
+}
+
+.demo-value {
+  font-family: ui-monospace, monospace;
+  @include rsm.responsive-scale(font-size, 22, 16, $min: 16, $max: 22);
+  @include rsm.responsive-scale(margin-top, 16, 10, $min: 10, $max: 16);
+}
+
+.clamped-pad {
+  @include rsm.responsive-scale(padding, 40 32, 16 12, $min: 16, $max: 40);
+  border: 1px dashed rgba(120, 130, 255, 0.5);
+  border-radius: 10px;
+  font-family: ui-monospace, monospace;
+  @include rsm.responsive-scale(font-size, 14, 12, $min: 12, $max: 14);
+}
+
+.clamped-rem {
+  @include rsm.responsive-scale(font-size, 3, 2, rem, $min: 1.5, $max: 3);
+  font-weight: 700;
+}
+
+.footer {
+  @include rsm.responsive-scale(padding, 32, 16, $min: 16, $max: 32);
+  text-align: center;
+  @include rsm.responsive-scale(font-size, 14, 12, $min: 12, $max: 14);
+}

@@ -50,6 +50,23 @@ Imagine building a beautiful UI in Figma, then seeing it perfectly scale on **ev
 
 Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Your favorite framework + perfect responsive design = ❤️
 
+## 🚀 What's New in v2.4.0
+
+**Bounded fluid scaling and one-line configuration.**
+
+- **✅ Clamp bounds**: pass `$min` / `$max` to keep fluid values inside a
+  range - `responsive-scale(font-size, 48, 24, $min: 24, $max: 48)` emits
+  `clamp(24px, <fluid>, 48px)` on every breakpoint. One-sided bounds emit
+  `max()` / `min()`. Verified to survive cssnano (Next.js) and esbuild (Vite)
+  minification unchanged; pre-2020 browsers simply keep the static fallback.
+- **✅ Breakpoint map configuration**: `@use ... with ($rsm-breakpoints:
+  (desktop: 1440px, mobile: 375px))` as a one-line alternative to the three
+  individual width variables.
+- **✅ `breakpoints()` function**: read the effective design widths to align
+  your own media queries.
+- **✅ Live demo**: fluid-scaling showcase deployable to GitHub Pages
+  ([`docs/demo/`](docs/demo/index.html)).
+
 ## 🚀 What's New in v2.3.0
 
 **Design widths are now real module configuration - and the math is finally continuous.**
@@ -114,6 +131,8 @@ three module variables (defaults: desktop `1920px`, tablet `768px`, mobile
 
 ### Option A (recommended): `@use ... with (...)`
 
+Individual width variables:
+
 ```scss
 // Any stylesheet that needs the mixins
 @use "responsive-scale-mixins" as rsm with (
@@ -126,6 +145,17 @@ three module variables (defaults: desktop `1920px`, tablet `768px`, mobile
   @include rsm.responsive-scale(font-size, 48, 24);
 }
 ```
+
+...or the equivalent one-map form (v2.4):
+
+```scss
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-breakpoints: (desktop: 1440px, tablet: 768px, mobile: 375px)
+);
+```
+
+`desktop` and `mobile` are required, `tablet` is optional. The two forms are
+mutually exclusive - mixing them fails with a clear error.
 
 Module configuration is applied when the module is loaded, so it works
 regardless of rule order and reaches **every** stylesheet compiled with that
@@ -386,7 +416,7 @@ For scoped component styles, use the wrapper-file pattern or `additionalData`
 runtime fallback flag. Parameter defaults follow the module configuration, so
 calling it with no arguments never resets your `@use with` widths.
 
-### `responsive-scale($property, $desktop-value, $mobile-value, $unit, $is-percentage, $desktop-relative, $mobile-relative, $important, $enable-fallback)`
+### `responsive-scale($property, $desktop-value, $mobile-value, $unit, $is-percentage, $desktop-relative, $mobile-relative, $important, $enable-fallback, $min, $max)`
 
 The main responsive scaling mixin.
 
@@ -400,6 +430,28 @@ The main responsive scaling mixin.
 - `$desktop-relative` / `$mobile-relative`: the base values for percentage mode
 - `$important`: `true`, or a string like `" !important"`
 - `$enable-fallback`: `null` (follow the global flag), `true`, or `false`
+- `$min` / `$max` (v2.4): optional unitless bounds (same `$unit`) applied to every fluid declaration:
+
+```scss
+// Classic bounded pattern: never smaller than the mobile value,
+// never larger than the desktop value
+.hero-title {
+  @include rsm.responsive-scale(font-size, 48, 24, $min: 24, $max: 48);
+}
+// -> clamp(24px, <fluid>, 48px) on desktop, tablet and mobile branches
+
+// One-sided bounds emit max() / min():
+.element {
+  @include rsm.responsive-scale(padding, 32 48, 16 24, $max: 48);
+}
+// -> min(48px, <fluid>) on each scaled element
+```
+
+Bounds apply to the fluid declarations only - static fallbacks keep the
+design values. Bounds share the `$unit` and cannot be combined with
+`$is-percentage`. On browsers without `clamp()` support (pre-2020) the
+declaration is dropped and the static fallback applies, exactly like every
+other fluid form.
 
 **Generated CSS** (default fallbacks on):
 
@@ -461,6 +513,16 @@ for aligning your own media queries:
 @media (min-width: rsm.breakpoint("desktop")) { ... }
 ```
 
+### `breakpoints()` (v2.4)
+
+Returns the effective design widths as a map (after any `$rsm-breakpoints`
+configuration):
+
+```scss
+@use "sass:map";
+@media (min-width: map.get(rsm.breakpoints(), desktop)) { ... }
+```
+
 ### `strip-units($value)`, `scaled-value($val, $width, $unit)`, `tablet-interpolation($desktop-value, $mobile-value, $unit)`, `mobile-scale-expression($mobile-value, $unit)`
 
 Utility functions used by the mixins; exposed for advanced use.
@@ -514,6 +576,16 @@ Utility functions used by the mixins; exposed for advanced use.
 }
 ```
 
+### Bounded (Clamped) Scaling
+
+```scss
+// Value never shrinks below 24px and never grows above 48px -
+// even on ultra-narrow (≤390px) or ultra-wide (≥1920px) screens
+.hero-title {
+  @include rsm.responsive-scale(font-size, 48, 24, $min: 24, $max: 48);
+}
+```
+
 ### Override Specificity
 
 ```scss
@@ -526,15 +598,17 @@ Utility functions used by the mixins; exposed for advanced use.
 
 | Browser | Behavior |
 | --- | --- |
-| Chrome / Edge / Firefox / Safari (2023+) | Full fluid scaling everywhere |
-| Chrome / Edge / Firefox / Safari (older) | Fluid px scaling; static values for rem/em/%/vh |
-| Browsers with `vw` but without `calc()` (IE9+) | Fluid px scaling |
+| Chrome / Edge / Firefox / Safari (2023+) | Full fluid scaling everywhere ([`calc()` same-type division](https://caniuse.com/calc)) |
+| Chrome / Edge / Firefox / Safari (2013–2022) | Fluid px scaling; static values for rem/em/%/vh |
+| Chrome 79+ / Firefox 75+ / Safari 13.1+ (2020) | `$min`/`$max` bounds honored via [`clamp()`](https://caniuse.com/css-clamp) / [`min()`/`max()`](https://developer.mozilla.org/docs/Web/CSS/min) |
+| Browsers with `vw` but without `calc()` (IE9+, [viewport units](https://caniuse.com/viewport-units)) | Fluid px scaling |
 | Very old browsers (no `vw`) | Static fallback values at each breakpoint |
-| IE 11 | Fluid px scaling; static for unit-preserving values |
+| IE 11 | Fluid px scaling; static for unit-preserving values and bounds |
 
 Every declaration ships with a static fallback, so **nothing is ever blank** -
 the original Firefox Mobile bug is structurally impossible now that the output
-contains neither CSS variables nor `@supports` gates.
+contains no CSS variables, and unsupported fluid forms (including `clamp()`
+bounds on pre-2020 browsers) simply fall back to the static value.
 
 ## 🔧 Troubleshooting
 
@@ -585,6 +659,32 @@ npx --yes sass test/test.scss test/test.css
 ```
 
 See [`test/TEST_README.md`](test/TEST_README.md) for details.
+
+### Live demo
+
+```bash
+# Local preview
+mkdir -p node_modules/responsive-scale-mixins && cp index.scss node_modules/responsive-scale-mixins/index.scss
+npx sass --load-path=node_modules docs/demo/demo.scss docs/demo/demo.css
+# then open docs/demo/index.html in a browser
+```
+
+Pushing to `main` deploys `docs/demo/` to GitHub Pages automatically via
+[`.github/workflows/deploy-demo.yml`](.github/workflows/deploy-demo.yml)
+(one-time setup: **Settings → Pages → Source: "GitHub Actions"**).
+
+### Releasing (maintainers)
+
+Publishing is automated by
+[`.github/workflows/release.yml`](.github/workflows/release.yml). To release:
+
+1. Bump the version in `package.json` and the `index.scss` header, update `CHANGELOG.md`, commit
+2. Tag and push: `git tag v2.4.0 && git push origin v2.4.0`
+3. The workflow verifies the tag matches `package.json`, runs the test suite, validates the tarball, publishes to npm with provenance, and creates the GitHub Release
+
+One-time setup: add an npm **Granular Access Token** (read/write on the
+package) as the repository secret `NPM_TOKEN`, with publishing settings that
+allow the token without 2FA.
 
 ## 🤝 Contributing
 
