@@ -708,6 +708,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
+- 🌐 **Live Demo: [https://sidodus.github.io/responsive-scale-mixins/](https://sidodus.github.io/responsive-scale-mixins/)**
 - 📧 Email: saheedodulaja@gmail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/Sidodus/responsive-scale-mixins/issues)
 - 📖 Docs: [Full Documentation](https://github.com/Sidodus/responsive-scale-mixins#readme)
