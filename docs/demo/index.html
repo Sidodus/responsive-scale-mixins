@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Scale Mixins — Live Demo</title>
+    <link rel="stylesheet" href="demo.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <p class="viewport-readout">
+        Viewport: <strong id="vw">—</strong>px
+        <span class="bp-badge" id="bp">—</span>
+      </p>
+      <h1 class="hero-title">Resize me.</h1>
+      <p class="hero-sub">
+        This page uses <code>responsive-scale-mixins</code> exclusively — no
+        hand-written media queries. Design widths: desktop 1440px, mobile 390px.
+      </p>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2 class="card-title">Unbounded fluid scaling</h2>
+        <p class="card-body">
+          Values keep scaling proportionally below the mobile design width and
+          above the desktop design width.
+        </p>
+        <p class="demo-value unbounded" data-expected>font-size: 48 → 24</p>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Clamped scaling (v2.4)</h2>
+        <p class="card-body">
+          Same curve, bounded with <code>$min</code> / <code>$max</code> — the
+          value never leaves [24px, 48px] on any screen.
+        </p>
+        <p class="demo-value clamped" data-expected>clamp(24px, …, 48px)</p>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Bounded spacing</h2>
+        <p class="card-body">
+          Works per element on shorthand values too, and with one-sided
+          <code>max()</code> bounds.
+        </p>
+        <div class="clamped-pad">padding: clamp(16px, …, 48px)</div>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Bounded fluid type (rem)</h2>
+        <p class="card-body">
+          Unit-preserving scaling with bounds — respects the user's root font
+          size and never exceeds the design range.
+        </p>
+        <p class="clamped-rem">Aa 3rem → 2rem, clamped</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>
+        <a href="https://www.npmjs.com/package/responsive-scale-mixins"
+          >responsive-scale-mixins</a
+        >
+        — MIT © Saheed Odulaja ·
+        <a href="https://github.com/Sidodus/responsive-scale-mixins">GitHub</a>
+      </p>
+    </footer>
+
+    <script>
+      const vw = document.getElementById("vw");
+      const bp = document.getElementById("bp");
+      function update() {
+        const w = window.innerWidth;
+        vw.textContent = w;
+        bp.textContent =
+          w >= 1440 ? "desktop range" : w >= 390 ? "interpolation range" : "mobile range";
+      }
+      update();
+      window.addEventListener("resize", update);
+    </script>
+  </body>
+</html>

@@ -383,6 +383,156 @@ test("global fallback disable via module configuration", () => {
   assertExcludes(css, "@supports", "no barrier without fallbacks");
 });
 
+// ----- 4b. Clamp bounds (v2.4) ----------------------------------------------
+
+test("two-sided clamp bounds wrap every fluid declaration", () => {
+  const { css } = compile(`
+@use "responsive-scale-mixins" as rsm;
+.a { @include rsm.responsive-scale(font-size, 48, 24, $min: 24, $max: 48); }
+`);
+  assertIncludes(css, "font-size: 48px;", "unclamped static fallback");
+  assertIncludes(css, "font-size: clamp(24px, 2.5vw, 48px);", "desktop clamp");
+  assertIncludes(
+    css,
+    "font-size: clamp(24px, calc(24px + (100vw - 390px) * 24 / 1530), 48px);",
+    "tablet clamp"
+  );
+  assertIncludes(css, "font-size: clamp(24px, 6.1538461538vw, 48px);", "mobile clamp");
+});
+
+test("one-sided bounds emit max()/min()", () => {
+  const { css: minOnly } = compile(`
+@use "responsive-scale-mixins" as rsm;
+.a { @include rsm.responsive-scale(font-size, 48, 24, $min: 20); }
+`);
+  assertIncludes(minOnly, "font-size: max(20px, 2.5vw);", "min-only");
+  assertExcludes(minOnly, "clamp(", "no clamp for one-sided bound");
+
+  const { css: maxOnly } = compile(`
+@use "responsive-scale-mixins" as rsm;
+.a { @include rsm.responsive-scale(font-size, 48, 24, $max: 56); }
+`);
+  assertIncludes(maxOnly, "font-size: min(56px, 2.5vw);", "max-only");
+});
+
+test("clamp works with unit-preserving units and stays division-first", () => {
+  const { css } = compile(`
+@use "responsive-scale-mixins" as rsm;
+.a { @include rsm.responsive-scale(font-size, 3, 2, rem, $min: 1.5, $max: 3); }
+`);
+  assertIncludes(
+    css,
+    "font-size: clamp(1.5rem, calc(3rem / 1920px * 100vw), 3rem);",
+    "rem clamp desktop"
+  );
+  assertIncludes(
+    css,
+    "font-size: clamp(1.5rem, calc(2rem + (3rem - 2rem) / (1920px - 390px) * (100vw - 390px)), 3rem);",
+    "rem clamp tablet"
+  );
+});
+
+test("clamp applies per element to list values", () => {
+  const { css } = compile(`
+@use "responsive-scale-mixins" as rsm;
+.a { @include rsm.responsive-scale(padding, 32 48, 16 24, $min: 16, $max: 48); }
+`);
+  assertIncludes(
+    css,
+    "padding: clamp(16px, 1.6666666667vw, 48px) clamp(16px, 2.5vw, 48px);",
+    "per-element clamp"
+  );
+});
+
+test("clamp errors: inverted bounds and percentage-mode conflict", () => {
+  compileExpectError(
+    `
+@use "responsive-scale-mixins" as rsm;
+.a { @include rsm.responsive-scale(font-size, 48, 24, $min: 40, $max: 20); }
+`,
+    "must not be greater"
+  );
+  compileExpectError(
+    `
+@use "responsive-scale-mixins" as rsm;
+.a { @include rsm.responsive-scale(letter-spacing, 1, 1, px, true, 48, 32, $min: 1); }
+`,
+    "cannot be combined with $is-percentage"
+  );
+});
+
+test("responsive-scale-no-fallback forwards clamp bounds", () => {
+  const { css } = compile(`
+@use "responsive-scale-mixins" as rsm;
+.a { @include rsm.responsive-scale-no-fallback(font-size, 48, 24, $min: 24, $max: 48); }
+`);
+  assertIncludes(css, "font-size: clamp(24px, 2.5vw, 48px);", "clamped fluid");
+  assertExcludes(css, "font-size: 48px;", "no static fallback");
+});
+
+// ----- 4c. Breakpoint map configuration (v2.4) -------------------------------
+
+test("$rsm-breakpoints map drives breakpoints, calc expressions and CSS variables", () => {
+  const { css } = compile(`
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-breakpoints: (desktop: 1440px, tablet: 900px, mobile: 375px)
+);
+.a { @include rsm.responsive-scale(font-size, 48, 24); }
+:root { @include rsm.responsive-scale-variables(); }
+`);
+  assertIncludes(css, "min-width: 375px) and (max-width: 1439px", "tablet MQ");
+  assertIncludes(css, "max-width: 374px", "mobile MQ");
+  assertIncludes(css, "font-size: 3.3333333333vw;", "desktop fluid");
+  assertIncludes(css, "--computed-tablet-scale-factor: calc(100vw / 900);", "tablet var");
+});
+
+test("breakpoints() exposes the effective widths", () => {
+  const { css } = compile(`
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-breakpoints: (desktop: 1200px, mobile: 360px)
+);
+@use "sass:map";
+@media (min-width: map.get(rsm.breakpoints(), desktop)) { .a { color: red; } }
+`);
+  assertIncludes(css, "min-width: 1200px", "breakpoints() map readout");
+});
+
+test("$rsm-breakpoints conflicts with individual width variables", () => {
+  compileExpectError(
+    `
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-desktop-width: 1200px,
+  $rsm-breakpoints: (desktop: 1440px, mobile: 375px)
+);
+`,
+    "not both"
+  );
+});
+
+test("$rsm-breakpoints validates unknown keys and missing required keys", () => {
+  compileExpectError(
+    `
+@use "responsive-scale-mixins" as rsm with ($rsm-breakpoints: (desktop: 1440px, tiny: 100px));
+`,
+    "only the keys"
+  );
+  compileExpectError(
+    `
+@use "responsive-scale-mixins" as rsm with ($rsm-breakpoints: (desktop: 1440px));
+`,
+    "requires at least"
+  );
+});
+
+test("$rsm-breakpoints validates inverted widths", () => {
+  compileExpectError(
+    `
+@use "responsive-scale-mixins" as rsm with ($rsm-breakpoints: (desktop: 300px, mobile: 900px));
+`,
+    "must be greater"
+  );
+});
+
 // ----- 5. Unit handling ------------------------------------------------------
 
 test("unit-preserving units keep their unit (rem)", () => {

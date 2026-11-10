@@ -88,7 +88,16 @@ variables.
    Media queries must use compile-time constants (CSS cannot put `var()` in
    media queries) - this is why configuration is the only propagation channel.
 
-8. **Backwards compatibility of the public API.** `responsive-scale()`,
+8. **Clamp bounds are emitted verbatim (string.unquote), never as Sass
+   calc-family literals.** Sass re-parses literal clamp()/min()/max() and its
+   simplifier could mangle same-type-division forms inside. Bounds share the
+   $unit, apply to fluid declarations only (static fallbacks keep design
+   values), and cannot combine with $is-percentage.
+9. **$rsm-breakpoints map is applied at module load, after the helper
+    functions are defined** (top-level code runs top-to-bottom). It is
+    mutually exclusive with the individual $rsm-*-width variables - mixing
+    them must fail with a clear error.
+10. **Backwards compatibility of the public API.** `responsive-scale()`,
    `responsive-scale-no-fallback()`, `responsive-scale-variables()`,
    `strip-units()`, `scaled-value()`, `tablet-interpolation()`,
    `mobile-scale-expression()` keep their signatures; the legacy `@import` +
@@ -98,7 +107,7 @@ variables.
 
 ```bash
 npm install          # installs devDependencies (sass)
-npm test             # assertion suite: 30 tests, must be all green
+npm test             # assertion suite: 41 tests, must be all green
 ```
 
 Manual visual check:
