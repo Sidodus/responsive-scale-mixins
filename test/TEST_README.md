@@ -1,257 +1,102 @@
-# 🧪 Responsive Scale Mixins - Test Suite
+# Testing Guide
 
-This directory contains comprehensive tests for the Responsive Scale Mixins library. These tests verify that the SCSS mixins work correctly across different units, breakpoints, and use cases.
+There are two layers of testing in this repository:
 
-## 📁 Test Files
+1. **The assertion suite** (`npm test`) - compiles representative stylesheets
+   through the Dart Sass JS API and asserts on the generated CSS. This is the
+   primary gate; CI runs it on every push/PR.
+2. **The manual visual test page** (`test.sh` / `test.html`) - for eyeballing
+   real browser rendering across viewport sizes.
 
-### Core Test Files
-
-- **`test.scss`** - Main test file using SCSS mixins
-- **`test.css`** - Compiled CSS output (auto-generated)
-- **`test.html`** - Visual test page for browser testing
-- **`test.sh`** - Automated test script (cross-platform)
-
-### Generated Files (Auto-created)
-
-- **`test.css.map`** - Source map for debugging
-
-## 🚀 Running Tests
-
-### Quick Test (Recommended)
+## Automated Suite
 
 ```bash
-# Cross-platform (Unix/Linux/macOS/Windows)
-cd test && ./test.sh
+npm test
+# or: node test/run-tests.js
 ```
 
-OR From the root folder
+What it covers (27 assertions):
+
+- Default breakpoints are derived from the module defaults (390px / 1919px / 389px)
+- `@use ... with (...)` configuration drives calc expressions AND breakpoints
+- The wrapper-file pattern propagates widths into separately compiled stylesheets
+- Interpolation continuity at the breakpoint boundaries (numeric verification)
+- Mid-range values are not inflated (1366px laptop ≈ 39.3px for a 48px design)
+- No `var()`, no `@supports`, no division-by-length in the output
+- Static fallback pairs, `responsive-scale-no-fallback`, global fallback disable
+- Unit handling: px→vw, rem/em/vw/vh unit-preserving forms, cm conversion, negatives
+- List values per-element + clear errors for mismatched lists
+- Percentage mode (static desktop/mobile, interpolated tablet)
+- Validation errors (unitless values, px widths, inverted widths)
+- Legacy `@import` + variables-before-import pattern
+- `responsive-scale-variables()` output and `breakpoint()` helper
+- Zero deprecation warnings from current Dart Sass
+
+## Manual Visual Testing
 
 ```bash
-# Cross-platform (Unix/Linux/macOS/Windows)
+# Cross-platform
 test/test.sh
 ```
 
-> Note: `test.sh` is now directory-aware and changes into the `test/` folder before compiling, so it will work even when run from the repository root.
+This compiles `test.scss` → `test.css` and opens `test.html` in your browser.
 
-This will:
-
-1. ✅ Compile `test.scss` to `test.css`
-2. ✅ Open `test.html` in your default browser
-3. ✅ Display testing instructions
-
-### Simplified Fallback Testing
-
-For testing the new v2.1.0 fallback functionality:
+Manual steps if `sass` is not installed globally:
 
 ```bash
-# Test fallback generation
-sass test/fallback-test.scss test/fallback-test.css
-
-# View generated CSS
-cat test/fallback-test.css
+npx --yes sass test/test.scss test/test.css
+# then open test/test.html manually
 ```
 
-This will show both fallback and modern CSS declarations for browser compatibility testing.
+### What to verify in the browser
 
-### Manual Testing
+Resize the window across the default breakpoints
+(desktop design width 1920px, mobile design width 390px):
 
-```bash
-# Compile SCSS
-sass test.scss test.css
+- **Mobile (≤389px)**: proportional scaling around the mobile design value
+- **Tablet (390px-1919px)**: continuous interpolation between mobile and
+  desktop values - no jumps at 390px or 1920px, values in between are
+  *between* the two design values (never larger than the desktop value)
+- **Desktop (≥1920px)**: proportional scaling around the desktop design value
 
-# Open test page
-# - On Linux: xdg-open test.html
-# - On macOS: open test.html
-# - On Windows: start test.html
-```
+Use DevTools → Computed tab to confirm exact sizes at the boundary widths.
 
-## 🧪 What Gets Tested
-
-### 1. **Unit Support**
-
-- ✅ **rem units**: `@include responsive-scale(font-size, 2, 1.5, rem)`
-- ✅ **em units**: `@include responsive-scale(font-size, 1, 0.8, em)`
-- ✅ **px units**: `@include responsive-scale(width, 200, 150, px)`
-- ✅ **Percentage-based**: `@include responsive-scale(letter-spacing, -1, -0.5, px, true, 16, 14)`
-
-### 2. **Responsive Breakpoints**
-
-- ✅ **Desktop** (≥992px): Scales from 1440px design width
-- ✅ **Tablet** (768px-991px): Interpolated values between desktop/mobile
-- ✅ **Mobile** (≤767px): Scales from 375px design width
-
-### 3. **CSS Variable Generation**
-
-- ✅ Generic scale factors: `--computed-scale-factor`
-- ✅ Unit appending: `* 2rem`, `* 1em`, `* 200px`
-- ✅ Media query support for all breakpoints
-
-### 4. **Visual Verification**
-
-- ✅ Browser rendering at different viewport sizes
-- ✅ DevTools computed values verification
-- ✅ Responsive scaling behavior
-
-## 📋 Test Checklist
-
-### Compilation Tests
-
-- [ ] `test.scss` compiles without errors
-- [ ] No SCSS syntax errors
-- [ ] All mixins resolve correctly
-- [ ] CSS variables are generated properly
-
-### Unit Tests
-
-- [ ] **rem units**: Scale with root font-size
-- [ ] **em units**: Scale with parent font-size
-- [ ] **px units**: Absolute scaling
-- [ ] **Percentage**: Correct relative calculations
-
-### Breakpoint Tests
-
-- [ ] **Desktop** (≥992px): Values match design specifications
-- [ ] **Tablet** (768-991px): Smooth interpolation
-- [ ] **Mobile** (≤767px): Mobile-optimized values
-
-### Browser Tests
-
-- [ ] Visual scaling at each breakpoint
-- [ ] DevTools shows correct computed values
-- [ ] No CSS errors in console
-- [ ] Responsive behavior on window resize
-
-## 🔍 Expected CSS Output
-
-### Generated Variables
+### Expected output shapes
 
 ```css
-:root {
-  --computed-scale-factor: calc(100vw / 1440px);
-  --computed-tablet-scale-factor: calc(100vw / 768px);
-  --computed-mobile-scale-factor: calc(100vw / 375px);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-```
+/* px values: static fallback + pure vw fluid value */
+font-size: 48px;
+font-size: 2.5vw;
 
-### Generated Styles
-
-```css
-/* rem units */
-font-size: calc(var(--computed-scale-factor) * 2rem);
-
-/* em units */
-font-size: calc(var(--computed-scale-factor) * 1em);
-
-/* px units */
-width: calc(var(--computed-scale-factor) * 200px);
-
-/* Tablet breakpoint */
-@media screen and (min-width: 768px) and (max-width: 991px) {
-  font-size: calc(
-    var(--computed-tablet-scale-factor) *
-      (1.5rem + var(--tablet-proportion-scale-factor) * (2rem - 1.5rem))
-  );
+/* tablet: continuous interpolation (unitless divisor - valid everywhere) */
+@media screen and (min-width: 390px) and (max-width: 1919px) {
+  font-size: 24px;
+  font-size: calc(24px + (100vw - 390px) * 24 / 1530);
 }
 
-/* Mobile breakpoint */
-@media screen and (max-width: 767px) {
-  font-size: calc(var(--computed-mobile-scale-factor) * 1.5rem);
-}
+/* unit-preserving values (rem/em/%/vw/vh): verbatim same-type division */
+font-size: 3rem;
+font-size: calc(3rem / 1920px * 100vw);
 ```
 
-## 🐛 Troubleshooting
-
-### Compilation Issues
-
-```bash
-# Check Sass version
-sass --version
-
-# Reinstall Sass if needed
-npm install -g sass
-
-# Clear any cached files
-rm -f test.css test.css.map
-```
-
-### Browser Issues
-
-- **Page not loading**: Check that `test.css` exists and is linked correctly
-- **Styles not applying**: Verify CSS variables are defined in `:root`
-- **Scaling not working**: Check viewport width in DevTools
-
-### Test Script Issues
-
-```bash
-# Make script executable (Linux/macOS)
-chmod +x test.sh
-
-# On Windows: If test.bat fails, try using test.sh
-chmod +x test.sh  # Make executable
-./test.sh         # Run the shell script
-
-# Check browser commands
-which xdg-open  # Linux
-which open      # macOS
-which start     # Windows (in bash)
-```
-
-## 📊 Test Coverage
-
-### Units Tested
-
-- [x] px (pixels)
-- [x] rem (root em)
-- [x] em (element em)
-- [x] % (percentage-based calculations)
-
-### Breakpoints Tested
-
-- [x] Desktop (≥992px)
-- [x] Tablet (768px-991px)
-- [x] Mobile (≤767px)
-
-### Features Tested
-
-- [x] Single value scaling
-- [x] Multi-value scaling (padding, margin)
-- [x] Percentage-based properties
-- [x] Media query generation
-- [x] CSS variable integration
-
-## 🤝 Contributing to Tests
-
-When adding new tests:
-
-1. **Update `test.scss`** with new mixin calls
-2. **Update `test.html`** with corresponding HTML elements
-3. **Update this README** with new test cases
-4. **Test across all breakpoints** and units
-5. **Verify in multiple browsers**
-
-### Test File Structure
+## Test Files
 
 ```
-test.scss      # SCSS mixin calls
-├── Variables  # @include responsive-scale-variables()
-├── Mixins     # @include responsive-scale() calls
-└── Output     # Compiled to test.css
-
-test.html      # Visual test page
-├── Styles     # Links to test.css
-├── Content    # HTML elements to test
-└── Scripts    # Viewport width display
+test/
+├── run-tests.js        # assertion suite (npm test)
+├── test.scss           # visual test page styles
+├── test.html           # visual test page
+├── regression.scss     # regression case from v2.2.x era
+├── fallback-test.scss  # fallback demo case
+└── test.sh             # convenience script for the visual page
 ```
 
-## 📞 Support
+## Contributing to Tests
 
-- **Issues**: [GitHub Issues](https://github.com/Sidodus/responsive-scale-mixins/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Sidodus/responsive-scale-mixins/discussions)
-- **Documentation**: [Main README](../README.md)
+When changing output-affecting code in `index.scss`:
 
----
-
-**Test Suite Version**: 2.1.0
-**Last Updated**: January 31 2026
-**Tested With**: Dart Sass 1.97.2
+1. Run `npm test` - add assertions for any new behavior
+2. Recompile `test.scss`/`regression.scss` and inspect the CSS
+3. Check the banned patterns are absent: `var(`, `@supports`, `)px`,
+   division by a length
+4. Verify visually in a browser across the breakpoint boundaries

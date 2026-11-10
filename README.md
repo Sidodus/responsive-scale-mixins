@@ -11,15 +11,15 @@ Imagine building a beautiful UI in Figma, then seeing it perfectly scale on **ev
 [![npm](https://img.shields.io/npm/v/responsive-scale-mixins)](https://www.npmjs.com/package/responsive-scale-mixins)
 [![npm](https://img.shields.io/npm/dm/responsive-scale-mixins)](https://www.npmjs.com/package/responsive-scale-mixins)
 
-## 🔥 **Why Developers Love It**
+## 🔥 Why Developers Love It
 
-### **🎯 Pixel-Perfect Figma Translation**
+### 🎯 Pixel-Perfect Figma Translation
 
 - Your Figma designs become reality, not approximations
 - Zero guessing, zero manual calculations
 - What you see in design tools is what users see on any device
 
-### **⚡ Revolutionary Simplicity**
+### ⚡ Revolutionary Simplicity
 
 ```scss
 // Before: 50+ lines of media queries
@@ -40,595 +40,405 @@ Imagine building a beautiful UI in Figma, then seeing it perfectly scale on **ev
 }
 ```
 
-### **🎨 Universal Unit Support**
+### 🎨 Universal Unit Support
 
 - **px, rem, em, vw, vh, %, cm, mm, in, pt, pc** - you name it, we scale it
 - Intelligent interpolation between desktop and mobile values
 - Perfect scaling from 320px phones to 8K displays
 
-### **🚀 Framework Agnostic**
+### 🚀 Framework Agnostic
 
 Works with React, Vue, Angular, Svelte, Next.js, Nuxt, Astro, and vanilla CSS. Your favorite framework + perfect responsive design = ❤️
 
-## 🚀 v2.2.2 - derive breakpoints from custom widths and fix invalid if()
+## 🚀 What's New in v2.3.0
 
-Previously, media query breakpoints were hardcoded (768px/991px/767px),
-so custom design widths passed to responsive-scale-variables() only
-affected the calc() expressions while the breakpoint ranges silently
-kept using the defaults. Breakpoints are now derived from the supplied
-mobile/desktop widths (tablet spans mobile-width to desktop-width - 1,
-mobile spans up to mobile-width - 1).
+**Design widths are now real module configuration - and the math is finally continuous.**
 
-Also replace the invalid if(sass(...): 1; else: 0) call inside
-responsive-scale-variables() with the standard if($cond, a, b) form;
-the invalid syntax broke compilation for every consumer.
+- **✅ Breakpoints that actually follow your widths**: set `$rsm-desktop-width` /
+  `$rsm-mobile-width` via Sass module configuration and BOTH the `calc()`
+  expressions and the media-query breakpoints follow - in every compiled
+  stylesheet, regardless of file or load order. Previously, widths set from
+  `globals.scss` silently failed to reach components compiled separately, and
+  the only workaround was editing the package source.
+- **✅ Continuous interpolation**: the tablet formula was mathematically broken
+  since v1 (it multiplied the interpolated value by `100vw / tablet-width`),
+  inflating mid-range values (~70px on a 1366px laptop for a 48px design) with
+  2-2.5x jumps at the breakpoint boundaries. The new curve is exactly the
+  linear blend between your mobile and desktop design values.
+- **✅ Stronger CSS output**: no `@supports` wrappers, no CSS variables, no
+  division-by-a-length (unsupported before 2023 *and* mangled into invalid CSS
+  by current Dart Sass). px-style values are emitted as pure vw lengths that
+  scale even in browsers without `calc()` support.
+- **✅ Zero-config requirement**: `responsive-scale-variables()` is now optional.
+- **✅ Clear validation errors** instead of silently invalid CSS.
 
-## 🚀 v2.2.1 - Universal Browser Compatibility (No Breaking Changes)
+See [CHANGELOG.md](CHANGELOG.md) for the full list and migration notes.
 
-**Automatic fallback generation for browsers without CSS variable support!**
+## 📱 How the Breakpoints Work
 
-### **✨ What's New**
+The design widths define a curve that is **continuous at every breakpoint**:
 
-- **Universal Browser Support**: Now works on Firefox Mobile, old Android browsers, and budget devices
-- **Automatic Fallbacks**: Generates both modern calc() AND static fallback values
-- **Zero Code Changes**: Your existing code works exactly the same
-- **Progressive Enhancement**: Modern browsers get responsive scaling, old browsers get static values
+| Range | Rule |
+| --- | --- |
+| `viewport ≤ mobile-width − 1` | `mobile-value × viewport / mobile-width` |
+| `mobile-width … desktop-width − 1` | linear blend from mobile-value to desktop-value |
+| `viewport ≥ desktop-width` | `desktop-value × viewport / desktop-width` |
 
-### **🎯 Browser Support Matrix**
+With the default widths (desktop 1920px, mobile 390px), a
+`responsive-scale(font-size, 48, 24)` renders:
 
-| Browser                       | v2.0.x                     | v2.1.0                     | Status    |
-| ----------------------------- | -------------------------- | -------------------------- | --------- |
-| Chrome, Safari, Firefox, Edge | ✅ Full responsive scaling | ✅ Full responsive scaling | Unchanged |
-| Firefox Mobile                | ❌ **BROKEN**              | ✅ **FIXED**               | **NEW!**  |
-| Android Browser (4.4+)        | ❌ **BROKEN**              | ✅ **FIXED**               | **NEW!**  |
-| Budget devices                | ❌ **BROKEN**              | ✅ **FIXED**               | **NEW!**  |
-| IE 11                         | ❌ Not supported           | ❌ Not supported           | Unchanged |
+| Viewport | Rendered size |
+| --- | --- |
+| 390px | 24px (mobile design value) |
+| 768px | ≈29.9px |
+| 1366px | ≈39.3px |
+| 1919px | ≈47.9px |
+| 1920px | 48px (desktop design value) |
 
-**Coverage improvement:** 85% → 99.5% (+14.5%)
+No jumps, no inflation - exactly the proportions you designed.
 
-### **🔧 How It Works**
+## ⚙️ Configuring Your Design Widths
+
+**This is the single most important section.** The breakpoints are derived from
+three module variables (defaults: desktop `1920px`, tablet `768px`, mobile
+`390px`):
+
+| Variable | Meaning |
+| --- | --- |
+| `$rsm-desktop-width` | Design canvas width for desktop (e.g. your Figma frame) |
+| `$rsm-tablet-width` | Legacy - only feeds `--computed-tablet-scale-factor` |
+| `$rsm-mobile-width` | Design canvas width for mobile |
+
+### Option A (recommended): `@use ... with (...)`
 
 ```scss
-// Your code (unchanged!)
-.hero-title {
+// Any stylesheet that needs the mixins
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-desktop-width: 1440px,
+  $rsm-tablet-width: 768px,
+  $rsm-mobile-width: 375px
+);
+
+.my-element {
   @include rsm.responsive-scale(font-size, 48, 24);
 }
-
-// v2.0.x output (broken on Firefox Mobile)
-.hero-title {
-  font-size: calc(100vw / 1920 * 48px);
-}
-
-// v2.2.1 output (works everywhere!)
-.hero-title {
-  font-size: 48px; /* Fallback for old browsers */
-}
-
-@supports (font-size: calc(100vw / 1920px * 48px)) {
-  .hero-title {
-    font-size: calc(100vw / 1920px * 48px); /* Modern responsive scaling */
-  }
-}
 ```
 
-**Browser behavior:**
+Module configuration is applied when the module is loaded, so it works
+regardless of rule order and reaches **every** stylesheet compiled with that
+configuration.
 
-- **Modern browsers**: Ignore first declaration, use second → Perfect responsive scaling ✅
-- **Old browsers**: Use first declaration, ignore second → Static fallback values ✅
-
-### **⚙️ New Optional Features**
-
-#### Disable Fallback for Single Property
+**Recommended pattern for real projects** - create one project-owned wrapper
+file and import it everywhere:
 
 ```scss
-// Don't generate fallback for this property (modern browsers only)
-.element {
-  @include rsm.responsive-scale-no-fallback(font-size, 48, 24);
-}
+// styles/_rsm.scss  (your file, lives in your repo)
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-desktop-width: 1440px,
+  $rsm-mobile-width: 375px
+);
+@forward "responsive-scale-mixins";
 ```
-
-#### Disable Fallback Globally
 
 ```scss
-:root {
-  @include rsm.responsive-scale-variables(
-    1920px,
-    768px,
-    390px,
-    false // No fallbacks anywhere
-  );
+// any component / page stylesheet
+@use "../styles/rsm" as rsm;
+
+.card {
+  @include rsm.responsive-scale(padding, 32 48, 16 24);
 }
 ```
 
-> Note: Setting the last argument to `false` disables fallback output globally for all `rsm.responsive-scale()` calls. Individual declarations can still override this behavior by passing the `$enable-fallback` parameter explicitly.
+Because every compilation unit loads your wrapper, the configured widths are
+guaranteed - even in build tools that compile each stylesheet separately
+(Next.js CSS Modules, Angular component styles, Vite, ...).
 
-### **📊 Performance Impact**
+> ⚠️ Sass can configure a module only once per compilation, and only at its
+> **first** load. Configure it in your wrapper (or entry) file - not twice.
 
-- **CSS size increase**: <1 KB (after GZip) on typical sites
-- **Build time**: No change
-- **Runtime performance**: No change
-- **Browser parsing**: Slightly faster on old browsers
-
-### **🔄 Migration Guide**
-
-**For all users:**
-
-```bash
-npm update responsive-scale-mixins
-```
-
-**That's it!** Everything works, plus Firefox Mobile now works.
-
-**For users who want to disable fallbacks:**
+### Option B: `responsive-scale-variables()` mixin (legacy, single-compile builds)
 
 ```scss
-// Use new mixin for modern-only styles
-@include rsm.responsive-scale-no-fallback(property, desktop, mobile);
-```
-
-### **✅ v2.0.9 - Bug Fix (No Breaking Changes)**
-
-**This is a bug fix that resolves tablet breakpoint calculation issues. No API changes.**
-
-- **Fixed**: Tablet breakpoint CSS generation was producing invalid `calc()` expressions
-- **Result**: Tablet scaling now works correctly with valid CSS output
-- **Compatibility**: All existing code continues to work unchanged
-- **API**: Zero breaking changes - same function calls, same parameters, same behavior
-
-### Migration Guide (Pure CSS Users)
-
-**Update your CSS variable definitions:**
-
-```css
-/* OLD (v1.x) */
-:root {
-  --computed-scale-factor-px: calc(100vw / 1440);
-  --computed-scale-factor-rem: calc(100vw / 1440 / 16);
-  --computed-tablet-scale-factor-px: calc(100vw / 768);
-  --computed-tablet-scale-factor-rem: calc(100vw / 768 / 16);
-  --computed-mobile-scale-factor-px: calc(100vw / 375);
-  --computed-mobile-scale-factor-rem: calc(100vw / 375 / 16);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-/* NEW (v2.0) */
-:root {
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-```
-
-**Update your calc expressions to include units:**
-
-```css
-/* OLD (v1.x) */
-font-size: calc(var(--computed-scale-factor-px) * 40);
-
-/* NEW (v2.0+) */
-font-size: calc(var(--computed-scale-factor) * 40px);
-
-@include rsm.responsive-scale(font-size, 24, 16);
-```
-
-## ✨ Features
-
-- **Figma Proportions**: Maintains exact proportions from your Figma designs
-- **Automatic Scaling**: No manual breakpoint calculations needed
-- **Tablet Interpolation**: Smart interpolation between mobile and desktop values
-- **CSS Custom Properties**: Uses modern CSS variables for optimal performance
-- **Framework Agnostic**: Works with any CSS framework or vanilla CSS
-- **TypeScript Ready**: Compatible with CSS Modules and CSS-in-JS solutions
-- **Universal Unit Support**: Handles all CSS units including absolute (px, pt, cm, mm, in, pc) and relative (%, em, rem, vw, vh, vmin, vmax) units
-
-## 🔧 Package Structure
-
-**Starting with v2.0.7**, this package uses a **single-file distribution** for maximum compatibility. All mixins and functions are consolidated in `index.scss`, eliminating import dependency issues that could occur with NPM package distribution.
-
-### Recommended Import Pattern
-
-```scss
-// Modern @use syntax (preferred)
 @use "responsive-scale-mixins" as rsm;
 
 :root {
-  @include rsm.responsive-scale-variables();
-}
-
-.my-element {
-  @include rsm.responsive-scale(font-size, 24, 16);
+  // Must run BEFORE any responsive-scale() include in the same compilation
+  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
 }
 ```
 
-### Troubleshooting Import Errors
+Since v2.3.0 this mixin is **optional** - the scaling mixins no longer depend
+on CSS variables. It still:
 
-If you encounter "Can't find stylesheet to import" errors with Dart Sass:
+1. emits the legacy custom properties (`--computed-scale-factor` and friends)
+   for hand-written styles that reference them;
+2. sets the fallback flag / widths at runtime - but `!global` mutation only
+   affects the **current compilation unit** and only for `responsive-scale()`
+   includes that come **after** it. That is precisely why widths set this way
+   never reached separately-compiled components in v2.2.x and earlier.
 
-1. **Update the package**: Ensure you're using v2.0.4 or later
-2. **Use relative imports as workaround**: Import the partials directly:
-   ```scss
-   @import "responsive-scale-mixins/scss/variables";
-   @import "responsive-scale-mixins/scss/mixins";
-   ```
-3. **Check your build tool**: Some tools may need configuration updates for SCSS module resolution
+### Option C: legacy `@import` (old builds)
+
+```scss
+// Set the variables BEFORE the import - the classic !default override pattern
+$rsm-desktop-width: 1440px;
+$rsm-mobile-width: 375px;
+@import "responsive-scale-mixins";
+
+.my-element {
+  @include responsive-scale(font-size, 48, 24);
+}
+```
 
 ## 🚀 Quick Start
 
 ### Installation
 
-#### npm
-
 ```bash
 npm install responsive-scale-mixins
+# or: yarn add responsive-scale-mixins
+# or: pnpm add responsive-scale-mixins
 ```
 
-#### Yarn
+### Minimal usage (no global setup required)
 
-```bash
-yarn add responsive-scale-mixins
-```
+```scss
+@use "responsive-scale-mixins" as rsm;
 
-#### pnpm
-
-```bash
-pnpm add responsive-scale-mixins
+.hero-title {
+  @include rsm.responsive-scale(font-size, 48, 24);
+}
 ```
 
 ### Framework-Specific Setup
 
-#### Next.js (App Router)
+#### Next.js (App Router & Pages Router)
 
 ```scss
-// app/globals.scss or app/styles/globals.scss
-@use "responsive-scale-mixins" as rsm;
+// app/globals.scss  (or styles/globals.scss)
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-desktop-width: 1440px,
+  $rsm-mobile-width: 375px
+);
 
 :root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  // Define CSS variables globally (required)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
-}
-
-// Import in app/layout.tsx: import './globals.scss'
-```
-
-### Regression Test
-
-To confirm the fix before publishing, run the local regression case included in `test/regression.scss`.
-
-```bash
-cd test
-./test.sh
-```
-
-If the build succeeds, verify that `test/regression.css` was generated and contains valid modern expressions such as:
-
-```css
-padding: calc(
-    var(--computed-tablet-scale-factor) *
-      (5px + var(--tablet-proportion-scale-factor) * (10px - 5px))
-  )
-  calc(
-    var(--computed-tablet-scale-factor) *
-      (10px + var(--tablet-proportion-scale-factor) * (20px - 10px))
-  );
-```
-
-Then verify the `@supports` output for the single-value case in `test.css` matches the corrected form:
-
-```css
-@supports (margin: calc(100vw / 1920px * 10px)) {
-  .bar {
-    margin: calc(100vw / 1920px * 10px);
-  }
+  // Optional: emit the legacy CSS variables for custom styles
+  @include rsm.responsive-scale-variables();
 }
 ```
 
-#### Next.js (Pages Router)
+Components compiled as CSS Modules load their own copy of the module. Add the
+configuration to **every compilation** via `sassOptions`:
 
-```scss
-// styles/globals.scss
-@use "responsive-scale-mixins" as rsm;
-
-:root {
-  // Define CSS variables globally (required)
-
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
-}
-
-// Import in pages/_app.js: import '../styles/globals.scss'
+```js
+// next.config.js
+module.exports = {
+  sassOptions: {
+    additionalData: `@use "responsive-scale-mixins" as rsm with (
+      $rsm-desktop-width: 1440px,
+      $rsm-mobile-width: 375px
+    );`,
+  },
+};
 ```
 
-**Next.js Setup:**
+(If you use the wrapper-file pattern, inject `@use "styles/rsm" as rsm;`
+instead and skip the per-file `@use`.)
 
-- **App Router**: Put `:root` in `app/globals.css` (imported in `layout.tsx`)
-- **Pages Router**: Put `:root` in `styles/globals.scss` (imported in `pages/_app.js`)
-- The `:root` selector defines global CSS custom properties accessible everywhere
+#### Vite (Vue / React / SvelteKit / Astro)
+
+```ts
+// vite.config.ts
+export default {
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "responsive-scale-mixins" as rsm with (
+          $rsm-desktop-width: 1440px,
+          $rsm-mobile-width: 375px
+        );`,
+      },
+    },
+  },
+};
+```
 
 #### Create React App
 
 ```scss
-// src/index.scss or src/styles/main.scss
-@use "responsive-scale-mixins" as rsm;
+// src/index.scss
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-desktop-width: 1440px,
+  $rsm-mobile-width: 375px
+);
 
 :root {
-  // Define CSS variables globally (required)
-
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
+  @include rsm.responsive-scale-variables();
 }
-
-// Import in src/index.js: import './index.scss'
 ```
-
-**Create React App Setup:**
-
-- Put `:root` in your main SCSS file (e.g., `src/index.scss`)
-- Import the SCSS file in `src/index.js`
-- The `:root` selector makes CSS variables available app-wide
-
-#### Vue.js
-
-```scss
-// src/assets/styles/main.scss
-@use "responsive-scale-mixins" as rsm;
-
-:root {
-  // Define CSS variables globally (required)
-
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
-}
-
-// Import in src/main.js: import './assets/styles/main.scss'
-```
-
-**Vue.js Setup:**
-
-- Put `:root` in your global SCSS file
-- Import in `src/main.js` or use in a global style resource
-- The `:root` selector defines app-wide CSS variables
 
 #### Angular
 
+Angular compiles component styles separately. Configure once in
+`src/styles.scss` **and** make the widths available to components with the
+wrapper pattern:
+
 ```scss
-// src/styles.scss (global styles)
-@use "responsive-scale-mixins" as rsm;
-
-:root {
-  // Define CSS variables globally (required)
-
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
-}
-
-// This file is automatically included by Angular CLI
+// src/_rsm.scss
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-desktop-width: 1440px,
+  $rsm-mobile-width: 375px
+);
+@forward "responsive-scale-mixins";
 ```
 
-**Angular Setup:**
-
-- Put `:root` in `src/styles.scss` (automatically included by Angular CLI)
-- No manual import needed - Angular handles it
-- The `:root` selector defines global CSS variables
-
-#### Vite + Vue/React
-
 ```scss
-// src/styles/main.scss
-@use "responsive-scale-mixins" as rsm;
+// src/styles.scss
+@use "./rsm" as rsm;
 
 :root {
-  // Customize for your design system (optional)
-
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
+  @include rsm.responsive-scale-variables();
 }
 ```
 
-#### Gatsby
-
 ```scss
-// src/styles/global.scss
-@use "responsive-scale-mixins" as rsm;
+// any component.scss
+@use "../rsm" as rsm;
 
-:root {
-  // Customize for your design system (optional)
-
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
+.card {
+  @include rsm.responsive-scale(padding, 32 48, 16 24);
 }
 ```
 
-#### Nuxt.js
+#### Vue.js / Nuxt.js
 
 ```scss
-// assets/styles/main.scss
-@use "responsive-scale-mixins" as rsm;
+// src/assets/styles/main.scss (registered globally)
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-desktop-width: 1440px,
+  $rsm-mobile-width: 375px
+);
 
 :root {
-  // Customize for your design system (optional)
-
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
+  @include rsm.responsive-scale-variables();
 }
 ```
 
-#### SvelteKit
-
-```scss
-// src/app.scss
-@use "responsive-scale-mixins" as rsm;
-
-:root {
-  // Customize for your design system (optional)
-
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
-}
-```
-
-#### Astro
-
-```scss
-// src/styles/global.scss
-@use "responsive-scale-mixins" as rsm;
-
-:root {
-  // Customize for your design system (optional)
-
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
-}
-```
+For scoped component styles, use the wrapper-file pattern or `additionalData`
+(Vite/Nuxt config shown above).
 
 #### CSS Modules
 
 ```scss
-// styles.module.scss
-@use "responsive-scale-mixins" as rsm;
+// styles/global.scss  - widths for the whole app
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-desktop-width: 1440px,
+  $rsm-mobile-width: 375px
+);
 
-// Variables must be in global scope
-// In your main CSS file:
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1920);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 390);
-  --tablet-proportion-scale-factor: calc((100vw - 390px) / (1920px - 390px));
-}
+// styles.module.scss  - any module
+@use "responsive-scale-mixins" as rsm; // same compilation = same widths
 
-// Then in your module
 .myClass {
   @include rsm.responsive-scale(font-size, 24, 16);
 }
 ```
 
-#### Tailwind CSS Integration
+> Modules compiled **separately** need the wrapper-file pattern or
+> `additionalData` injection - otherwise they get the default widths.
+
+#### Tailwind CSS
 
 ```scss
 // styles/main.scss
-@use "responsive-scale-mixins" as rsm;
+@use "responsive-scale-mixins" as rsm with (
+  $rsm-desktop-width: 1440px,
+  $rsm-mobile-width: 375px
+);
 
-:root {
-  @include rsm.responsive-scale-variables();
-}
-
-// Use alongside Tailwind
 .custom-element {
   @include rsm.responsive-scale(padding, 20 40, 10 20);
   @apply bg-blue-500 text-white; // Tailwind classes still work
 }
 ```
 
-#### Styled Components
+### Pure CSS alternative (no Sass)
 
-```scss
-// If using styled-components with SCSS preprocessing
-import styled from 'styled-components';
-import './styles/responsive-mixins.scss'; // Import in your main file
-
-const StyledComponent = styled.div`
-  ${props => props.theme.responsiveScale('font-size', 24, 16)}
-`;
-```
-
-### Basic Usage
-
-#### Modern @use Syntax (Recommended)
-
-```scss
-// In your main SCSS file
-@use "responsive-scale-mixins" as rsm;
-
-// Include variables in your root element (required)
+```css
 :root {
-  @include rsm.responsive-scale-variables();
-}
-
-// Use the mixin anywhere
-.my-element {
-  @include rsm.responsive-scale(font-size, 24, 16);
-  @include rsm.responsive-scale(padding, 20 40, 10 20);
-}
-```
-
-#### Legacy @import Syntax (for older setups)
-
-```scss
-// In your main SCSS file
-@import "~responsive-scale-mixins";
-
-// Include variables in your root element (required)
-:root {
-  @include responsive-scale-variables();
-}
-
-// Use the mixin anywhere
-.my-element {
-  @include responsive-scale(font-size, 24, 16);
-  @include responsive-scale(padding, 20 40, 10 20);
+  --computed-scale-factor: calc(100vw / 1440);
+  --computed-mobile-scale-factor: calc(100vw / 375);
+  --tablet-proportion-scale-factor: calc((100vw - 375px) / 1065);
 }
 ```
 
 ## 📖 API Reference
 
-### `responsive-scale-variables($desktop-width, $tablet-width, $mobile-width)`
+### `responsive-scale-variables($desktop-width, $tablet-width, $mobile-width, $enable-fallback)`
 
-Defines the CSS custom properties for scaling calculations.
+*Optional since v2.3.0.* Emits the legacy CSS custom properties and sets the
+runtime fallback flag. Parameter defaults follow the module configuration, so
+calling it with no arguments never resets your `@use with` widths.
 
-**Parameters:**
-
-- `$desktop-width`: Design width for desktop (default: 1920px)
-- `$tablet-width`: Design width for tablet (default: 768px)
-- `$mobile-width`: Design width for mobile (default: 390px)
-
-### `responsive-scale($property, $desktop-value, $mobile-value, $unit, $is-percentage, $desktop-relative, $mobile-relative, $important)`
+### `responsive-scale($property, $desktop-value, $mobile-value, $unit, $is-percentage, $desktop-relative, $mobile-relative, $important, $enable-fallback)`
 
 The main responsive scaling mixin.
 
 **Parameters:**
 
-- `$property`: CSS property name (e.g., `font-size`, `padding`)
-- `$desktop-value`: Value for desktop screens
-- `$mobile-value`: Value for mobile screens
-- `$unit`: Unit for scaling (`px` or `rem`, default: `px`)
-- `$is-percentage`: Whether the value is a percentage (default: `false`)
-- `$desktop-relative`: Base value for percentage calculations on desktop
-- `$mobile-relative`: Base value for percentage calculations on mobile
-- `$important`: String to append (e.g., `" !important"` for override, default: `null`)
+- `$property`: CSS property name (e.g. `font-size`, `padding`)
+- `$desktop-value`: unitless value at the desktop design width (or a space list for shorthand properties)
+- `$mobile-value`: unitless value at the mobile design width (must match list-ness/length of `$desktop-value`)
+- `$unit`: `px` (default), `rem`, `em`, `%`, `vw`, `vh`, `vmin`, `vmax`, `pt`, `cm`, `mm`, `in`, `pc` - pass without quotes
+- `$is-percentage`: `true` to treat the value as a percentage of `$desktop-relative`/`$mobile-relative`
+- `$desktop-relative` / `$mobile-relative`: the base values for percentage mode
+- `$important`: `true`, or a string like `" !important"`
+- `$enable-fallback`: `null` (follow the global flag), `true`, or `false`
+
+**Generated CSS** (default fallbacks on):
+
+```css
+.hero-title {
+  font-size: 48px;                        /* static fallback */
+  font-size: 2.5vw;                       /* fluid - pure vw, works without calc() */
+}
+
+@media screen and (min-width: 390px) and (max-width: 1919px) {
+  .hero-title {
+    font-size: 24px;                      /* static fallback */
+    font-size: calc(24px + (100vw - 390px) * 24 / 1530);  /* continuous interpolation */
+  }
+}
+
+@media screen and (max-width: 389px) {
+  .hero-title {
+    font-size: 24px;                      /* static fallback */
+    font-size: 6.1538461538vw;            /* fluid */
+  }
+}
+```
+
+Browsers that cannot parse a fluid declaration keep the static one - no
+`@supports` needed. Unit-preserving values (rem/em/%/vw/vh) emit a
+same-type-division `calc()` (e.g. `calc(3rem / 1920px * 100vw)`), which is
+supported by 2023+ browsers and falls back to the static value elsewhere.
+
+### `responsive-scale-no-fallback(...)`
+
+Same parameters minus `$enable-fallback`; emits fluid declarations only.
+
+### `breakpoint($name)`
+
+Returns the configured width for `"desktop"`, `"tablet"` or `"mobile"` - handy
+for aligning your own media queries:
+
+```scss
+@media (min-width: rsm.breakpoint("desktop")) { ... }
+```
+
+### `strip-units($value)`, `scaled-value($val, $width, $unit)`, `tablet-interpolation($desktop-value, $mobile-value, $unit)`, `mobile-scale-expression($mobile-value, $unit)`
+
+Utility functions used by the mixins; exposed for advanced use.
 
 ## 🎯 Examples
 
@@ -670,405 +480,86 @@ The main responsive scaling mixin.
 }
 ```
 
-### Override Specificity
-
-```scss
-.override-bootstrap {
-  @include rsm.responsive-scale(
-    font-size,
-    24,
-    16,
-    px,
-    false,
-    null,
-    null,
-    " !important"
-  );
-  @include rsm.responsive-scale(
-    padding,
-    16 32,
-    8 16,
-    px,
-    false,
-    null,
-    null,
-    " !important"
-  );
-}
-```
-
-## 🔧 Configuration
-
-### Custom Design Widths
-
-Easily customize the design widths to match your project's breakpoints:
-
-```scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-
-  // Custom design widths (desktop, tablet, mobile)
-  @include rsm.responsive-scale-variables(1440px, 768px, 375px);
-  // Or use defaults: @include rsm.responsive-scale-variables();
-}
-```
-
-**Default values:**
-
-- Desktop: 1920px
-- Tablet: 768px
-- Mobile: 390px
-
 ### REM and EM Units
 
 ```scss
 .element {
-  @include rsm.responsive-scale(
-    font-size,
-    3,
-    2,
-    rem
-  ); // 3rem / 2rem - uses rem scale factor
-  @include rsm.responsive-scale(
-    font-size,
-    2,
-    1.5,
-    em
-  ); // 2em / 1.5em - uses rem scale factor
+  @include rsm.responsive-scale(font-size, 3, 2, rem);
+  @include rsm.responsive-scale(font-size, 2, 1.5, em);
 }
 ```
 
-**Universal Unit Support:**
-
-The mixin supports **all CSS units** with a single generic scale factor:
-
-**Absolute Units:**
-
-- `@include responsive-scale(property, value, mobile-value, px)` → `* valuepx`
-- `@include responsive-scale(property, value, mobile-value, pt)` → `* valuept`
-- `@include responsive-scale(property, value, mobile-value, cm)` → `* valuecm`
-- `@include responsive-scale(property, value, mobile-value, mm)` → `* valuemm`
-- `@include responsive-scale(property, value, mobile-value, in)` → `* valuein`
-- `@include responsive-scale(property, value, mobile-value, pc)` → `* valuepc`
-
-**Relative Units:**
-
-- `@include responsive-scale(property, value, mobile-value, em)` → `* valueem`
-- `@include responsive-scale(property, value, mobile-value, rem)` → `* valuerem`
-- `@include responsive-scale(property, value, mobile-value, %)` → `* value%`
-- `@include responsive-scale(property, value, mobile-value, vw)` → `* valuevw`
-- `@include responsive-scale(property, value, mobile-value, vh)` → `* valuevh`
-- `@include responsive-scale(property, value, mobile-value, vmin)` → `* valuevmin`
-- `@include responsive-scale(property, value, mobile-value, vmax)` → `* valuevmax`
-
-**Example Usage:**
+### Override Specificity
 
 ```scss
-.element {
-  @include rsm.responsive-scale(margin, 2, 1, cm); // centimeters
-  @include rsm.responsive-scale(width, 50, 30, vw); // viewport width
-  @include rsm.responsive-scale(height, 80, 60, vh); // viewport height
-  @include rsm.responsive-scale(font-size, 1.5, 1, em); // em units
+.override-bootstrap {
+  @include rsm.responsive-scale(font-size, 24, 16, px, false, null, null, true);
 }
 ```
 
-### Manual CSS Variables (Alternative)
+## 🌐 Browser Support
 
-If you prefer manual control, you can set the CSS variables directly:
+| Browser | Behavior |
+| --- | --- |
+| Chrome / Edge / Firefox / Safari (2023+) | Full fluid scaling everywhere |
+| Chrome / Edge / Firefox / Safari (older) | Fluid px scaling; static values for rem/em/%/vh |
+| Browsers with `vw` but without `calc()` (IE9+) | Fluid px scaling |
+| Very old browsers (no `vw`) | Static fallback values at each breakpoint |
+| IE 11 | Fluid px scaling; static for unit-preserving values |
 
-```scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440); // Your desktop width
-  --computed-tablet-scale-factor: calc(100vw / 768); // Your tablet width
-  --computed-mobile-scale-factor: calc(100vw / 375); // Your mobile width
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-```
+Every declaration ships with a static fallback, so **nothing is ever blank** -
+the original Firefox Mobile bug is structurally impossible now that the output
+contains neither CSS variables nor `@supports` gates.
 
 ## 🔧 Troubleshooting
 
-If the `@include responsive-scale-variables()` mixin doesn't work in your setup (e.g., due to SCSS compilation issues), use the manual CSS variables approach. Below are manual setups for each framework:
+### "My custom widths from globals.scss don't change the breakpoints"
 
-### Why the Manual Approach Works
+Sass modules are loaded **per compilation unit**. A `!global` mutation (the
+v2.2.x `responsive-scale-variables()` mechanism) only reaches mixin calls in
+the *same* compiled stylesheet, and only if it runs *before* them. Components
+compiled separately (Next.js/Angular/Vite CSS Modules) load a fresh module
+with the default widths.
 
-The `@include responsive-scale-variables()` mixin may fail in certain SCSS compilation environments (like some Next.js setups) because the imported mixins aren't processed correctly. The manual CSS variables approach bypasses this by directly defining the required `--computed-scale-factor-*` variables in `:root`.
+**Fix**: use Option A (`@use ... with (...)` + wrapper file or
+`additionalData` injection). That is what it was added for.
 
-### Next.js (App Router) - Manual Setup
+### "This module was already loaded, so it can't be configured using with"
 
-```scss
-// app/globals.css or app/styles/globals.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440); // Your design desktop width
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
+The module was loaded earlier in the same compilation without configuration.
+Configure it at the first load - in the wrapper file pattern, the wrapper is
+always first.
 
-// In component files
-@use "responsive-scale-mixins" as rsm;
-.my-element {
-  @include rsm.responsive-scale(font-size, 24, 16);
-}
-```
+### "Compilation error: value must be a unitless number"
 
-### Next.js (Pages Router) - Manual Setup
+v2.3.0 validates inputs. Pass `48` (the unit is the separate `$unit`
+parameter), not `48px`.
 
-```scss
-// styles/globals.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
+### Import resolution errors ("Can't find stylesheet")
 
-// In component files
-@import "responsive-scale-mixins";
-```
-
-### Create React App - Manual Setup
-
-```scss
-// src/index.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-// In component files
-@import "responsive-scale-mixins";
-```
-
-### Vue.js - Manual Setup
-
-```scss
-// src/assets/styles/main.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-// In component styles
-@import "responsive-scale-mixins";
-```
-
-### Angular - Manual Setup
-
-```scss
-// src/styles.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-// In component styles
-@import "responsive-scale-mixins";
-```
-
-### Vite + Vue/React - Manual Setup
-
-```scss
-// src/styles/main.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-// In components
-@import "responsive-scale-mixins";
-```
-
-### Gatsby - Manual Setup
-
-```scss
-// src/styles/global.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-// In components
-@import "responsive-scale-mixins";
-```
-
-### Nuxt.js - Manual Setup
-
-```scss
-// assets/styles/main.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-// In components
-@import "responsive-scale-mixins";
-```
-
-### SvelteKit - Manual Setup
-
-```scss
-// src/app.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-// In components
-@import "responsive-scale-mixins";
-```
-
-### Astro - Manual Setup
-
-```scss
-// src/styles/global.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-// In components
-@import "responsive-scale-mixins";
-```
-
-### CSS Modules - Manual Setup
-
-```scss
-// In your global CSS file (e.g., globals.scss)
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1920);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 390);
-  --tablet-proportion-scale-factor: calc((100vw - 390px) / (1920px - 390px));
-}
-
-// In your module files
-@use "responsive-scale-mixins" as rsm;
-.myClass {
-  @include rsm.responsive-scale(font-size, 24, 16);
-}
-```
-
-### Tailwind CSS - Manual Setup
-
-```scss
-// styles/main.scss
-:root {
-  // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-// In components
-@use "responsive-scale-mixins" as rsm;
-.custom-element {
-  @include rsm.responsive-scale(padding, 20 40, 10 20);
-  @apply bg-blue-500 text-white;
-}
-```
-
-### Styled Components - Manual Setup
-
-```scss
-// In your global styles
-:root {
-   // Replace 1440 with your design width or leave default (desktop)
-  // Replace 768 with your design width or leave default (tablet)
-  // Replace 375 with your design width or leave default (mobile)
-  --computed-scale-factor: calc(100vw / 1440);
-  --computed-tablet-scale-factor: calc(100vw / 768);
-  --computed-mobile-scale-factor: calc(100vw / 375);
-  --tablet-proportion-scale-factor: calc((100vw - 375px) / (1440px - 375px));
-}
-
-// In styled components with SCSS preprocessing
-import styled from 'styled-components';
-import './styles/responsive-mixins.scss';
-
-const StyledComponent = styled.div`
-  ${props => props.theme.responsiveScale('font-size', 24, 16)}
-`;
-```
-
-**Note:** Replace `1440`, `768`, `375` with your actual design widths. The manual approach ensures compatibility across all build tools and frameworks.
-
-## 📱 Breakpoints
-
-- **Desktop**: ≥992px (scales from desktop design width)
-- **Tablet**: 768px - 991px (interpolated values)
-- **Mobile**: ≤767px (scales from mobile design width)
+- Ensure v2.3.0+ and the `@use "responsive-scale-mixins" as rsm;` syntax
+- Some bundlers need the package added to their Sass `loadPaths`
+- Legacy fallback: `@import "responsive-scale-mixins";`
 
 ## 🛠 Development
 
-### Building
-
 ```bash
 npm install
-# No build step required - pure SCSS
+npm test          # assertion test suite (test/run-tests.js)
 ```
 
-### Testing
+The test suite compiles representative stylesheets through the Dart Sass JS
+API and asserts on the generated CSS, including numeric verification that the
+interpolation curve is continuous at the breakpoint boundaries.
+
+Manual visual testing:
 
 ```bash
-npm test
+npx --yes sass test/test.scss test/test.css
+# then open test/test.html in a browser and resize the window
 ```
+
+See [`test/TEST_README.md`](test/TEST_README.md) for details.
 
 ## 🤝 Contributing
 
@@ -1077,6 +568,9 @@ npm test
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+Agents contributing to this repository should read [AGENTS.md](AGENTS.md)
+first for architecture invariants and workflow.
 
 ## 📄 License
 
@@ -1088,40 +582,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Built for modern web development workflows
 - Compatible with CSS Modules, Styled Components, and traditional CSS
 
-## 🧪 Testing
-
-The library includes a comprehensive test suite located in the `test/` directory:
-
-```bash
-# Run the test suite (cross-platform)
-cd test && ./test.sh
-```
-
-If `./test.sh` fails because `sass` is not installed globally, run this instead from the repository root:
-
-```bash
-npx --yes sass test/test.scss test/test.css
-start test/test.html
-```
-
-On Windows, you can also open `test/test.html` manually after compiling.
-
-See [`test/TEST_README.md`](test/TEST_README.md) for detailed testing instructions.
-
-<!-- ## � Linking NPM Package to GitHub Packages
-
-To connect your published NPM package to GitHub Packages:
-
-1. **Go to your GitHub repository** → **Settings** → **Packages**
-2. **Click "Connect repository"** or **"Link to repository"**
-3. **Search for and select** your NPM package: `responsive-scale-mixins`
-4. **Confirm the connection**
-
-This will display your NPM package statistics and information in the GitHub Packages section of your repository.
-
-**Note:** The package will automatically appear in GitHub Packages once published to NPM, as long as the repository URL in `package.json` matches your GitHub repository. -->
-
-## �📞 Support
+## 📞 Support
 
 - 📧 Email: saheedodulaja@gmail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/Sidodus/responsive-scale-mixins/issues)

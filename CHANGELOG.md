@@ -5,6 +5,78 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-11-10
+
+### Added
+
+- **Module configuration for design widths** - the recommended way to set
+  breakpoints:
+
+  ```scss
+  @use "responsive-scale-mixins" as rsm with (
+    $rsm-desktop-width: 1440px,
+    $rsm-tablet-width: 768px,
+    $rsm-mobile-width: 375px
+  );
+  ```
+
+  Configuration is applied at module load, works regardless of rule order,
+  and reaches every stylesheet compiled with it - fixing the long-standing
+  issue where custom widths set from `globals.scss` never reached components
+  compiled as separate compilation units (Next.js, Angular, Vite CSS
+  Modules). A wrapper-file pattern (`@use ... with` + `@forward`) is
+  documented for such builds.
+- `breakpoint("desktop" | "tablet" | "mobile")` function exposing the
+  configured widths.
+- Input validation with clear error messages: unitless-number values,
+  px (or unitless) widths, desktop-width > mobile-width, matching list
+  lengths, percentage mode requiring relative bases.
+- Real assertion test suite (`test/run-tests.js`, `npm test`) covering
+  breakpoint propagation, interpolation continuity, fallback toggles, units,
+  lists, percentage mode, legacy `@import`, and zero deprecation warnings.
+
+### Fixed
+
+- **Tablet interpolation formula** (behavior change): the old formula
+  multiplied the interpolated value by `(100vw / tablet-width)`, inflating
+  mid-range values (a 48px desktop / 24px mobile value rendered ~70px on a
+  1366px laptop) and producing 2-2.5x jumps at the breakpoint boundaries
+  (24px -> 12px crossing 390px; ~120px -> 48px crossing 1920px with default
+  widths). The new curve is the exact linear blend between the mobile and
+  desktop design values and is continuous at every breakpoint.
+- **Invalid calc() output**: all expressions now avoid division by a length
+  (`100vw / 1920px`), which was unsupported before 2023 browsers AND is
+  mangled into invalid CSS by current Dart Sass versions (e.g.
+  `calc(0.15625vw * 1rem / 1px)`). px-style units are emitted as pure vw
+  lengths; unit-preserving units (rem, em, %, vw, vh, vmin, vmax) use
+  same-type-division forms emitted verbatim with static fallbacks.
+- **Invalid percentage fallback CSS** (`calc(1 / 100 * 48)px` - the unit was
+  appended outside the calc()).
+- **`responsive-scale-variables()` no longer resets configured widths**: its
+  parameter defaults now follow the module configuration, so calling it with
+  no arguments respects `@use with` instead of silently reverting to
+  1920px/768px/390px.
+- Removed the deprecated `if()` function usage that emitted a Sass
+  deprecation warning on current Dart Sass.
+
+### Changed
+
+- **Output structure**: modern expressions are emitted as a plain second
+  declaration after the static fallback instead of being wrapped in
+  `@supports` - browsers drop declarations they cannot parse, so the cascade
+  alone provides progressive enhancement with roughly half the output size.
+- `responsive-scale-variables()` is now **optional**; the scaling mixins no
+  longer depend on CSS variables.
+- The `$important` parameter accepts `true` in addition to a string like
+  `" !important"`.
+- `get-scale-factor()`, `get-tablet-scale-factor()` and
+  `get-mobile-scale-factor()` internal helpers removed (dead code without
+  var() output).
+- Identical desktop/mobile values emit a single constant declaration in the
+  tablet range instead of a redundant fallback pair.
+- `--tablet-proportion-scale-factor` and friends are emitted with unitless
+  divisors (valid in every calc-capable browser).
+
 ## [2.2.2] - 2026-08-30
 
 ### Fixed

@@ -1,0 +1,125 @@
+# AGENTS.md
+
+Guidance for AI coding agents (and human contributors) working on this
+repository. Read this before changing anything.
+
+## What this project is
+
+`responsive-scale-mixins` is a **published NPM package** (single-file SCSS
+library, `index.scss`) that generates fluid, breakpoint-aware CSS from design
+values. Consumers write:
+
+```scss
+@use "responsive-scale-mixins" as rsm;
+.hero-title { @include rsm.responsive-scale(font-size, 48, 24); }
+```
+
+and get static fallback declarations plus fluid `vw`/`calc()` declarations,
+with media-query breakpoints derived from three module configuration
+variables.
+
+## Repository layout
+
+| Path | Purpose |
+| --- | --- |
+| `index.scss` | **The entire package.** Everything ships from this one file (deliberate since v2.0.7 - single-file distribution avoids bundler resolution issues). |
+| `test/run-tests.js` | Assertion test suite (`npm test`). Uses the `sass` JS API, no other dev dependencies. |
+| `test/test.scss`, `test/test.html` | Manual visual test page (compile, then open in a browser). |
+| `docs/history/` | Historical design documents from the v2.1/v2.2 "Firefox compatibility" era. **Archived reference only - several claims are outdated.** |
+| `.github/workflows/` | CI: compile checks + package validation. |
+
+## Architecture invariants (do not break these)
+
+1. **Single-file distribution.** All public members live in `index.scss`.
+   Do not split into partials unless you also solve the bundler resolution
+   problems described in the v2.0.7 changelog entry.
+
+2. **No CSS variables in generated scaling output.** The original "blank on
+   Firefox Mobile" bug was var()-dependence. The mixins must work without any
+   `:root` setup. `responsive-scale-variables()` only emits *legacy* variables
+   for consumer convenience.
+
+3. **No `@supports` wrappers.** Progressive enhancement is achieved by
+   emitting the static fallback declaration first and the fluid declaration
+   second - browsers drop declarations they cannot parse.
+
+4. **No division by a length** (e.g. `100vw / 1920px`). Two reasons:
+   - unsupported before CSS Values 4 same-type division shipped (2023+
+     browsers);
+   - **current Dart Sass mangles such calc() expressions into invalid CSS**
+     (e.g. `calc(0.15625vw * 1rem / 1px)`).
+   Instead: px-style units are emitted as pure vw lengths
+   (`calc(48 * 100vw / 1920)` resolves to `2.5vw`), and unit-preserving units
+   (rem, em, %, vw, vh, vmin, vmax) use same-type-division forms emitted
+   verbatim through `string.unquote(...)` so Sass cannot rewrite them.
+
+5. **The interpolation curve must be continuous at both breakpoints.**
+   - mobile branch: `mobile-value * viewport / mobile-width`
+   - tablet branch: linear blend between mobile-value and desktop-value
+   - desktop branch: `desktop-value * viewport / desktop-width`
+   The v1-v2.2 tablet formula was discontinuous and inflated; never reintroduce
+   a `(100vw / tablet-width)` factor. `test/run-tests.js` asserts continuity.
+
+6. **Widths come from module configuration.** `$rsm-desktop-width`,
+   `$rsm-tablet-width`, `$rsm-mobile-width` are `!default` module variables.
+   `!global` mutation inside `responsive-scale-variables()` only affects the
+   current compilation unit and only for includes that expand *after* it -
+   which is why separately-compiled components (Next.js/Angular/Vite) never
+   saw widths set from `globals.scss`. `@use ... with (...)` is the reliable
+   mechanism; the wrapper-file pattern (configure + `@forward`) is the
+   documented fix. `responsive-scale-variables()` parameter defaults must
+   reference the module variables (never hardcode numbers) so calling it with
+   no arguments does not reset configuration.
+
+7. **Breakpoints are derived from the widths**: mobile = `<= mobile-width - 1`,
+   tablet = `[mobile-width, desktop-width - 1]`, desktop = `>= desktop-width`.
+   Media queries must use compile-time constants (CSS cannot put `var()` in
+   media queries) - this is why configuration is the only propagation channel.
+
+8. **Backwards compatibility of the public API.** `responsive-scale()`,
+   `responsive-scale-no-fallback()`, `responsive-scale-variables()`,
+   `strip-units()`, `scaled-value()`, `tablet-interpolation()`,
+   `mobile-scale-expression()` keep their signatures; the legacy `@import` +
+   variables-before-import pattern must keep working.
+
+## How to test
+
+```bash
+npm install          # installs devDependencies (sass)
+npm test             # assertion suite: 27 tests, must be all green
+```
+
+Manual visual check:
+
+```bash
+npx --yes sass test/test.scss test/test.css
+# open test/test.html in a browser, resize window, inspect computed styles
+```
+
+When touching output-affecting code, also compile `test/regression.scss` and
+eyeball `regression.css` - tablet expressions should read
+`calc(<mobile>px + (100vw - <mw>px) * <delta> / <denominator>)`.
+
+## Sanity checks before publishing
+
+1. `npm test` green.
+2. Compile `test/test.scss` and `test/regression.scss` with zero deprecation
+   warnings (`if()` function, division-by-length, etc. are all banned).
+3. `npm pack --dry-run` - the tarball must contain **only `index.scss`**
+   (enforced by the `files` allowlist in package.json plus `.npmignore`).
+4. Update `CHANGELOG.md` and the version in `package.json` and the
+   `index.scss` header together.
+5. Search the generated CSS for `var(`, `@supports`, `)px`, and `/ 19\d0px`
+   style division-by-length patterns - all must be absent.
+
+## House rules
+
+- Keep the changelog in Keep-a-Changelog format; dates use `YYYY-MM-DD`.
+- The `fix/` folder was archived to `docs/history/` in v2.3.0; do not revive
+  its claims without re-verifying against current code.
+- Windows dev machine: the shell PATH may need
+  `export PATH="/usr/bin:$PATH"`-style fixing before git/node resolve in
+  bash. Node and sass are installed locally.
+- `AGENTS.md`, `test/`, `docs/` and `.npmignore` are intentionally **not**
+  published to NPM (the `files` allowlist ships only `index.scss`); keeping
+  them in the public GitHub repo is fine and encouraged.

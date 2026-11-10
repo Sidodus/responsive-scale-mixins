@@ -20,11 +20,11 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Install Sass
-        run: npm install -g sass
+      - name: Install dependencies
+        run: npm install
 
-      - name: Verify Sass installation
-        run: sass --version
+      - name: Run test suite
+        run: npm test
 
       - name: Compile main SCSS file
         run: sass index.scss dist/index.css --style=compressed
@@ -60,12 +60,27 @@ jobs:
             exit 1
           fi
 
-          # Check test CSS for expected direct calc expressions (browser-compatible)
+          # v2.3.0 output contract: fluid px values as pure vw lengths,
+          # interpolation calc() with unitless divisors, no var()/@supports
           if grep -E -q "calc\(100vw / [0-9]+px" test/test.css; then
-            echo "✅ Test CSS contains expected direct calc expressions"
-          else
-            echo "❌ Test CSS missing expected direct calc expressions"
+            echo "❌ Test CSS contains banned division-by-length expressions"
             exit 1
+          else
+            echo "✅ No division-by-length calc expressions"
+          fi
+
+          if grep -E -q "calc\([0-9.]+px \+ \(100vw - [0-9]+px\)" test/test.css; then
+            echo "✅ Test CSS contains expected interpolation calc expressions"
+          else
+            echo "❌ Test CSS missing expected interpolation calc expressions"
+            exit 1
+          fi
+
+          if grep -E -q "var\(--computed|@supports" <(grep -v "^\s*\*" test/test.css); then
+            echo "❌ Test CSS contains var() scale factors or @supports wrappers"
+            exit 1
+          else
+            echo "✅ No var()/@supports in scaling output"
           fi
 
       - name: Check file sizes
@@ -139,8 +154,9 @@ jobs:
       - name: Test npm pack dry-run
         run: |
           npm pack --dry-run > pack-output.txt
-          if grep -q "responsive-scale-mixins@2.2.2" pack-output.txt || grep -q "responsive-scale-mixins-2.2.2" pack-output.txt; then
-            echo "✅ Package name and version correct"
+          VERSION=$(node -p "require('./package.json').version")
+          if grep -q "responsive-scale-mixins@${VERSION}" pack-output.txt || grep -q "responsive-scale-mixins-${VERSION}" pack-output.txt; then
+            echo "✅ Package name and version correct (v${VERSION})"
           else
             echo "❌ Package name/version issue"
             cat pack-output.txt

@@ -1,33 +1,12 @@
-/* Responsive Scale Variables Mixin
- * Include this mixin in your root element to define the scaling factors.
- * Adjust the design widths to match your design system breakpoints.
- * 
- * v2.2.0: Now includes fallback generation for browsers without CSS variable support
- */
-/* Utility function to strip units from values */
-/* Responsive Scale Mixins
- * Core scaling functionality with support for all CSS units
- * v2.2.0: Generates both modern calc() AND static fallback values
- */
-/* v2.2.0: Main responsive scale mixin with fallback support
- * Generates two CSS declarations:
- * 1. Static fallback value for unsupported browsers
- * 2. Modern calc() expression for modern browsers
- */
-/* v2.2.0: New mixin to disable fallback for specific declarations
- * Useful when you want only modern browsers to receive a style
- */
 :root {
   /* Define CSS variables globally (required) */
   --desktop-width: 1920px;
   --tablet-width: 768px;
   --mobile-width: 390px;
-  --computed-scale-factor: (100vw / 1920px);
-  --computed-tablet-scale-factor: (100vw / 768px);
-  --computed-mobile-scale-factor: (100vw / 390px);
-  --tablet-proportion-scale-factor: (
-    (100vw - 390px) / (1920px - 390px)
-  );
+  --computed-scale-factor: calc(100vw / 1920);
+  --computed-tablet-scale-factor: calc(100vw / 768);
+  --computed-mobile-scale-factor: calc(100vw / 390);
+  --tablet-proportion-scale-factor: calc((100vw - 390px) / 1530);
   --rsm-desktop-width-value: 1920;
   --rsm-tablet-width-value: 768;
   --rsm-mobile-width-value: 390;
@@ -140,114 +119,66 @@ a {
   backdrop-filter: blur(15px);
   box-shadow: var(--shadow);
   padding: 25px;
+  padding: 1.3020833333vw;
 }
-@supports (padding: calc(100vw / 1920px * 25px)) {
-  .testInfo {
-    padding: calc(100vw / 1920px * 25px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo {
     padding: 20px;
-  }
-  @supports (padding: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (25px - 20px)))) {
-    .testInfo {
-      padding: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (25px - 20px)));
-    }
+    padding: calc(20px + (100vw - 390px) * 5 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testInfo {
     padding: 20px;
-  }
-  @supports (padding: calc(100vw / 390px * 20px)) {
-    .testInfo {
-      padding: calc(100vw / 390px * 20px);
-    }
+    padding: 5.1282051282vw;
   }
 }
 .testInfo {
   border-radius: 16px;
+  border-radius: 0.8333333333vw;
 }
-@supports (border-radius: calc(100vw / 1920px * 16px)) {
-  .testInfo {
-    border-radius: calc(100vw / 1920px * 16px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo {
     border-radius: 12px;
-  }
-  @supports (border-radius: calc(100vw / 768px * (12px + (100vw - 390px) / (1920px - 390px) * (16px - 12px)))) {
-    .testInfo {
-      border-radius: calc(100vw / 768px * (12px + (100vw - 390px) / (1920px - 390px) * (16px - 12px)));
-    }
+    border-radius: calc(12px + (100vw - 390px) * 4 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testInfo {
     border-radius: 12px;
-  }
-  @supports (border-radius: calc(100vw / 390px * 12px)) {
-    .testInfo {
-      border-radius: calc(100vw / 390px * 12px);
-    }
+    border-radius: 3.0769230769vw;
   }
 }
 .testInfo {
   margin-bottom: 35px;
+  margin-bottom: 1.8229166667vw;
 }
-@supports (margin-bottom: calc(100vw / 1920px * 35px)) {
-  .testInfo {
-    margin-bottom: calc(100vw / 1920px * 35px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo {
     margin-bottom: 25px;
-  }
-  @supports (margin-bottom: calc(100vw / 768px * (25px + (100vw - 390px) / (1920px - 390px) * (35px - 25px)))) {
-    .testInfo {
-      margin-bottom: calc(100vw / 768px * (25px + (100vw - 390px) / (1920px - 390px) * (35px - 25px)));
-    }
+    margin-bottom: calc(25px + (100vw - 390px) * 10 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testInfo {
     margin-bottom: 25px;
-  }
-  @supports (margin-bottom: calc(100vw / 390px * 25px)) {
-    .testInfo {
-      margin-bottom: calc(100vw / 390px * 25px);
-    }
+    margin-bottom: 6.4102564103vw;
   }
 }
 .testInfo {
   border-inline-width: 4px;
+  border-inline-width: 0.2083333333vw;
 }
-@supports (border-inline-width: calc(100vw / 1920px * 4px)) {
-  .testInfo {
-    border-inline-width: calc(100vw / 1920px * 4px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo {
     border-inline-width: 2px;
-  }
-  @supports (border-inline-width: calc(100vw / 768px * (2px + (100vw - 390px) / (1920px - 390px) * (4px - 2px)))) {
-    .testInfo {
-      border-inline-width: calc(100vw / 768px * (2px + (100vw - 390px) / (1920px - 390px) * (4px - 2px)));
-    }
+    border-inline-width: calc(2px + (100vw - 390px) * 2 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testInfo {
     border-inline-width: 2px;
-  }
-  @supports (border-inline-width: calc(100vw / 390px * 2px)) {
-    .testInfo {
-      border-inline-width: calc(100vw / 390px * 2px);
-    }
+    border-inline-width: 0.5128205128vw;
   }
 }
 .testInfo {
@@ -269,58 +200,34 @@ a {
 }
 .testInfo h1 {
   font-size: 3rem;
+  font-size: calc(3rem / 1920px * 100vw);
 }
-@supports (font-size: calc(100vw / 1920px * 3rem)) {
-  .testInfo h1 {
-    font-size: calc(100vw / 1920px * 3rem);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo h1 {
     font-size: 2rem;
-  }
-  @supports (font-size: calc(100vw / 768px * (2rem + (100vw - 390px) / (1920px - 390px) * (3rem - 2rem)))) {
-    .testInfo h1 {
-      font-size: calc(100vw / 768px * (2rem + (100vw - 390px) / (1920px - 390px) * (3rem - 2rem)));
-    }
+    font-size: calc(2rem + (100vw - 390px) * ((3rem - 2rem) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testInfo h1 {
     font-size: 2rem;
-  }
-  @supports (font-size: calc(100vw / 390px * 2rem)) {
-    .testInfo h1 {
-      font-size: calc(100vw / 390px * 2rem);
-    }
+    font-size: calc(2rem / 390px * 100vw);
   }
 }
 .testInfo h1 {
   margin-bottom: 1rem;
+  margin-bottom: calc(1rem / 1920px * 100vw);
 }
-@supports (margin-bottom: calc(100vw / 1920px * 1rem)) {
-  .testInfo h1 {
-    margin-bottom: calc(100vw / 1920px * 1rem);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo h1 {
     margin-bottom: 0.5rem;
-  }
-  @supports (margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)))) {
-    .testInfo h1 {
-      margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)));
-    }
+    margin-bottom: calc(0.5rem + (100vw - 390px) * ((1rem - 0.5rem) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testInfo h1 {
     margin-bottom: 0.5rem;
-  }
-  @supports (margin-bottom: calc(100vw / 390px * 0.5rem)) {
-    .testInfo h1 {
-      margin-bottom: calc(100vw / 390px * 0.5rem);
-    }
+    margin-bottom: calc(0.5rem / 390px * 100vw);
   }
 }
 .testInfo h1 {
@@ -328,30 +235,18 @@ a {
 }
 .testInfo p {
   font-size: 1.5rem;
+  font-size: calc(1.5rem / 1920px * 100vw);
 }
-@supports (font-size: calc(100vw / 1920px * 1.5rem)) {
-  .testInfo p {
-    font-size: calc(100vw / 1920px * 1.5rem);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo p {
     font-size: 1.2rem;
-  }
-  @supports (font-size: calc(100vw / 768px * (1.2rem + (100vw - 390px) / (1920px - 390px) * (1.5rem - 1.2rem)))) {
-    .testInfo p {
-      font-size: calc(100vw / 768px * (1.2rem + (100vw - 390px) / (1920px - 390px) * (1.5rem - 1.2rem)));
-    }
+    font-size: calc(1.2rem + (100vw - 390px) * ((1.5rem - 1.2rem) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testInfo p {
     font-size: 1.2rem;
-  }
-  @supports (font-size: calc(100vw / 390px * 1.2rem)) {
-    .testInfo p {
-      font-size: calc(100vw / 390px * 1.2rem);
-    }
+    font-size: calc(1.2rem / 390px * 100vw);
   }
 }
 .testInfo p {
@@ -359,30 +254,18 @@ a {
 }
 .testInfo h3 {
   font-size: 2rem;
+  font-size: calc(2rem / 1920px * 100vw);
 }
-@supports (font-size: calc(100vw / 1920px * 2rem)) {
-  .testInfo h3 {
-    font-size: calc(100vw / 1920px * 2rem);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testInfo h3 {
     font-size: 1.4rem;
-  }
-  @supports (font-size: calc(100vw / 768px * (1.4rem + (100vw - 390px) / (1920px - 390px) * (2rem - 1.4rem)))) {
-    .testInfo h3 {
-      font-size: calc(100vw / 768px * (1.4rem + (100vw - 390px) / (1920px - 390px) * (2rem - 1.4rem)));
-    }
+    font-size: calc(1.4rem + (100vw - 390px) * ((2rem - 1.4rem) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testInfo h3 {
     font-size: 1.4rem;
-  }
-  @supports (font-size: calc(100vw / 390px * 1.4rem)) {
-    .testInfo h3 {
-      font-size: calc(100vw / 390px * 1.4rem);
-    }
+    font-size: calc(1.4rem / 390px * 100vw);
   }
 }
 .testInfo h3 {
@@ -435,46 +318,33 @@ a {
 
 .dynamicValue {
   padding: 2px 6px;
-  padding: calc(100vw / 1920px * 2px) calc(100vw / 1920px * 6px);
+  padding: 0.1041666667vw 0.3125vw;
 }
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .dynamicValue {
     padding: 1.3px 3.4px;
-    padding: calc(var(--computed-tablet-scale-factor) * (1.3px + var(--tablet-proportion-scale-factor) * (2px - 1.3px))) calc(var(--computed-tablet-scale-factor) * (3.4px + var(--tablet-proportion-scale-factor) * (6px - 3.4px)));
+    padding: calc(1.3px + (100vw - 390px) * 0.7 / 1530) calc(3.4px + (100vw - 390px) * 2.6 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .dynamicValue {
     padding: 1.3px 3.4px;
-    padding: calc(100vw / 390px * 1.3px) calc(100vw / 390px * 3.4px);
+    padding: 0.3333333333vw 0.8717948718vw;
   }
 }
 .dynamicValue {
   border-radius: 4px;
+  border-radius: 0.2083333333vw;
 }
-@supports (border-radius: calc(100vw / 1920px * 4px)) {
-  .dynamicValue {
-    border-radius: calc(100vw / 1920px * 4px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .dynamicValue {
     border-radius: 4px;
   }
-  @supports (border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (4px - 4px)))) {
-    .dynamicValue {
-      border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (4px - 4px)));
-    }
-  }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .dynamicValue {
     border-radius: 4px;
-  }
-  @supports (border-radius: calc(100vw / 390px * 4px)) {
-    .dynamicValue {
-      border-radius: calc(100vw / 390px * 4px);
-    }
+    border-radius: 1.0256410256vw;
   }
 }
 
@@ -493,86 +363,50 @@ a {
   background: var(--surface);
   backdrop-filter: blur(15px);
   border-radius: 16px;
+  border-radius: 0.8333333333vw;
 }
-@supports (border-radius: calc(100vw / 1920px * 16px)) {
-  .demoSection {
-    border-radius: calc(100vw / 1920px * 16px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .demoSection {
     border-radius: 12px;
-  }
-  @supports (border-radius: calc(100vw / 768px * (12px + (100vw - 390px) / (1920px - 390px) * (16px - 12px)))) {
-    .demoSection {
-      border-radius: calc(100vw / 768px * (12px + (100vw - 390px) / (1920px - 390px) * (16px - 12px)));
-    }
+    border-radius: calc(12px + (100vw - 390px) * 4 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .demoSection {
     border-radius: 12px;
-  }
-  @supports (border-radius: calc(100vw / 390px * 12px)) {
-    .demoSection {
-      border-radius: calc(100vw / 390px * 12px);
-    }
+    border-radius: 3.0769230769vw;
   }
 }
 .demoSection {
   padding: 30px;
+  padding: 1.5625vw;
 }
-@supports (padding: calc(100vw / 1920px * 30px)) {
-  .demoSection {
-    padding: calc(100vw / 1920px * 30px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .demoSection {
     padding: 20px;
-  }
-  @supports (padding: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (30px - 20px)))) {
-    .demoSection {
-      padding: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (30px - 20px)));
-    }
+    padding: calc(20px + (100vw - 390px) * 10 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .demoSection {
     padding: 20px;
-  }
-  @supports (padding: calc(100vw / 390px * 20px)) {
-    .demoSection {
-      padding: calc(100vw / 390px * 20px);
-    }
+    padding: 5.1282051282vw;
   }
 }
 .demoSection {
   margin-bottom: 25px;
+  margin-bottom: 1.3020833333vw;
 }
-@supports (margin-bottom: calc(100vw / 1920px * 25px)) {
-  .demoSection {
-    margin-bottom: calc(100vw / 1920px * 25px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .demoSection {
     margin-bottom: 20px;
-  }
-  @supports (margin-bottom: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (25px - 20px)))) {
-    .demoSection {
-      margin-bottom: calc(100vw / 768px * (20px + (100vw - 390px) / (1920px - 390px) * (25px - 20px)));
-    }
+    margin-bottom: calc(20px + (100vw - 390px) * 5 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .demoSection {
     margin-bottom: 20px;
-  }
-  @supports (margin-bottom: calc(100vw / 390px * 20px)) {
-    .demoSection {
-      margin-bottom: calc(100vw / 390px * 20px);
-    }
+    margin-bottom: 5.1282051282vw;
   }
 }
 .demoSection {
@@ -604,58 +438,34 @@ a {
 
 .beforeAfter {
   margin-bottom: 2.5rem;
+  margin-bottom: calc(2.5rem / 1920px * 100vw);
 }
-@supports (margin-bottom: calc(100vw / 1920px * 2.5rem)) {
-  .beforeAfter {
-    margin-bottom: calc(100vw / 1920px * 2.5rem);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .beforeAfter {
     margin-bottom: 1.2rem;
-  }
-  @supports (margin-bottom: calc(100vw / 768px * (1.2rem + (100vw - 390px) / (1920px - 390px) * (2.5rem - 1.2rem)))) {
-    .beforeAfter {
-      margin-bottom: calc(100vw / 768px * (1.2rem + (100vw - 390px) / (1920px - 390px) * (2.5rem - 1.2rem)));
-    }
+    margin-bottom: calc(1.2rem + (100vw - 390px) * ((2.5rem - 1.2rem) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .beforeAfter {
     margin-bottom: 1.2rem;
-  }
-  @supports (margin-bottom: calc(100vw / 390px * 1.2rem)) {
-    .beforeAfter {
-      margin-bottom: calc(100vw / 390px * 1.2rem);
-    }
+    margin-bottom: calc(1.2rem / 390px * 100vw);
   }
 }
 .beforeAfter {
   font-size: 3rem;
+  font-size: calc(3rem / 1920px * 100vw);
 }
-@supports (font-size: calc(100vw / 1920px * 3rem)) {
-  .beforeAfter {
-    font-size: calc(100vw / 1920px * 3rem);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .beforeAfter {
     font-size: 2rem;
-  }
-  @supports (font-size: calc(100vw / 768px * (2rem + (100vw - 390px) / (1920px - 390px) * (3rem - 2rem)))) {
-    .beforeAfter {
-      font-size: calc(100vw / 768px * (2rem + (100vw - 390px) / (1920px - 390px) * (3rem - 2rem)));
-    }
+    font-size: calc(2rem + (100vw - 390px) * ((3rem - 2rem) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .beforeAfter {
     font-size: 2rem;
-  }
-  @supports (font-size: calc(100vw / 390px * 2rem)) {
-    .beforeAfter {
-      font-size: calc(100vw / 390px * 2rem);
-    }
+    font-size: calc(2rem / 390px * 100vw);
   }
 }
 .beforeAfter {
@@ -746,116 +556,67 @@ a {
 .testHeading {
   color: var(--accent);
   padding-bottom: 10px;
+  padding-bottom: 0.5208333333vw;
 }
-@supports (padding-bottom: calc(100vw / 1920px * 10px)) {
-  .testHeading {
-    padding-bottom: calc(100vw / 1920px * 10px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testHeading {
     padding-bottom: 10px;
   }
-  @supports (padding-bottom: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (10px - 10px)))) {
-    .testHeading {
-      padding-bottom: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (10px - 10px)));
-    }
-  }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testHeading {
     padding-bottom: 10px;
-  }
-  @supports (padding-bottom: calc(100vw / 390px * 10px)) {
-    .testHeading {
-      padding-bottom: calc(100vw / 390px * 10px);
-    }
+    padding-bottom: 2.5641025641vw;
   }
 }
 .testHeading {
   font-size: 2rem;
+  font-size: calc(2rem / 1920px * 100vw);
 }
-@supports (font-size: calc(100vw / 1920px * 2rem)) {
-  .testHeading {
-    font-size: calc(100vw / 1920px * 2rem);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testHeading {
     font-size: 1.4rem;
-  }
-  @supports (font-size: calc(100vw / 768px * (1.4rem + (100vw - 390px) / (1920px - 390px) * (2rem - 1.4rem)))) {
-    .testHeading {
-      font-size: calc(100vw / 768px * (1.4rem + (100vw - 390px) / (1920px - 390px) * (2rem - 1.4rem)));
-    }
+    font-size: calc(1.4rem + (100vw - 390px) * ((2rem - 1.4rem) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testHeading {
     font-size: 1.4rem;
-  }
-  @supports (font-size: calc(100vw / 390px * 1.4rem)) {
-    .testHeading {
-      font-size: calc(100vw / 390px * 1.4rem);
-    }
+    font-size: calc(1.4rem / 390px * 100vw);
   }
 }
 .testHeading {
   margin-bottom: 1rem;
+  margin-bottom: calc(1rem / 1920px * 100vw);
 }
-@supports (margin-bottom: calc(100vw / 1920px * 1rem)) {
-  .testHeading {
-    margin-bottom: calc(100vw / 1920px * 1rem);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testHeading {
     margin-bottom: 0.5rem;
-  }
-  @supports (margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)))) {
-    .testHeading {
-      margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)));
-    }
+    margin-bottom: calc(0.5rem + (100vw - 390px) * ((1rem - 0.5rem) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testHeading {
     margin-bottom: 0.5rem;
-  }
-  @supports (margin-bottom: calc(100vw / 390px * 0.5rem)) {
-    .testHeading {
-      margin-bottom: calc(100vw / 390px * 0.5rem);
-    }
+    margin-bottom: calc(0.5rem / 390px * 100vw);
   }
 }
 
 .testParagraph {
   color: var(--muted);
   font-size: 1.4em;
+  font-size: calc(1.4em / 1920px * 100vw);
 }
-@supports (font-size: calc(100vw / 1920px * 1.4em)) {
-  .testParagraph {
-    font-size: calc(100vw / 1920px * 1.4em);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testParagraph {
     font-size: 0.8em;
-  }
-  @supports (font-size: calc(100vw / 768px * (0.8em + (100vw - 390px) / (1920px - 390px) * (1.4em - 0.8em)))) {
-    .testParagraph {
-      font-size: calc(100vw / 768px * (0.8em + (100vw - 390px) / (1920px - 390px) * (1.4em - 0.8em)));
-    }
+    font-size: calc(0.8em + (100vw - 390px) * ((1.4em - 0.8em) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testParagraph {
     font-size: 0.8em;
-  }
-  @supports (font-size: calc(100vw / 390px * 0.8em)) {
-    .testParagraph {
-      font-size: calc(100vw / 390px * 0.8em);
-    }
+    font-size: calc(0.8em / 390px * 100vw);
   }
 }
 
@@ -863,30 +624,18 @@ a {
   background: linear-gradient(45deg, var(--accent), var(--accent-strong));
   color: var(--foreground);
   border-radius: 8px;
+  border-radius: 0.4166666667vw;
 }
-@supports (border-radius: calc(100vw / 1920px * 8px)) {
-  .testBox {
-    border-radius: calc(100vw / 1920px * 8px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testBox {
     border-radius: 4px;
-  }
-  @supports (border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (8px - 4px)))) {
-    .testBox {
-      border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (8px - 4px)));
-    }
+    border-radius: calc(4px + (100vw - 390px) * 4 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testBox {
     border-radius: 4px;
-  }
-  @supports (border-radius: calc(100vw / 390px * 4px)) {
-    .testBox {
-      border-radius: calc(100vw / 390px * 4px);
-    }
+    border-radius: 1.0256410256vw;
   }
 }
 .testBox {
@@ -895,86 +644,49 @@ a {
   align-items: center;
   width: 100%;
   height: 100px;
+  height: 5.2083333333vw;
 }
-@supports (height: calc(100vw / 1920px * 100px)) {
-  .testBox {
-    height: calc(100vw / 1920px * 100px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testBox {
     height: 100px;
   }
-  @supports (height: calc(100vw / 768px * (100px + (100vw - 390px) / (1920px - 390px) * (100px - 100px)))) {
-    .testBox {
-      height: calc(100vw / 768px * (100px + (100vw - 390px) / (1920px - 390px) * (100px - 100px)));
-    }
-  }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testBox {
     height: 100px;
-  }
-  @supports (height: calc(100vw / 390px * 100px)) {
-    .testBox {
-      height: calc(100vw / 390px * 100px);
-    }
+    height: 25.641025641vw;
   }
 }
 .testBox {
   padding: 20px;
+  padding: 1.0416666667vw;
 }
-@supports (padding: calc(100vw / 1920px * 20px)) {
-  .testBox {
-    padding: calc(100vw / 1920px * 20px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testBox {
     padding: 10px;
-  }
-  @supports (padding: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (20px - 10px)))) {
-    .testBox {
-      padding: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (20px - 10px)));
-    }
+    padding: calc(10px + (100vw - 390px) * 10 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testBox {
     padding: 10px;
-  }
-  @supports (padding: calc(100vw / 390px * 10px)) {
-    .testBox {
-      padding: calc(100vw / 390px * 10px);
-    }
+    padding: 2.5641025641vw;
   }
 }
 .testBox {
   margin-bottom: 1rem;
+  margin-bottom: calc(1rem / 1920px * 100vw);
 }
-@supports (margin-bottom: calc(100vw / 1920px * 1rem)) {
-  .testBox {
-    margin-bottom: calc(100vw / 1920px * 1rem);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testBox {
     margin-bottom: 0.5rem;
-  }
-  @supports (margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)))) {
-    .testBox {
-      margin-bottom: calc(100vw / 768px * (0.5rem + (100vw - 390px) / (1920px - 390px) * (1rem - 0.5rem)));
-    }
+    margin-bottom: calc(0.5rem + (100vw - 390px) * ((1rem - 0.5rem) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testBox {
     margin-bottom: 0.5rem;
-  }
-  @supports (margin-bottom: calc(100vw / 390px * 0.5rem)) {
-    .testBox {
-      margin-bottom: calc(100vw / 390px * 0.5rem);
-    }
+    margin-bottom: calc(0.5rem / 390px * 100vw);
   }
 }
 .testBox .testBoxInner {
@@ -986,145 +698,84 @@ a {
   justify-content: center;
   align-items: center;
   font-size: 1.4em;
+  font-size: calc(1.4em / 1920px * 100vw);
 }
-@supports (font-size: calc(100vw / 1920px * 1.4em)) {
-  .testBox .testBoxInner {
-    font-size: calc(100vw / 1920px * 1.4em);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testBox .testBoxInner {
     font-size: 0.8em;
-  }
-  @supports (font-size: calc(100vw / 768px * (0.8em + (100vw - 390px) / (1920px - 390px) * (1.4em - 0.8em)))) {
-    .testBox .testBoxInner {
-      font-size: calc(100vw / 768px * (0.8em + (100vw - 390px) / (1920px - 390px) * (1.4em - 0.8em)));
-    }
+    font-size: calc(0.8em + (100vw - 390px) * ((1.4em - 0.8em) / (1920px - 390px)));
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testBox .testBoxInner {
     font-size: 0.8em;
-  }
-  @supports (font-size: calc(100vw / 390px * 0.8em)) {
-    .testBox .testBoxInner {
-      font-size: calc(100vw / 390px * 0.8em);
-    }
+    font-size: calc(0.8em / 390px * 100vw);
   }
 }
 
 .testLetterSpacing {
   background: var(--warning-bg);
   padding: 15px;
+  padding: 0.78125vw;
 }
-@supports (padding: calc(100vw / 1920px * 15px)) {
-  .testLetterSpacing {
-    padding: calc(100vw / 1920px * 15px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testLetterSpacing {
     padding: 10px;
-  }
-  @supports (padding: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (15px - 10px)))) {
-    .testLetterSpacing {
-      padding: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (15px - 10px)));
-    }
+    padding: calc(10px + (100vw - 390px) * 5 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testLetterSpacing {
     padding: 10px;
-  }
-  @supports (padding: calc(100vw / 390px * 10px)) {
-    .testLetterSpacing {
-      padding: calc(100vw / 390px * 10px);
-    }
+    padding: 2.5641025641vw;
   }
 }
 .testLetterSpacing {
   border-radius: 8px;
+  border-radius: 0.4166666667vw;
 }
-@supports (border-radius: calc(100vw / 1920px * 8px)) {
-  .testLetterSpacing {
-    border-radius: calc(100vw / 1920px * 8px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testLetterSpacing {
     border-radius: 4px;
-  }
-  @supports (border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (8px - 4px)))) {
-    .testLetterSpacing {
-      border-radius: calc(100vw / 768px * (4px + (100vw - 390px) / (1920px - 390px) * (8px - 4px)));
-    }
+    border-radius: calc(4px + (100vw - 390px) * 4 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testLetterSpacing {
     border-radius: 4px;
-  }
-  @supports (border-radius: calc(100vw / 390px * 4px)) {
-    .testLetterSpacing {
-      border-radius: calc(100vw / 390px * 4px);
-    }
+    border-radius: 1.0256410256vw;
   }
 }
 .testLetterSpacing {
   font-weight: bold;
   letter-spacing: -1px;
+  letter-spacing: -0.0520833333vw;
 }
-@supports (letter-spacing: calc(100vw / 1920px * -1px)) {
-  .testLetterSpacing {
-    letter-spacing: calc(100vw / 1920px * -1px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testLetterSpacing {
     letter-spacing: -1px;
   }
-  @supports (letter-spacing: calc(100vw / 768px * (-1px + (100vw - 390px) / (1920px - 390px) * (-1px - -1px)))) {
-    .testLetterSpacing {
-      letter-spacing: calc(100vw / 768px * (-1px + (100vw - 390px) / (1920px - 390px) * (-1px - -1px)));
-    }
-  }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testLetterSpacing {
     letter-spacing: -1px;
-  }
-  @supports (letter-spacing: calc(100vw / 390px * -1px)) {
-    .testLetterSpacing {
-      letter-spacing: calc(100vw / 390px * -1px);
-    }
+    letter-spacing: -0.2564102564vw;
   }
 }
 .testLetterSpacing {
   font-size: 24px;
+  font-size: 1.25vw;
 }
-@supports (font-size: calc(100vw / 1920px * 24px)) {
-  .testLetterSpacing {
-    font-size: calc(100vw / 1920px * 24px);
-  }
-}
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .testLetterSpacing {
     font-size: 18px;
-  }
-  @supports (font-size: calc(100vw / 768px * (18px + (100vw - 390px) / (1920px - 390px) * (24px - 18px)))) {
-    .testLetterSpacing {
-      font-size: calc(100vw / 768px * (18px + (100vw - 390px) / (1920px - 390px) * (24px - 18px)));
-    }
+    font-size: calc(18px + (100vw - 390px) * 6 / 1530);
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .testLetterSpacing {
     font-size: 18px;
-  }
-  @supports (font-size: calc(100vw / 390px * 18px)) {
-    .testLetterSpacing {
-      font-size: calc(100vw / 390px * 18px);
-    }
+    font-size: 4.6153846154vw;
   }
 }
 
