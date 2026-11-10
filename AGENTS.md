@@ -150,6 +150,9 @@ valid, no reordered/invalid calc(), custom breakpoints in every chunk.
 - Keep the changelog in Keep-a-Changelog format; dates use `YYYY-MM-DD`.
 - The `fix/` folder was archived to `docs/history/` in v2.3.0; do not revive
   its claims without re-verifying against current code.
+- Node toolchain: the dev/CI toolchain requires Node >= 22.12 (sass 1.101.0
+  depends on chokidar 5, which is ESM-only). CI pins Node 24 and installs
+  from the committed package-lock.json - keep the lockfile committed.
 - Windows dev machine: the shell PATH may need
   `export PATH="/usr/bin:$PATH"`-style fixing before git/node resolve in
   bash. Node and sass are installed locally.
