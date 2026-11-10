@@ -675,16 +675,15 @@ Pushing to `main` deploys `docs/demo/` to GitHub Pages automatically via
 
 ### Releasing (maintainers)
 
-Publishing is automated by
-[`.github/workflows/release.yml`](.github/workflows/release.yml). To release:
+npm publishing is **manual** - run `npm publish` yourself when the tree is
+ready (the sanity checklist in [AGENTS.md](AGENTS.md) is the pre-flight gate).
+GitHub Actions assists with everything else via
+[`.github/workflows/release.yml`](.github/workflows/release.yml):
 
 1. Bump the version in `package.json` and the `index.scss` header, update `CHANGELOG.md`, commit
-2. Tag and push: `git tag v2.4.0 && git push origin v2.4.0`
-3. The workflow verifies the tag matches `package.json`, runs the test suite, validates the tarball, publishes to npm with provenance, and creates the GitHub Release
-
-One-time setup: add an npm **Granular Access Token** (read/write on the
-package) as the repository secret `NPM_TOKEN`, with publishing settings that
-allow the token without 2FA.
+2. Publish manually: `npm publish` (use `--otp=<code>` if 2FA is enabled)
+3. Tag and push: `git tag v2.4.0 && git push origin v2.4.0`
+4. The workflow verifies the tag matches `package.json`, runs the test suite, validates the tarball, and creates the GitHub Release
 
 ## 🤝 Contributing
 
