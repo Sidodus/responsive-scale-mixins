@@ -114,8 +114,8 @@ eyeball `regression.css` - tablet expressions should read
 
 ## Framework verification (real builds, not just simulations)
 
-The v2.3.0 changes were validated against real production builds, and BOTH
-found real bugs that Sass-level testing missed:
+The v2.3.0 changes were validated against real production builds, and TWO
+of them found real bugs that Sass-level testing missed:
 
 1. **Vite 5 + React + Vue** (`additionalData` config, CSS Modules, scoped
    styles): esbuild minification reordered a same-type division into invalid
@@ -123,6 +123,10 @@ found real bugs that Sass-level testing missed:
 2. **Next.js 14 App Router** (`sassOptions.additionalData`, globals + CSS
    Modules compiled separately): cssnano dropped static fallbacks from plain
    declaration pairs -> fixed by the @supports barrier (invariant 3).
+3. **Angular 17** (wrapper file + stylePreprocessorOptions.includePaths,
+   component styles inlined into JS): verified clean - fallback pairs,
+   @supports barriers and division-first forms all survived its esbuild
+   minification. Astro/SvelteKit share Vite's engine and are covered by #1.
 
 If you change emission code, repeat at least the Next.js + Vite builds and
 diff the production CSS for: fallback pairs present, `@supports` conditions

@@ -27,12 +27,12 @@ jobs:
         run: npm test
 
       - name: Compile main SCSS file
-        run: sass index.scss dist/index.css --style=compressed
+        run: npx sass index.scss dist/index.css --style=compressed
 
       - name: Compile test SCSS file
         run: |
           cd test
-          sass test.scss test.css --style=compressed
+          npx sass test.scss test.css --style=compressed
 
       - name: Check for SCSS compilation errors
         run: |
