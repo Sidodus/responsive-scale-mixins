@@ -1,12 +1,12 @@
 {
   "name": "responsive-scale-mixins",
-  "version": "2.2.2",
-  "description": "🎨 Revolutionary SCSS mixins for perfect responsive design with universal browser compatibility. Supports ALL CSS units (px, rem, em, vw, vh, %, etc.) with pixel-perfect scaling and automatic fallbacks for browsers without CSS variable support. Zero manual calculations - just flawless responsive typography, spacing, and dimensions across desktop, tablet, and mobile. Single-file distribution for maximum compatibility. Framework-agnostic, works everywhere including Firefox Mobile and old Android browsers.",
+  "version": "2.3.0",
+  "description": "🎨 SCSS mixins for perfect responsive design with universal browser compatibility. Supports ALL CSS units (px, rem, em, vw, vh, %, etc.) with pixel-perfect scaling and automatic static fallbacks for older browsers. Zero manual calculations - just flawless responsive typography, spacing, and dimensions across desktop, tablet, and mobile. Single-file distribution for maximum compatibility. Framework-agnostic and configurable design widths via Sass module configuration.",
   "main": "index.scss",
   "style": "index.scss",
   "sass": "index.scss",
   "scripts": {
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "node test/run-tests.js"
   },
   "keywords": [
     "scss",
@@ -53,12 +53,15 @@
     "url": "git+https://github.com/Sidodus/responsive-scale-mixins.git"
   },
   "bugs": {
-    "url": "https://github.com/Sidodus/responsive-scale-mixins.git/issues"
+    "url": "https://github.com/Sidodus/responsive-scale-mixins/issues"
   },
-  "homepage": "https://github.com/Sidodus/responsive-scale-mixins.git#readme",
+  "homepage": "https://github.com/Sidodus/responsive-scale-mixins#readme",
   "files": [
     "index.scss"
   ],
+  "devDependencies": {
+    "sass": "1.101.0"
+  },
   "engines": {
     "node": ">=12.0.0"
   }

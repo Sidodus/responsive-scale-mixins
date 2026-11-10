@@ -1,8 +1,9 @@
 # Test files - not needed in NPM package
 test/
 
-# Fix files - not needed in NPM package
-fix/
+# Docs and agent guidance - not needed in NPM package
+docs/
+AGENTS.md
 
 # Development files
 .nyc_output/

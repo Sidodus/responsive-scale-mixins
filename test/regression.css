@@ -1,63 +1,56 @@
-/* Responsive Scale Variables Mixin
- * Include this mixin in your root element to define the scaling factors.
- * Adjust the design widths to match your design system breakpoints.
- * 
- * v2.2.0: Now includes fallback generation for browsers without CSS variable support
- */
-/* Utility function to strip units from values */
-/* Responsive Scale Mixins
- * Core scaling functionality with support for all CSS units
- * v2.2.0: Generates both modern calc() AND static fallback values
- */
-/* v2.2.0: Main responsive scale mixin with fallback support
- * Generates two CSS declarations:
- * 1. Static fallback value for unsupported browsers
- * 2. Modern calc() expression for modern browsers
- */
-/* v2.2.0: New mixin to disable fallback for specific declarations
- * Useful when you want only modern browsers to receive a style
- */
 .regression {
   padding: 10px 20px;
-  padding: calc(100vw / 1920px * 10px) calc(100vw / 1920px * 20px);
 }
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@supports (padding: 0.5208333333vw 1.0416666667vw) {
   .regression {
-    padding: 5px 10px;
-    padding: calc(var(--computed-tablet-scale-factor) * (5px + var(--tablet-proportion-scale-factor) * (10px - 5px))) calc(var(--computed-tablet-scale-factor) * (10px + var(--tablet-proportion-scale-factor) * (20px - 10px)));
+    padding: 0.5208333333vw 1.0416666667vw;
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .regression {
     padding: 5px 10px;
-    padding: calc(100vw / 390px * 5px) calc(100vw / 390px * 10px);
+  }
+  @supports (padding: calc(5px + (100vw - 390px) * 5 / 1530) calc(10px + (100vw - 390px) * 10 / 1530)) {
+    .regression {
+      padding: calc(5px + (100vw - 390px) * 5 / 1530) calc(10px + (100vw - 390px) * 10 / 1530);
+    }
+  }
+}
+@media screen and (max-width: 389px) {
+  .regression {
+    padding: 5px 10px;
+  }
+  @supports (padding: 1.2820512821vw 2.5641025641vw) {
+    .regression {
+      padding: 1.2820512821vw 2.5641025641vw;
+    }
   }
 }
 .regression {
   margin: 20px;
 }
-@supports (margin: calc(100vw / 1920px * 20px)) {
+@supports (margin: 1.0416666667vw) {
   .regression {
-    margin: calc(100vw / 1920px * 20px);
+    margin: 1.0416666667vw;
   }
 }
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 390px) and (max-width: 1919px) {
   .regression {
     margin: 10px;
   }
-  @supports (margin: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (20px - 10px)))) {
+  @supports (margin: calc(10px + (100vw - 390px) * 10 / 1530)) {
     .regression {
-      margin: calc(100vw / 768px * (10px + (100vw - 390px) / (1920px - 390px) * (20px - 10px)));
+      margin: calc(10px + (100vw - 390px) * 10 / 1530);
     }
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 389px) {
   .regression {
     margin: 10px;
   }
-  @supports (margin: calc(100vw / 390px * 10px)) {
+  @supports (margin: 2.5641025641vw) {
     .regression {
-      margin: calc(100vw / 390px * 10px);
+      margin: 2.5641025641vw;
     }
   }
 }

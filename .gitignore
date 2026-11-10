@@ -28,6 +28,10 @@ Thumbs.db
 *.tmp
 *.temp
 
+# Tool state / audit scratch
+.zcode/
+.audit-tmp/
+
 # Logs
 *.log
 
@@ -40,7 +44,6 @@ Thumbs.db
 
 # Package manager files
 yarn.lock
-package-lock.json
 
 # Test artifacts (optional - can be committed for reference)
 # test/*.css

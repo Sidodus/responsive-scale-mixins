@@ -18,21 +18,21 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "24"
 
-      - name: Install Sass
-        run: npm install -g sass
+      - name: Install dependencies
+        run: npm install
 
-      - name: Verify Sass installation
-        run: sass --version
+      - name: Run test suite
+        run: npm test
 
       - name: Compile main SCSS file
-        run: sass index.scss dist/index.css --style=compressed
+        run: npx sass index.scss dist/index.css --style=compressed
 
       - name: Compile test SCSS file
         run: |
           cd test
-          sass test.scss test.css --style=compressed
+          npx sass test.scss test.css --style=compressed
 
       - name: Check for SCSS compilation errors
         run: |
@@ -60,12 +60,35 @@ jobs:
             exit 1
           fi
 
-          # Check test CSS for expected direct calc expressions (browser-compatible)
+          # v2.3.0 output contract: fluid px values as pure vw lengths,
+          # interpolation calc() with unitless divisors, @supports barriers
+          # around fluid declarations (minifier defense), no var() scale factors
           if grep -E -q "calc\(100vw / [0-9]+px" test/test.css; then
-            echo "✅ Test CSS contains expected direct calc expressions"
-          else
-            echo "❌ Test CSS missing expected direct calc expressions"
+            echo "❌ Test CSS contains banned division-by-length expressions"
             exit 1
+          else
+            echo "✅ No division-by-length calc expressions"
+          fi
+
+          if grep -E -q "calc\([0-9.]+px \+ \(100vw - [0-9]+px\)" test/test.css; then
+            echo "✅ Test CSS contains expected interpolation calc expressions"
+          else
+            echo "❌ Test CSS missing expected interpolation calc expressions"
+            exit 1
+          fi
+
+          if ! grep -q "@supports" test/test.css; then
+            echo "❌ Test CSS is missing @supports minifier barriers around fluid declarations"
+            exit 1
+          else
+            echo "✅ @supports barriers present"
+          fi
+
+          if grep -E -q "var\(--computed" <(grep -v "^\s*\*" test/test.css); then
+            echo "❌ Test CSS scaling output depends on CSS variables"
+            exit 1
+          else
+            echo "✅ Scaling output is var()-free"
           fi
 
       - name: Check file sizes
@@ -93,7 +116,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "24"
 
       - name: Install dependencies
         run: npm install
@@ -139,8 +162,9 @@ jobs:
       - name: Test npm pack dry-run
         run: |
           npm pack --dry-run > pack-output.txt
-          if grep -q "responsive-scale-mixins@2.2.2" pack-output.txt || grep -q "responsive-scale-mixins-2.2.2" pack-output.txt; then
-            echo "✅ Package name and version correct"
+          VERSION=$(node -p "require('./package.json').version")
+          if grep -q "responsive-scale-mixins@${VERSION}" pack-output.txt || grep -q "responsive-scale-mixins-${VERSION}" pack-output.txt; then
+            echo "✅ Package name and version correct (v${VERSION})"
           else
             echo "❌ Package name/version issue"
             cat pack-output.txt
