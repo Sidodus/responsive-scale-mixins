@@ -88,16 +88,22 @@ variables.
    Media queries must use compile-time constants (CSS cannot put `var()` in
    media queries) - this is why configuration is the only propagation channel.
 
-8. **Clamp bounds are emitted verbatim (string.unquote), never as Sass
+8. **No dash-prefixed member names.** Dart Sass versions before ~1.100
+   reject `@function -foo` / `@mixin -foo` as "Invalid function name"
+   (verified: sass 1.94.1). Internal helpers use the `rsm-` prefix instead
+   (valid on every Dart Sass version). When renaming members, replace in ONE
+   regex pass with a guard against an already-prefixed match — a naive
+   substring replace cascades (rsm-bounds-number contains -bounds-number).
+9. **Clamp bounds are emitted verbatim (string.unquote), never as Sass
    calc-family literals.** Sass re-parses literal clamp()/min()/max() and its
    simplifier could mangle same-type-division forms inside. Bounds share the
    $unit, apply to fluid declarations only (static fallbacks keep design
    values), and cannot combine with $is-percentage.
-9. **$rsm-breakpoints map is applied at module load, after the helper
+10. **$rsm-breakpoints map is applied at module load, after the helper
     functions are defined** (top-level code runs top-to-bottom). It is
     mutually exclusive with the individual $rsm-*-width variables - mixing
     them must fail with a clear error.
-10. **Backwards compatibility of the public API.** `responsive-scale()`,
+11. **Backwards compatibility of the public API.** `responsive-scale()`,
    `responsive-scale-no-fallback()`, `responsive-scale-variables()`,
    `strip-units()`, `scaled-value()`, `tablet-interpolation()`,
    `mobile-scale-expression()` keep their signatures; the legacy `@import` +
@@ -137,7 +143,11 @@ of them found real bugs that Sass-level testing missed:
    @supports barriers and division-first forms all survived its esbuild
    minification. Astro/SvelteKit share Vite's engine and are covered by #1.
 
-If you change emission code, repeat at least the Next.js + Vite builds and
+Harness ledger: 2026-11-14 the sandboxes were upgraded to Next.js 16
+(Turbopack default), Vite 8, React 19 and sass 1.108 — all output checks
+(fallback pairs, @supports barriers, division-first forms, clamp bounds)
+re-verified green on the new majors. If you change emission code, repeat at
+least the Next.js + Vite builds and
 diff the production CSS for: fallback pairs present, `@supports` conditions
 valid, no reordered/invalid calc(), custom breakpoints in every chunk.
 

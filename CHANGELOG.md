@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.1] - 2026-11-15
+
+### Fixed
+
+- **Compatibility with older Dart Sass versions**: the internal helper
+  members introduced in v2.4.0 used dash-prefixed names
+  (`-maybe-clamp`, `-emit-fluid`, `-width-number`, ...), which Dart Sass
+  versions before ~1.100 reject as "Invalid function name" — every consumer
+  on those compilers (e.g. projects pinned to sass 1.93/1.94) failed to
+  compile. All internal members now use the `rsm-` prefix, which is valid on
+  every Dart Sass version. Verified by compiling the package under sass
+  1.94.1 with custom design widths (1360px/768px/540px) and clamp bounds.
+  The documented public API is unchanged.
+
 ## [2.4.0] - 2026-11-10
 
 ### Added

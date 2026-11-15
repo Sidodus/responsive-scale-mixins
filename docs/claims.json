@@ -1,0 +1,119 @@
+{
+  "$schema-note": "Claims discipline registry (MASTER_GUIDE.md §8). Every figure used in marketing copy must appear here with the test or command that verifies it. Re-run `node docs/claims-check.mjs` before every post wave — a stale claim is a wrong claim. Never quote a number that is not in this registry. Illustrative figures (rhetorical scenarios, not measured facts) must be marked with \"type\": \"illustrative\".",
+  "lastVerified": "2026-11-14",
+  "registry": [
+    {
+      "id": "test-count",
+      "claim": "41 tests",
+      "value": 41,
+      "verifiedBy": "npm test (test/run-tests.js prints '41 passed'); count = number of test() calls in test/run-tests.js",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["linkedin", "x", "instagram", "youtube", "tiktok", "assets/scene.js pills", "assets/card.html pills"]
+    },
+    {
+      "id": "zero-dependencies",
+      "claim": "0 dependencies / Zero dependencies / zero dependencies",
+      "value": 0,
+      "verifiedBy": "node -p \"Object.keys(require('./package.json').dependencies ?? {}).length\" -> 0; registry confirms latest version ships with no dependencies",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["linkedin", "x", "instagram", "youtube", "tiktok", "assets/scene.js pills", "assets/card.html pills", "assets/demo.html"]
+    },
+    {
+      "id": "single-file",
+      "claim": "Single-file SCSS / 1 file",
+      "value": "index.scss only",
+      "verifiedBy": "npm pack --dry-run -> total files: 4 (index.scss, README.md, package.json, LICENSE); package.json files allowlist",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["x", "assets/scene.js pills", "assets/card.html pills"]
+    },
+    {
+      "id": "version-2.4.0",
+      "claim": "v2.4.0",
+      "value": "2.4.0",
+      "verifiedBy": "npm view responsive-scale-mixins version -> 2.4.0; registry dist-tags.latest",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["assets/scene.js pills", "assets/card.html chip", "kit README"]
+    },
+    {
+      "id": "interpolation-curve",
+      "claim": "48px @ 1920 -> 24px @ 390 — exactly. Continuous linear blend in between.",
+      "value": "24px at 390px viewport, 48px at 1920px viewport, linear between, proportional beyond",
+      "verifiedBy": "npm test (test/run-tests.js asserts continuity numerically: |tablet(390) - mobileLimit| < 0.01 and |tablet(1920) - desktopLimit| < 0.01)",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["linkedin", "x", "youtube", "instagram", "assets/scene.js slide 2", "assets/card.html", "docs/demo"]
+    },
+    {
+      "id": "audit-70px-1366",
+      "claim": "48px headline rendered ~70px on a 1366px laptop",
+      "value": "69.9px (v2.2 formula evaluated at 1366px viewport: (1366/768) * (24 + ((1366-390)/1530) * 24))",
+      "verifiedBy": "node -p \"((1366/768) * (24 + ((1366-390)/(1920-390)) * 24)).toFixed(1)\" -> 69.9; documented in CHANGELOG.md [2.3.0]",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["linkedin", "x", "instagram", "youtube", "tiktok", "assets/scene.js slide 1", "assets/card.html", "kit README"]
+    },
+    {
+      "id": "audit-jump-25x",
+      "claim": "2.5× jump crossing 1920px (2× crossing 390px)",
+      "value": "119.9px -> 48px at 1920 (2.50x); 23.94px -> 12.19px at 390 (1.96x)",
+      "verifiedBy": "node -p \"((1919/768) * (24 + ((1919-390)/1530) * 24)) / 48\" -> 2.50 ; node -p \"(23.94) / ((390/768) * 24)\" -> 1.96; documented in CHANGELOG.md [2.3.0]",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["linkedin", "x", "instagram", "youtube", "tiktok", "assets/scene.js slide 1", "assets/card.html", "kit README"]
+    },
+    {
+      "id": "wrong-duration-14-months",
+      "claim": "wrong since v1 / for 14 months",
+      "value": "14 months (v1.x first released 2025-09; interpolation fixed in v2.3.0 released 2026-11-10)",
+      "verifiedBy": "CHANGELOG.md dates ([1.x.x] 2025-09, [2.3.0] 2026-11-10) + git history",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["linkedin", "x", "instagram", "youtube", "tiktok", "assets/scene.js slide 1", "kit README"]
+    },
+    {
+      "id": "installs-thousands",
+      "claim": "thousands of installs",
+      "value": "3,047 downloads in the last year (npm registry API, 2026-11-14); 503 last month",
+      "verifiedBy": "https://api.npmjs.org/downloads/point/last-year/responsive-scale-mixins",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["linkedin", "instagram", "youtube", "tiktok"]
+    },
+    {
+      "id": "clamp-output",
+      "claim": "clamp(24px, calc(24px + (100vw - 390px) * 24 / 1530), 48px)",
+      "value": "exact emitted string for responsive-scale(font-size, 48, 24, $min: 24, $max: 48) with default widths",
+      "verifiedBy": "npm test (clamp two-sided test asserts this exact string); regenerate: node docs/claims-check.mjs",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["linkedin", "x", "youtube", "instagram", "assets/scene.js slide 3", "assets/card.html", "kit README", "README.md"]
+    },
+    {
+      "id": "framework-verification",
+      "claim": "Verified in real production builds of Next.js, Vite and Angular",
+      "value": "Next.js 16 (Turbopack), Vite 8 + React 19 + Vue 3.5, Angular 17 — harness ledger in AGENTS.md",
+      "verifiedBy": "My Apps/rsm-integration-tests sandboxes (npm build + CSS diff checks); AGENTS.md 'Framework verification' + harness ledger",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["linkedin", "x", "instagram", "youtube", "tiktok", "assets/scene.js slide 6", "assets/card.html pills", "kit README"]
+    },
+    {
+      "id": "one-line-of-scss",
+      "claim": "One line of SCSS. Zero media queries.",
+      "value": "structural: a single @include produces all branches; the developer writes no media queries (the mixin emits its own internal ones)",
+      "verifiedBy": "test/run-tests.js (single include asserts desktop + tablet + mobile blocks); note: 'zero media queries' refers to what the DEVELOPER writes",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["assets/card.html tagline", "instagram", "youtube", "tiktok", "assets/scene.js intro"]
+    },
+    {
+      "id": "50-lines-illustrative",
+      "claim": "replaced 50 lines of media queries",
+      "value": "illustrative scenario (matches the README hero example 'Before: 50+ lines of media queries') — NOT a measured figure",
+      "verifiedBy": "README.md hero example (illustrative); kept honest by the one-line-of-scss registry entry",
+      "lastVerified": "2026-11-14",
+      "type": "illustrative",
+      "usedIn": ["linkedin", "tiktok storyboard", "assets/scene.js intro"]
+    },
+    {
+      "id": "static-fallbacks",
+      "claim": "static fallbacks for browsers that can't handle fluid forms / nothing is ever blank",
+      "value": "every fluid declaration is paired with a static declaration; @supports barriers keep the pair intact in production minifiers",
+      "verifiedBy": "npm test (fallback pair + minifier-barrier invariant tests); cssnano/esbuild probe checks in My Apps/rsm-integration-tests/cssnano-probe.js",
+      "lastVerified": "2026-11-14",
+      "usedIn": ["x", "linkedin", "youtube", "instagram", "kit README", "README.md"]
+    }
+  ]
+}

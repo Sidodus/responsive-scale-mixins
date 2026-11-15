@@ -660,6 +660,13 @@ npx --yes sass test/test.scss test/test.css
 
 See [`test/TEST_README.md`](test/TEST_README.md) for details.
 
+### Claims registry (marketing figures)
+
+Every number quoted in social/promo material must appear in
+[`docs/claims.json`](docs/claims.json), each entry citing the test or command
+that verifies it. Before posting anything: `node docs/claims-check.mjs` —
+all rows must PASS (see MASTER-guide claims discipline).
+
 ### Live demo
 
 ```bash
