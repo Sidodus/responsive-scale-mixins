@@ -1,7 +1,16 @@
-// Responsive Scale Mixins v2.4.0
+// Responsive Scale Mixins v2.4.1
 // A powerful SCSS mixin system for creating perfectly responsive designs
 // with universal browser compatibility and static fallbacks.
 // Single-file distribution for maximum compatibility.
+//
+// v2.4.1 CHANGELOG:
+// - FIX: renamed the internal dash-prefixed members (-width-number,
+//  -maybe-clamp, -emit-fluid, ...) to the rsm- prefix. Dart Sass versions
+//  before ~1.100 reject dash-prefixed function/mixin names as
+//  "Invalid function name", so v2.4.0 failed to compile for every consumer
+//  on older compilers (e.g. sass 1.93/1.94 projects). The rsm- prefix is
+//  valid on every Dart Sass version. Internal names only - the documented
+//  public API is unchanged.
 //
 // v2.4.0 CHANGELOG:
 // - NEW: clamp bounds. Pass `$min` and `$max` (unitless, same $unit as the
@@ -137,7 +146,7 @@ $rsm-breakpoints: () !default;
 
 // Validates and normalizes a design width to a unitless number.
 // Accepts `1920px` or `1920`; rejects anything else with a helpful message.
-@function -width-number($value, $name) {
+@function rsm-width-number($value, $name) {
   @if meta.type-of($value) != "number" {
     @error "responsive-scale-mixins: #{$name} must be a width like 1440px, got `#{$value}`.";
   }
@@ -164,15 +173,15 @@ $rsm-breakpoints: () !default;
     @error "responsive-scale-mixins: $rsm-breakpoints requires at least the `desktop` and `mobile` keys.";
   }
 
-  $rsm-desktop-width: -width-number(map.get($rsm-breakpoints, desktop), "$rsm-breakpoints.desktop") * 1px;
+  $rsm-desktop-width: rsm-width-number(map.get($rsm-breakpoints, desktop), "$rsm-breakpoints.desktop") * 1px;
   $tablet-from-map: null;
   @if map.has-key($rsm-breakpoints, tablet) {
     $tablet-from-map: map.get($rsm-breakpoints, tablet);
   } @else {
     $tablet-from-map: 768px;
   }
-  $rsm-tablet-width: -width-number($tablet-from-map, "$rsm-breakpoints.tablet") * 1px;
-  $rsm-mobile-width: -width-number(map.get($rsm-breakpoints, mobile), "$rsm-breakpoints.mobile") * 1px;
+  $rsm-tablet-width: rsm-width-number($tablet-from-map, "$rsm-breakpoints.tablet") * 1px;
+  $rsm-mobile-width: rsm-width-number(map.get($rsm-breakpoints, mobile), "$rsm-breakpoints.mobile") * 1px;
 
   @if strip-units($rsm-desktop-width) <= strip-units($rsm-mobile-width) {
     @error "responsive-scale-mixins: $rsm-breakpoints desktop (#{$rsm-desktop-width}) must be greater than mobile (#{$rsm-mobile-width}).";
@@ -181,7 +190,7 @@ $rsm-breakpoints: () !default;
 
 // Validates a scaling value: a unitless number (the unit is a separate
 // parameter). Clear error instead of silently invalid CSS like `48pxpx`.
-@function -value-number($value, $name) {
+@function rsm-value-number($value, $name) {
   @if meta.type-of($value) != "number" or not math.is-unitless($value) {
     @error "responsive-scale-mixins: #{$name} must be a unitless number (the unit comes from the $unit parameter), got `#{$value}`.";
   }
@@ -191,7 +200,7 @@ $rsm-breakpoints: () !default;
 // px-per-unit conversion factor for absolute units, or null when the unit
 // is not convertible to px at compile time. Bare units arrive as unquoted
 // strings (px, rem, %, ...).
-@function -unit-px-factor($unit) {
+@function rsm-unit-px-factor($unit) {
   $u: #{$unit};
 
   @if $u == "px" {
@@ -224,10 +233,10 @@ $rsm-breakpoints: () !default;
 // a calc() - so it is emitted verbatim as an unquoted string. Older browsers
 // drop it and keep the static fallback.
 @function scaled-value($val, $width, $unit: px) {
-  $val: -value-number($val, "value");
-  $w: -width-number($width, "width");
+  $val: rsm-value-number($val, "value");
+  $w: rsm-width-number($width, "width");
 
-  $px-factor: -unit-px-factor($unit);
+  $px-factor: rsm-unit-px-factor($unit);
   @if $px-factor != null {
     $px-at-design: $val * $px-factor;
     @return math.div($px-at-design * 100, $w) * 1vw;
@@ -248,10 +257,10 @@ $rsm-breakpoints: () !default;
 // into an invalid length-times-length product:
 //  calc(MOBILEu + (DESKTOPu - MOBILEu) / (DWpx - MWpx) * (100vw - MWpx))
 @function tablet-interpolation($desktop-value, $mobile-value, $unit) {
-  $desktop-value: -value-number($desktop-value, "desktop-value");
-  $mobile-value: -value-number($mobile-value, "mobile-value");
-  $dw: -width-number($rsm-desktop-width, "$rsm-desktop-width");
-  $mw: -width-number($rsm-mobile-width, "$rsm-mobile-width");
+  $desktop-value: rsm-value-number($desktop-value, "desktop-value");
+  $mobile-value: rsm-value-number($mobile-value, "mobile-value");
+  $dw: rsm-width-number($rsm-desktop-width, "$rsm-desktop-width");
+  $mw: rsm-width-number($rsm-mobile-width, "$rsm-mobile-width");
 
   @if $dw <= $mw {
     @error "responsive-scale-mixins: $rsm-desktop-width (#{$dw}px) must be greater than $rsm-mobile-width (#{$mw}px).";
@@ -263,7 +272,7 @@ $rsm-breakpoints: () !default;
     @return string.unquote("#{$mobile-value}#{$unit}");
   }
 
-  @if -unit-px-factor($unit) != null {
+  @if rsm-unit-px-factor($unit) != null {
     @return calc(
       #{$mobile-value}#{$unit} +
         (100vw - #{$mw}px) * #{$desktop-value - $mobile-value} / #{$dw - $mw}
@@ -308,32 +317,32 @@ $rsm-breakpoints: () !default;
 
 // Joins a list of unitless numbers into a static space-separated CSS value
 // with the unit appended to each element (e.g. `20px 40px`).
-@function -static-list($values, $unit) {
+@function rsm-static-list($values, $unit) {
   $out: ();
   @each $v in $values {
-    $v: -value-number($v, "list value");
+    $v: rsm-value-number($v, "list value");
     $out: list.append($out, string.unquote("#{$v}#{$unit}"), space);
   }
   @return string.unquote("#{$out}");
 }
 
 // Scales one unitless value against the configured desktop width.
-@function -scaled-desktop($v, $unit) {
+@function rsm-scaled-desktop($v, $unit) {
   @return scaled-value($v, $rsm-desktop-width, $unit);
 }
 
 // Scales one unitless value against the configured mobile width.
-@function -scaled-mobile($v, $unit) {
+@function rsm-scaled-mobile($v, $unit) {
   @return mobile-scale-expression($v, $unit);
 }
 
 // Maps each element of a unitless number list through the given two-argument
 // function ($value, $unit) and joins the results into a space-separated
 // CSS value.
-@function -scaled-list($values, $scaler, $unit) {
+@function rsm-scaled-list($values, $scaler, $unit) {
   $out: ();
   @each $v in $values {
-    $v: -value-number($v, "list value");
+    $v: rsm-value-number($v, "list value");
     $out: list.append($out, meta.call($scaler, $v, $unit), space);
   }
   @return $out;
@@ -341,7 +350,7 @@ $rsm-breakpoints: () !default;
 
 // True when every desktop/mobile value pair is identical, in which case the
 // tablet interpolation is constant and needs no fallback pair.
-@function -all-equal($desktop-values, $mobile-values) {
+@function rsm-all-equal($desktop-values, $mobile-values) {
   @for $i from 1 through list.length($desktop-values) {
     @if list.nth($desktop-values, $i) != list.nth($mobile-values, $i) {
       @return false;
@@ -351,7 +360,7 @@ $rsm-breakpoints: () !default;
 }
 
 // Appends the $important argument (null, true or a string like " !important")
-@function -important($important) {
+@function rsm-important($important) {
   @if $important == true {
     @return " !important";
   }
@@ -359,18 +368,18 @@ $rsm-breakpoints: () !default;
 }
 
 // Validates a clamp bound: null (no bound) or a unitless number.
-@function -bounds-number($value, $name) {
+@function rsm-bounds-number($value, $name) {
   @if $value == null {
     @return null;
   }
-  @return -value-number($value, $name);
+  @return rsm-value-number($value, $name);
 }
 
 // Wraps a fluid expression in clamp()/max()/min() bounds when configured.
 // Built as a verbatim string: Sass would re-parse a literal clamp() and its
 // calc simplifier can mangle the same-type-division forms inside (invariant 4b).
 // One-sided bounds use max()/min(), which have slightly wider support than clamp().
-@function -maybe-clamp($fluid, $min, $max, $unit) {
+@function rsm-maybe-clamp($fluid, $min, $max, $unit) {
   @if $min == null and $max == null {
     @return $fluid;
   }
@@ -384,13 +393,13 @@ $rsm-breakpoints: () !default;
 }
 
 // Maps -maybe-clamp over a scaled value list (shorthand properties).
-@function -clamp-list($values, $min, $max, $unit) {
+@function rsm-clamp-list($values, $min, $max, $unit) {
   @if $min == null and $max == null {
     @return $values;
   }
   $out: ();
   @each $v in $values {
-    $out: list.append($out, -maybe-clamp($v, $min, $max, $unit), space);
+    $out: list.append($out, rsm-maybe-clamp($v, $min, $max, $unit), space);
   }
   @return $out;
 }
@@ -402,7 +411,7 @@ $rsm-breakpoints: () !default;
 // (padding, margin, width, ...) - a plain "fallback + fluid" pair loses the
 // static fallback in production builds. Minifiers never merge declarations
 // across an @supports boundary, so the pair survives everywhere.
-@mixin -emit-fluid($property, $fluid, $important, $with-supports: true) {
+@mixin rsm-emit-fluid($property, $fluid, $important, $with-supports: true) {
   @if $with-supports {
     @supports (#{$property}: #{$fluid}) {
       #{$property}: #{$fluid}#{$important};
@@ -436,9 +445,9 @@ $rsm-breakpoints: () !default;
   $rsm-tablet-width: $tablet-width !global;
   $rsm-mobile-width: $mobile-width !global;
 
-  $dw: -width-number($desktop-width, "$desktop-width");
-  $tw: -width-number($tablet-width, "$tablet-width");
-  $mw: -width-number($mobile-width, "$mobile-width");
+  $dw: rsm-width-number($desktop-width, "$desktop-width");
+  $tw: rsm-width-number($tablet-width, "$tablet-width");
+  $mw: rsm-width-number($mobile-width, "$mobile-width");
 
   @if $dw <= $mw {
     @error "responsive-scale-mixins: $desktop-width (#{$dw}px) must be greater than $mobile-width (#{$mw}px).";
@@ -498,16 +507,16 @@ $rsm-breakpoints: () !default;
   @if $enable-fallback == null {
     $enable-fallback: $rsm-fallback-enabled;
   }
-  $important: -important($important);
-  $min: -bounds-number($min, "$min");
-  $max: -bounds-number($max, "$max");
+  $important: rsm-important($important);
+  $min: rsm-bounds-number($min, "$min");
+  $max: rsm-bounds-number($max, "$max");
 
   @if $min != null and $max != null and $min > $max {
     @error "responsive-scale-mixins: $min (#{$min}) must not be greater than $max (#{$max}).";
   }
 
-  $dw: -width-number($rsm-desktop-width, "$rsm-desktop-width");
-  $mw: -width-number($rsm-mobile-width, "$rsm-mobile-width");
+  $dw: rsm-width-number($rsm-desktop-width, "$rsm-desktop-width");
+  $mw: rsm-width-number($rsm-mobile-width, "$rsm-mobile-width");
 
   @if $dw <= $mw {
     @error "responsive-scale-mixins: $rsm-desktop-width (#{$dw}px) must be greater than $rsm-mobile-width (#{$mw}px).";
@@ -527,10 +536,10 @@ $rsm-breakpoints: () !default;
       @error "responsive-scale-mixins: $is-percentage requires both $desktop-relative and $mobile-relative.";
     }
 
-    $desktop-relative: -value-number($desktop-relative, "$desktop-relative");
-    $mobile-relative: -value-number($mobile-relative, "$mobile-relative");
-    $desktop-value: -value-number($desktop-value, "$desktop-value");
-    $mobile-value: -value-number($mobile-value, "$mobile-value");
+    $desktop-relative: rsm-value-number($desktop-relative, "$desktop-relative");
+    $mobile-relative: rsm-value-number($mobile-relative, "$mobile-relative");
+    $desktop-value: rsm-value-number($desktop-value, "$desktop-value");
+    $mobile-value: rsm-value-number($mobile-value, "$mobile-value");
 
     // Desktop: static percentage of the relative base (calc-free: Sass
     // resolves the arithmetic at compile time)
@@ -545,8 +554,8 @@ $rsm-breakpoints: () !default;
         #{$property}: #{$tablet-fallback}#{$unit}#{$important};
       }
 
-      @if -unit-px-factor($unit) != null {
-        @include -emit-fluid(
+      @if rsm-unit-px-factor($unit) != null {
+        @include rsm-emit-fluid(
           $property,
           calc(
             #{math.div($mobile-value, 100)} * (#{$mobile-relative}#{$unit} + (100vw - #{$mw}px) * #{$desktop-relative - $mobile-relative} / #{$dw - $mw})
@@ -555,7 +564,7 @@ $rsm-breakpoints: () !default;
           $enable-fallback
         );
       } @else {
-        @include -emit-fluid(
+        @include rsm-emit-fluid(
           $property,
           string.unquote(
             "calc(#{math.div($mobile-value, 100)} * (#{$mobile-relative}#{$unit} + (#{$desktop-relative}#{$unit} - #{$mobile-relative}#{$unit}) / (#{$dw}px - #{$mw}px) * (100vw - #{$mw}px)))"
@@ -588,12 +597,12 @@ $rsm-breakpoints: () !default;
     // --- Desktop (base declaration, applies above the tablet breakpoint) ---
     @if $desktop-is-list {
       @if $enable-fallback {
-        #{$property}: -static-list($desktop-value, $unit)#{$important};
+        #{$property}: rsm-static-list($desktop-value, $unit)#{$important};
       }
-      @include -emit-fluid(
+      @include rsm-emit-fluid(
         $property,
-        -clamp-list(
-          -scaled-list($desktop-value, meta.get-function("-scaled-desktop"), $unit),
+        rsm-clamp-list(
+          rsm-scaled-list($desktop-value, meta.get-function("rsm-scaled-desktop"), $unit),
           $min,
           $max,
           $unit
@@ -605,9 +614,9 @@ $rsm-breakpoints: () !default;
       @if $enable-fallback {
         #{$property}: #{$desktop-value}#{$unit}#{$important};
       }
-      @include -emit-fluid(
+      @include rsm-emit-fluid(
         $property,
-        -maybe-clamp(
+        rsm-maybe-clamp(
           scaled-value($desktop-value, $rsm-desktop-width, $unit),
           $min,
           $max,
@@ -622,7 +631,7 @@ $rsm-breakpoints: () !default;
     @media screen and (min-width: #{$mw}px) and (max-width: #{$dw - 1}px) {
       $tablet-is-constant: false;
       @if $desktop-is-list {
-        $tablet-is-constant: -all-equal($desktop-value, $mobile-value);
+        $tablet-is-constant: rsm-all-equal($desktop-value, $mobile-value);
       } @else {
         $tablet-is-constant: $desktop-value == $mobile-value;
       }
@@ -630,14 +639,14 @@ $rsm-breakpoints: () !default;
       @if $tablet-is-constant {
         // Interpolation is constant: one declaration covers every browser
         @if $desktop-is-list {
-          #{$property}: -static-list($mobile-value, $unit)#{$important};
+          #{$property}: rsm-static-list($mobile-value, $unit)#{$important};
         } @else {
           #{$property}: #{$mobile-value}#{$unit}#{$important};
         }
       } @else {
         @if $enable-fallback {
           @if $desktop-is-list {
-            #{$property}: -static-list($mobile-value, $unit)#{$important};
+            #{$property}: rsm-static-list($mobile-value, $unit)#{$important};
           } @else {
             #{$property}: #{$mobile-value}#{$unit}#{$important};
           }
@@ -654,16 +663,16 @@ $rsm-breakpoints: () !default;
               space
             );
           }
-          @include -emit-fluid(
+          @include rsm-emit-fluid(
             $property,
-            -clamp-list($tablet-fluid, $min, $max, $unit),
+            rsm-clamp-list($tablet-fluid, $min, $max, $unit),
             $important,
             $enable-fallback
           );
         } @else {
-          @include -emit-fluid(
+          @include rsm-emit-fluid(
             $property,
-            -maybe-clamp(
+            rsm-maybe-clamp(
               tablet-interpolation($desktop-value, $mobile-value, $unit),
               $min,
               $max,
@@ -680,12 +689,12 @@ $rsm-breakpoints: () !default;
     @media screen and (max-width: #{$mw - 1}px) {
       @if $mobile-is-list {
         @if $enable-fallback {
-          #{$property}: -static-list($mobile-value, $unit)#{$important};
+          #{$property}: rsm-static-list($mobile-value, $unit)#{$important};
         }
-        @include -emit-fluid(
+        @include rsm-emit-fluid(
           $property,
-          -clamp-list(
-            -scaled-list($mobile-value, meta.get-function("-scaled-mobile"), $unit),
+          rsm-clamp-list(
+            rsm-scaled-list($mobile-value, meta.get-function("rsm-scaled-mobile"), $unit),
             $min,
             $max,
             $unit
@@ -697,9 +706,9 @@ $rsm-breakpoints: () !default;
         @if $enable-fallback {
           #{$property}: #{$mobile-value}#{$unit}#{$important};
         }
-        @include -emit-fluid(
+        @include rsm-emit-fluid(
           $property,
-          -maybe-clamp(
+          rsm-maybe-clamp(
             mobile-scale-expression($mobile-value, $unit),
             $min,
             $max,
